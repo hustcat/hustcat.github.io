@@ -1,11 +1,11 @@
-　---
-　　layout: default
-　　title: YY's Blog
-　　---
-　　<h2>{{ page.title }}</h2>
-　　<p>最新文章</p>
-　　<ul>
-　　　　{% for post in site.posts %}
+---
+layout: default
+title: YY's Blog
+---
+<h2>{{ page.title }}</h2>
+<p>最新文章</p>
+<ul>
+	{% for post in site.posts %}
 　　　　　　<li>{{ post.date | date_to_string }} <a href="{{ post.url }}">{{ post.title }}</a></li>
 　　　　{% endfor %}
-　　</ul>
+</ul>
