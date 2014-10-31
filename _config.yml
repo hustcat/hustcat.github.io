@@ -1,1 +1,6 @@
-baseurl: /hustcat.github.io
+me: "hustcat/"
+author: "hustcat"
+uri: "http://hustcat.github.io"
+markdown: redcarpet
+pygments: true
+permalink: pretty
