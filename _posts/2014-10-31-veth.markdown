@@ -92,7 +92,8 @@ static void attach_one_default_qdisc(struct net_device *dev,
 创建noqueue
 ------
 开始尝试直接删除设备默认的pfifo_fast队列，发现会出错：
-```sh
+
+```bash
 # tc qdisc del dev vethd4ea root
 RTNETLINK answers: No such file or directory
 # tc  -s qdisc ls dev vethd4ea
@@ -104,7 +105,8 @@ qdisc pfifo_fast 0: root refcnt 2 bands 3 priomap  1 2 2 2 1 2 0 0 1 1 1 1 1 1 1
 后来看到Jesper Brouer给出一个替换默认队列的方式，尝试了一下，成功完成。
 
 替换默认的qdisc队列
-```sh
+
+```bash
 # tc qdisc replace dev vethd4ea root pfifo limit 100
 # tc  -s qdisc ls dev vethd4ea                      
 qdisc pfifo 8001: root refcnt 2 limit 100p
@@ -116,12 +118,14 @@ link/ether 3a:15:3b:e1:d7:6d brd ff:ff:ff:ff:ff:ff
 ```
 
 修改队列长度
-```sh
+
+```bash
 # ifconfig vethd4ea txqueuelen 0
 ```
 
 删除qdisc
-```sh
+
+```bash
 # tc qdisc del dev vethd4ea root                    
 # ip link show vethd4ea                
 9: vethd4ea: <BROADCAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP mode DEFAULT 
