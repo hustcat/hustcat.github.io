@@ -15,6 +15,7 @@ title:  "从veth看虚拟网络设备的qdisc"
 ------
 在注册（创建）设备时，qdisc设置为noop_qdisc， 
 register_netdevice -> dev_init_scheduler
+
 ```c
 void dev_init_scheduler(struct net_device *dev)
 {
@@ -28,6 +29,7 @@ void dev_init_scheduler(struct net_device *dev)
 
 打开设备时，如果没有配置qdisc时，就指定为默认的pfifo_fast队列：
 dev_open -> dev_activate，
+
 ```c
 void dev_activate(struct net_device *dev)
 {
