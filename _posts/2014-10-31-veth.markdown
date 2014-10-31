@@ -3,13 +3,11 @@ layout: post
 title:  "从veth看虚拟网络设备的qdisc"
 ---
 
-从veth看虚拟网络设备的qdisc
-======
 背景
 ------
 前段时间在测试docker的网络性能的时候，发现了一个veth的性能问题，后来给docker官方提交了一个PR，参考[set tx_queuelen to 0 when create veth device](https://github.com/docker/libcontainer/pull/193)，引起了一些讨论。再后来，RedHat的网络专家[Jesper Brouer](https://github.com/netoptimizer) 出来详细的讨论了一下这个问题。
 
-![veth qdisc](https://github.com/hustcat/effective-go/blob/master/pics/network_veth.png)
+![veth qdisc](http://images.cnitblog.com/blog/23202/201410/141941365298477.png)
 
 可以看到，veth设备qdisc队列，而环回设备/桥接设备是没qdisc队列的，参考br_dev_setup函数。
 
