@@ -1,6 +1,16 @@
-me: "hustcat/"
-author: "hustcat"
-uri: "http://hustcat.github.io"
-markdown: redcarpet
+markdown: rdiscount
+permalink: /:title/
+url: http://hustcat.github.io
+name: YY哥
+author: hustcat
+qq: 395070574
+email: hustcat@gmail.com
+duoshuo: hustcat
+beian: 
+cnzz: 
+weibo: 
+github: hustcat
 pygments: true
-permalink: pretty
+safe: true
+paginate: 20
+about: "Hustcat"
