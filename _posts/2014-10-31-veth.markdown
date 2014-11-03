@@ -1,6 +1,8 @@
 ---
 layout: post
 title:  "从veth看虚拟网络设备的qdisc"
+categories: Linux
+tags:  veth qdisc
 ---
 
 背景
