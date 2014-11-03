@@ -7,16 +7,25 @@ tags: docker kubernetes
 
 Kubernetes从0.4开始，开发很快，变化也很大。这里谈谈services的一些变化。
 之前的kubernetes services，kube-proxy在host上监听service指定的端口，然后由kube-proxy将请求转到后端具体的pods。这有一些问题：
+
 （1）最大的问题，由于kube-proxy在host上监听端口，这样pod内的容器在expose时，就不能使用该host的该端口；而且service之间可能冲突；
+
 （2）环境变量不能动态更新，所以pods不能知道在它之后启动的service的信息。
 
 为此，kubernetes重新设计了services，让每个service都有一个自己的IP，但这并不是一个真正IP，而是通过iptables实现一个虚拟的IP。每个节点都生成这样一条类似的iptables规则：
+
+```sh
 -A KUBE-PROXY -d 10.11.0.1/32 -p tcp -m comment --comment apache-service -m tcp --dport ${service-port} -j REDIRECT --to-ports ${kube-proxy-port}
+```
+
 由于kube-proxy-port是随机生成，大大减少了host port冲突的机会。另外，由于每个service都有一个自己的IP，所以service之间冲突也没有了，不同的service可以使用相同的port。
 
 考虑3个节点：
+
 yy1: 172.16.213.138 (master)
+
 yy2: 172.16.213.140 (minion)
+
 yy3: 172.16.213.141 (minion)
 
 apiserver运行参数
