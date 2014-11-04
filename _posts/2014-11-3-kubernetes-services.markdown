@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  "Kubernetes最新进展之services"
+title:  Kubernetes深入浅出：services
 categories: Linux
 tags: docker kubernetes
 ---
