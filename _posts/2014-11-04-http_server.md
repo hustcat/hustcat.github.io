@@ -9,6 +9,7 @@ tags: go
 示例
 ------
 Go语言的标准库对http编程提供了很多的支持，我们只要几行代码，就可以写一个简单的http server：
+
 ```go
 package main
 
@@ -117,6 +118,8 @@ func (c *conn) serve() {
 
 serverHandler
 ------
+
+```go
 // serverHandler delegates to either the server's Handler or
 // DefaultServeMux and also handles "OPTIONS *" requests.
 type serverHandler struct {
@@ -138,6 +141,8 @@ DefaultServeMux是结构体ServeMux的实例，它根据请求的路径，将请
 
 ServeMux
 ------
+
+```go
 type ServeMux struct {
 	mu    sync.RWMutex
 	m     map[string]muxEntry  ///pattern --> muxEntry
