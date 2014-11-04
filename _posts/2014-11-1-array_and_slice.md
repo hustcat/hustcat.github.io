@@ -1,6 +1,7 @@
 ---
+date: 2014-11-01 18:44:30+00:00
 layout: post
-title:  "数组（array）与切片（slice）"
+title:  "Go语言学习：数组（array）与切片（slice）"
 categories: 编程语言
 tags: go
 ---
