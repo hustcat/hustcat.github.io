@@ -10,7 +10,7 @@ tags: go
 ------
 Go语言的标准库对http编程提供了很多的支持，我们只要几行代码，就可以写一个简单的http server：
 
-```go
+{% highlight go linenos %}
 package main
 
 import (
@@ -31,7 +31,9 @@ func main() {
 		log.Fatal("ListenAndServe: ", err)
 	}
 }
-```
+
+{% endhighlight %}
+
 在浏览器中访问http://localhost:12345/hello，输出
 
 ```
