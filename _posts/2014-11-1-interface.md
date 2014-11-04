@@ -207,7 +207,8 @@ switch x.(type) {
 x必须是接口类型。
 
 来看一个详细的示例：
-```
+
+```go
 type Stringer interface {
     String() string
 }
