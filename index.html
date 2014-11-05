@@ -13,9 +13,10 @@ layout: page
   <li class="listing-item">
     <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
     <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
-    {% if site.truncate %}
-    <p>{{ page.excerpt | truncate: site.truncate }}</p>
-    {% endif%}
+    <p>	  
+      {{ post.excerpt | remove: '<p>' | remove: '</p>' }} &raquo;
+  	  <a href="{{ post.url }}">read more...</a>
+  	  </p>
   </li>
 {% endfor %}
 </ul>
