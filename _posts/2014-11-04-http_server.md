@@ -4,6 +4,7 @@ layout: post
 title:  "Go语言学习：http编程"
 categories: 编程语言
 tags: go
+excerpt: Go语言的标准库对http编程提供了很多的支持，我们只要几行代码，就可以写一个简单的http server，背后却有很多逻辑
 ---
 
 示例
