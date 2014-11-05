@@ -14,7 +14,7 @@ layout: page
     <time datetime="{{ post.date | date:"%Y-%m-%d" }}">{{ post.date | date:"%Y-%m-%d" }}</time>
     <a href="{{ post.url }}" title="{{ post.title }}">{{ post.title }}</a>
     {% if site.truncate %}
-    <p>{{ post.content | strip_html | truncate: site.truncate }}</p>
+    <p>{{ page.excerpt | truncate: site.truncate }}</p>
     {% endif%}
   </li>
 {% endfor %}
