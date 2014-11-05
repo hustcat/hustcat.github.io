@@ -4,6 +4,7 @@ layout: post
 title:  "Go语言学习：数组（array）与切片（slice）"
 categories: 编程语言
 tags: go
+excerpt: Go语言中数组与切片的区别
 ---
 
 数组
