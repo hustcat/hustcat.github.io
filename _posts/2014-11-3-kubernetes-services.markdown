@@ -1,6 +1,6 @@
 ---
 layout: post
-title:  Kubernetes深入浅出：services
+title:  Kubernetes解析：services
 categories: Linux
 tags: docker kubernetes
 ---
