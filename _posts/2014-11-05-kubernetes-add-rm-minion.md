@@ -1,6 +1,7 @@
 ---
 layout: post
 title:  Kubernetes解析：Minion的添加与删除
+date: 2014-11-05 23:40:30
 categories: Linux
 tags: docker kubernetes
 excerpt: "当你第一次使用Kubernetes时，一定会问题：如何向集群添加一个新的Minion？目前，关于Minion API，github上还没有文档介绍，这里简单总结一下。"
