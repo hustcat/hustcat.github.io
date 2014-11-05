@@ -12,4 +12,5 @@ weibo: hustcat
 github: hustcat
 pygments: true
 paginate: 20
+truncate: true
 about: "YY哥(hustcat)"
