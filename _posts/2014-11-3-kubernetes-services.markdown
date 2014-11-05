@@ -15,7 +15,7 @@ Kubernetes从0.4开始，开发很快，变化也很大。这里谈谈services�
 为此，kubernetes重新设计了services，让每个service都有一个自己的IP，但这并不是一个真正IP，而是通过iptables实现一个虚拟的IP。每个节点都生成这样一条类似的iptables规则：
 
 ```sh
--A KUBE-PROXY -d 10.11.0.1/32 -p tcp -m comment --comment apache-service -m tcp --dport ${service-port} -j REDIRECT --to-ports ${kube-proxy-port}
+-A KUBE-PROXY -d ${service-ip}/32 -p tcp -m comment --comment apache-service -m tcp --dport ${service-port} -j REDIRECT --to-ports ${kube-proxy-port}
 ```
 
 由于kube-proxy-port是随机生成，大大减少了host port冲突的机会。另外，由于每个service都有一个自己的IP，所以service之间冲突也没有了，不同的service可以使用相同的port。
