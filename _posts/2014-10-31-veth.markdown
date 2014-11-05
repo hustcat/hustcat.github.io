@@ -3,7 +3,7 @@ layout: post
 title:  "从veth看虚拟网络设备的qdisc"
 categories: Linux
 tags:  veth qdisc
-excerpt: "前段时间在测试docker的网络性能的时候，发现了一个veth的性能问题，后来给docker官方提交了一个PR，参考[set tx_queuelen to 0 when create veth device](https://github.com/docker/libcontainer/pull/193)，引起了一些讨论。"
+excerpt: 前段时间在测试docker的网络性能的时候，发现了一个veth的性能问题，后来给docker官方提交了一个PR，参考[set tx_queuelen to 0 when create veth device](https://github.com/docker/libcontainer/pull/193)，引起了一些讨论。
 ---
 
 背景
