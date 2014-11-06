@@ -32,6 +32,7 @@ Docker：
 
 * [set tx_queuelen to 0 when create veth device](https://github.com/docker/libcontainer/pull/193)
 * [access private registry: x509: certificate signed by unknown authority](https://github.com/docker/docker/issues/8849)
+* [poor NAT & networking performance](https://github.com/docker/docker/issues/7857)
 
 CoreOS/etcd
 
