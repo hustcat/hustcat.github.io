@@ -4,7 +4,7 @@ title:  Docker内部存储结构（devicemapper）解析
 date: 2014-11-07 12:10:30
 categories: Linux
 tags: docker
-excerpt: "关于Docker的内部存储结构，之前写过一篇文章，这里再补充一些内容。Docker的rootfs的大小默认为10G，我们可以通过一些通过一些参考来调整"
+excerpt: "关于Docker的内部存储结构，之前写过一篇文章，这里再补充一些内容。Docker的rootfs的大小默认为10G，我们可以通过一些参数来调整"
 ---
 
 关于Docker的内部存储结构，之前写过一篇文章，参考[这里](http://www.cnblogs.com/hustcat/p/3908985.html)。这里再补充一些内容。
