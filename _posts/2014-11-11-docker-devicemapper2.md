@@ -47,11 +47,10 @@ brw-rw---- 1 root disk 253, 1 Nov  7 13:04 /dev/dm-1
 # blockdev --report /dev/dm-1
 RO    RA   SSZ   BSZ   StartSec            Size   Device
 rw   256   512  4096          0     21474836480   /dev/dm-1
-
+```
 
 Devicemapper的初始化
 ------
-
 整个流程大体如下：
 
 ![](/assets/2014-11-11-devicemapper2-1.png)
