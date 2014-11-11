@@ -52,6 +52,7 @@ rw   256   512  4096          0     21474836480   /dev/dm-1
 Devicemapper的初始化
 ------
 整个流程大体如下：
+
 ![](/assets/2014-11-11-devicemapper2-1.png)
 
 ###创建thin pool
@@ -193,6 +194,7 @@ func createSnapDevice(poolName string, deviceId *int, baseName string, baseDevic
 ```
 
 三者之间的调用关系如下：
+
 ![](/assets/2014-11-11-devicemapper2-2.png)
 
 查看stop的容器的文件系统
