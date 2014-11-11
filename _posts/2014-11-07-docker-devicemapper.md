@@ -92,5 +92,11 @@ docker -d --storage-opt dm.basesize=20G --storage-opt dm.loopdatasize=200G --sto
 ```
 另外，--storage-opt还有其它一些参数，比较dm.fs指定文件系统（默认为ext4）等。
 
+```sh
+bash-4.2# df -h
+Filesystem                                                                                      Size  Used Avail Use% Mounted on
+/dev/mapper/docker-8:1-696417-751562f7368504d35ae19a1bfc47ea324470f3d624938303d664c1fd6086a34c   20G  429M   19G   3% /
+```
+
 更多内容请参考
 https://github.com/snitm/docker/tree/master/daemon/graphdriver/devmapper
