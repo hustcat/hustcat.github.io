@@ -18,7 +18,7 @@ yy2: 172.16.213.129
 
 ```sh
 #docker run -d --net="none" --name=test1 dbyin/centos
-# docker inspect --format='{{ .State.Pid }}' test1
+# docker inspect --format="{{ .State.Pid }}" test1
 2084
 ```
 
