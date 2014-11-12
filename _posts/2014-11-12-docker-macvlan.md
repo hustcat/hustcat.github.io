@@ -9,6 +9,9 @@ excerpt: 一般来说，我们在自定义Docker与外部网络通信的网络�
 
 一般来说，我们在自定义Docker与外部网络通信的网络，除了NAT，还有Linux Bridge、Open vSwitch、MacVLAN几种选择。MacVLAN相对于前两者，拥有更好的性能。
 
+MacVLAN有4种模式，参考[这里](http://backreference.org/2014/03/20/some-notes-on-macvlanmacvtap/)。
+VEPA需要接入交换机支持hairpin mode。相对而言，Bridge mode更加常用。
+
 环境
 
 yy1: 172.16.213.128
@@ -75,6 +78,14 @@ Last login: Tue Nov 11 07:49:27 2014 from 172.16.213.128
 ```
 
 > 注意：如果你是在虚拟机VMWare上测试，需要把Host的网卡设置为promisc模式：
+>
 > [root@yy2 ~]# ip link set eth0 promisc on
+>
 > 否则，其它Host也无法访问容器的网络。原因参考
 > [WMware 82545EM不支持unicast filtering](http://sourceforge.net/p/e1000/mailman/message/32952083)
+
+主要参考
+
+* [FOUR WAYS TO CONNECT A DOCKER CONTAINER TO A LOCAL NETWORK][ref1]
+
+[ref1]: http://blog.oddbit.com/2014/08/11/four-ways-to-connect-a-docker/
