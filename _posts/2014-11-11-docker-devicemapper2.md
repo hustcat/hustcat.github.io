@@ -242,3 +242,5 @@ deactivate thin volume
 # umount mnt/93f595ea79a0420cc263d054d3e63b5ad1e4cc3da128167984a6ac01ad89f8e9-init
 # dmsetup remove 93f595ea79a0420cc263d054d3e63b5ad1e4cc3da128167984a6ac01
 ```
+
+Docker的devicemapper的维护者[Alexander Larsson]()在[这篇文章](http://blogs.gnome.org/alexl/2013/10/15/adventures-in-docker-land/)中详细讨论了devicemapper最初的一些想法。
