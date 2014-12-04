@@ -9,6 +9,7 @@ excerpt: Docker中的配置与权限管理
 
 Docker中的配置
 ------
+Docker中的配置主要包括daemon进程和容器的配置。
 
 daemon的配置
 ---
@@ -175,8 +176,11 @@ docker中的权限
 docker提供了下面几个参数，用于管理容器的权限：
 
 > --cap-add: Add Linux capabilities
+>
 > --cap-drop: Drop Linux capabilities
+>
 > --privileged=false: Give extended privileges to this container
+>
 > --device=[]: Allows you to run devices inside the container without the --privileged flag.
 
 默认情况下，docker的容器中的root的权限是有严格限制的，比如，网络管理（NET_ADMIN等很多权限都是没有的。
@@ -297,6 +301,6 @@ https://github.com/docker/docker/blob/master/daemon/execdriver/native/template/d
 
 
 参考
------
+------
 https://github.com/docker/docker/blob/master/docs/sources/articles/security.md
 https://docs.docker.com/reference/run/#runtime-privilege-linux-capabilities-and-lxc-configuration
