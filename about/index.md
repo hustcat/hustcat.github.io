@@ -4,7 +4,24 @@ layout: page
 comments: no
 ---
 
+---
+###自我介绍
+
 {{ site.about }}
+
+专业打杂程序员，全栈工程师，擅长打杂，吹牛逼...
+
+看过以下但不仅限于以下列出的项目的源码：
+
+> Linux kernel, MySQL/InnoDB, Docker, Kubernetes, Ceph, SQLite, Memcached, Haproxy...
+
+使用过以下但不仅限于以下列出的语言：
+
+> C/C++, Shell, Go, Python, PHP, Perl, C#, Java, Lua, Html...
+
+格言
+
+> 阅码无数，心中无码
 
 ----
 
