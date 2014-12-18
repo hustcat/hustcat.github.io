@@ -78,21 +78,32 @@ for _, image := range repoData.ImgList {
 
 整个流程大致如下：
 （1）通过名称（例如dbyin/tlinux1.2）获取镜像列表imagelist，调用接口为
-	v1/repositories/dbyin/tlinux1.2/images
-	registry实际上读取文件repositories/dbyin/tlinux1.2/_index_images
+
+> v1/repositories/dbyin/tlinux1.2/images
+
+> registry实际上读取文件repositories/dbyin/tlinux1.2/_index_images
 
 （2）获取tag 列表，调用接口为
-	v1/repositories/dbyin/tlinux1.2/tags
+
+> v1/repositories/dbyin/tlinux1.2/tags
 
 （3）依次拉取所有镜像：
+
 	3.1）获取镜像的祖先镜像列表ancestry，调用接口为
-		v1/images/"+imgID+"/ancestry
-		registry实际上读取images/${image-id}/ancestry；
+
+> v1/images/"+imgID+"/ancestry
+
+> registry实际上读取images/${image-id}/ancestry；
+
    3.2）从最早的祖先镜像开始，依次拉取每一层镜像，调用接口为
-		//获取镜像描述文件
-		v1/images/"+imgID+"/json 
-		//获取该层的数据
-		v1/images/"+imagID+"/layer
+
+> //获取镜像描述文件
+
+> v1/images/"+imgID+"/json 
+
+> //获取该层的数据
+
+> v1/images/"+imagID+"/layer
 
 函数Register完成将本层的数据写到本地的graph：
 
