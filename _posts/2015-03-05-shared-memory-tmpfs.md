@@ -22,6 +22,7 @@ excerpt: 浅析Linux的共享内存与tmpfs文件系统
 * Intended to be simpler and better than older APIs
 
 另外，在Linux中不得不提一下内存映射（也可用于进程间通信）：
+
 *** Shared mappings – mmap(2) ***
 
 * Shared anonymous mappings：Sharing between related processes only (related via fork())
