@@ -11,12 +11,12 @@ excerpt: 浅析Linux的共享内存与tmpfs文件系统
 ------
 共享内存主要用于进程间通信，Linux有两种共享内存(Shared Memory)机制：
 
-*** System V shared memory(shm_open/shm_unlink) ***
+*** System V shared memory(shmget/shmat/shmdt) ***
 
 * Original shared memory mechanism, still widely used
 * Sharing between unrelated processes
 
-*** POSIX shared memory(shmget/shmat/shmdt) ***
+*** POSIX shared memory(shm_open/shm_unlink) ***
 
 * Sharing between unrelated processes, without overhead of filesystem I/O
 * Intended to be simpler and better than older APIs
