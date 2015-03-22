@@ -181,17 +181,17 @@ clone_mnt(struct vfsmount *old, struct dentry *root)
 >
 > (1)(2)(3)   (4)   (5)      (6)      (7)   (8) (9)   (10)         (11)
 > 
-> (1) mount ID:  unique identifier of the mount (may be reused after umount)
-> (2) parent ID:  ID of parent (or of self for the top of the mount tree)
-> (3) major:minor:  value of st_dev for files on filesystem
-> (4) root:  root of the mount within the filesystem
-> (5) mount point:  mount point relative to the process's root
-> (6) mount options:  per mount options
-> (7) optional fields:  zero or more fields of the form "tag[:value]"
-> (8) separator:  marks the end of the optional fields
-> (9) filesystem type:  name of filesystem of the form "type[.subtype]"
-> (10) mount source:  filesystem specific information or "none"
-> (11) super options:  per super block options
+> * (1) mount ID:  unique identifier of the mount (may be reused after umount)
+> * (2) parent ID:  ID of parent (or of self for the top of the mount tree)
+> * (3) major:minor:  value of st_dev for files on filesystem
+> * (4) root:  root of the mount within the filesystem
+> * (5) mount point:  mount point relative to the process's root
+> * (6) mount options:  per mount options
+> * (7) optional fields:  zero or more fields of the form "tag[:value]"
+> * (8) separator:  marks the end of the optional fields
+> * (9) filesystem type:  name of filesystem of the form "type[.subtype]"
+> * (10) mount source:  filesystem specific information or "none"
+> * (11) super options:  per super block options
 >
 > Parsers should ignore all unrecognised optional fields.  Currently the possible optional fields are:
 > 
@@ -336,16 +336,16 @@ SYSCALL_DEFINE2(pivot_root, const char __user *, new_root,
 
 The following restrictions apply to new_root and put_old:
 
-*（1）They must be directories.
+* （1）They must be directories.
 必须都是目录，也就是说不能是文件；
 
-*（2）new_root and put_old must not be on the same filesystem as the current root.
+* （2）new_root and put_old must not be on the same filesystem as the current root.
 new_root与put_old不能与当前进程的根目录在同一个文件系统；也就是说new_root与put_old与root必须是两个不同的vfsmount； 这从代码可以看出：
 
-*（3）put_old must be underneath new_root, that is, adding a nonzero number of /.. to the string pointed to by put_old must yield the same directory as new_root.
+* （3）put_old must be underneath new_root, that is, adding a nonzero number of /.. to the string pointed to by put_old must yield the same directory as new_root.
 目录put_old必须在new_root目录下，也就是说put_old/..与new_root是同一个目录；
 
-*（4）No other filesystem may be mounted on put_old.
+* （4）No other filesystem may be mounted on put_old.
 
 
 疑问：
@@ -354,8 +354,8 @@ new_root与put_old不能与当前进程的根目录在同一个文件系统；�
 
 pivot_root与chroot的一点区别：
 
-*（1）pivot_root会修改进程的根文件系统，chroot不会；
-*（2）pivot_root会修改进程的根目录、工作目录，chroot只会修改工作；
+* （1）pivot_root会修改进程的根文件系统，chroot不会；
+* （2）pivot_root会修改进程的根目录、工作目录，chroot只会修改工作；
 
 来看看pivot_root在lxc中的使用：
 
