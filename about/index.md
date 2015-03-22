@@ -55,9 +55,10 @@ kubernetes:
 
 go-dockerclient
 
-*[fix Cpuset bug](https://github.com/fsouza/go-dockerclient/pull/186)
+* [fix Cpuset bug](https://github.com/fsouza/go-dockerclient/pull/186)
 
 lxcfs
+
 * [Add /proc/diskstats](https://github.com/lxc/lxcfs/pull/16)
 
 
