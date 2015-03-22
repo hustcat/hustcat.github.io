@@ -43,17 +43,22 @@ GitHub：[http://github.com/{{ site.github }}](http://github.com/{{ site.github 
 [![新浪微博](http://service.t.sina.com.cn/widget/qmd/1831504255/02345c5a/1.png)](http://weibo.com/u/1831504255?s=6uyXnP)
 
 ---
-###社区动态：
+###提交的一些patch：
 
-Docker：
+Docker/libcontainer：
 
 * [set tx_queuelen to 0 when create veth device](https://github.com/docker/libcontainer/pull/193)
-* [access private registry: x509: certificate signed by unknown authority](https://github.com/docker/docker/issues/8849)
-* [poor NAT & networking performance](https://github.com/docker/docker/issues/7857)
 
-CoreOS/etcd
+kubernetes:
 
-* [Error: 501: All the given peers are not reachable](https://github.com/coreos/etcdctl/issues/109)
+* [Add docker's add/drop capabilites](https://github.com/GoogleCloudPlatform/kubernetes/pull/2933)
+
+go-dockerclient
+
+*[fix Cpuset bug](https://github.com/fsouza/go-dockerclient/pull/186)
+
+lxcfs
+* [Add /proc/diskstats](https://github.com/lxc/lxcfs/pull/16)
 
 
 MySQL：
