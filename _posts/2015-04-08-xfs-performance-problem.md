@@ -185,14 +185,16 @@ Tracing "truncate_inode_pages_range"... Ctrl-C to end.
 
 运行测试程序，基本过程如下：
 
-> open file without direct flag
-> read file   //cause kernel readahead 4 pages, and inode->i_mapping->nrpages > 0
-> close file
-> 
-> open file with direct flag
-> read  file //call xfs_flushinval_pages
-> read  file //will not call xfs_flushinval_pages
-> ...
+```
+open file without direct flag
+read file   //cause kernel readahead 4 pages, and inode->i_mapping->nrpages > 0
+close file
+
+open file with direct flag
+read  file //call xfs_flushinval_pages
+read  file //will not call xfs_flushinval_pages
+...
+```
 
 发现第2次read调用xfs_flushinval_pages时，会调用truncate_inode_page，导致第3次的read并不会调用xfs_flushinval_pages。详细参考[这里](https://github.com/hustcat/hustcat.github.io/tree/master/assets/xfs_file_aio_read_offset0.txt)。
 
@@ -200,15 +202,17 @@ Tracing "truncate_inode_pages_range"... Ctrl-C to end.
 
 Dave Chinner的解释让我茅舍顿开，xfs_file_aio_read调用xfs_flushinval_pages时，是以iocb->ki_pos作为开始地址的。也就是如果MySQL后面一直不读取第0个page，那么MySQL第一次使用buffer read的page产生的page就一直得不到释放。
 
-> open file without direct flag
-> read file   //cause kernel readahead 4 pages, and inode->i_mapping->nrpages > 0
-> close file
-> 
-> open file with direct flag
-> lseek 4*4096 // skip 4 readahead pages
-> read  file //cause xfs_flushinval_pages to do nothing
-> read  file //will call xfs_flushinval_pages
-> …
+```
+open file without direct flag
+read file   //cause kernel readahead 4 pages, and inode->i_mapping->nrpages > 0
+close file
+
+open file with direct flag
+lseek 4*4096 // skip 4 readahead pages
+read  file //cause xfs_flushinval_pages to do nothing
+read  file //will call xfs_flushinval_pages
+…
+```
 
 详细参考[这里](https://github.com/hustcat/hustcat.github.io/tree/master/assets/xfs_file_aio_read_offset4k.txt)
 
