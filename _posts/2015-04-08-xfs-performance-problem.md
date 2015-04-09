@@ -234,7 +234,13 @@ PS，Dave在回复我的邮件给我贴了一句Linux手册中的说明：
 >   using either mode alone.  Likewise, applications should avoid mixing
 >   mmap(2) of files with direct I/O to the same files.
 
-参考[这里](http://man7.org/linux/man-pages/man2/open.2.html)
+参考[这里](http://man7.org/linux/man-pages/man2/open.2.html)。
+
+同时，他也指出了应用层如何解决这个问题：
+
+> Applications that need to mix buffered and direct IO can invalidate
+> the cached pages by using POSIX_FADV_DONTNEED before doing direct
+> IO.
 
 # 5 附程序
 
