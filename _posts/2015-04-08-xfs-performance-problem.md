@@ -225,6 +225,17 @@ read  file //will call xfs_flushinval_pages
 PS，让我奇怪的是，网上看到很多人使用XFS跑MySQL，却没有看到人讨论这些问题，难道他们都没有遇到过这个问题么？？？
 
 
+PS，Dave在回复我的邮件给我贴了一句Linux手册中的说明：
+
+>	Applications should avoid mixing O_DIRECT and normal I/O to the same
+>   file, and especially to overlapping byte regions in the same file.
+>   Even when the filesystem correctly handles the coherency issues in
+>   this situation, overall I/O throughput is likely to be slower than
+>   using either mode alone.  Likewise, applications should avoid mixing
+>   mmap(2) of files with direct I/O to the same files.
+
+参考[这里](http://man7.org/linux/man-pages/man2/open.2.html)
+
 # 5 附程序
 
 ```c
