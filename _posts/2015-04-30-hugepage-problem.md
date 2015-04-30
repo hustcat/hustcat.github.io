@@ -113,8 +113,9 @@ done, count=400
 
 但是，由于PAGE size变成2M，这也可能带来负面的影响，可能导致程序占用的物理内存比4K的page size情况下要多。当然，前提是程序申请了过多的内存，却没有使用到这些内存。
 
-主要参考
-http://lwn.net/Articles/359158/
-https://lwn.net/Articles/423584/
-https://www.kernel.org/doc/Documentation/vm/transhuge.txt
-http://www.slideshare.net/raghusiddarth/transparent-hugepages-in-rhel-6
+## 主要参考
+
+* http://lwn.net/Articles/359158/
+* https://lwn.net/Articles/423584/
+* https://www.kernel.org/doc/Documentation/vm/transhuge.txt
+* http://www.slideshare.net/raghusiddarth/transparent-hugepages-in-rhel-6
