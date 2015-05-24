@@ -7,7 +7,7 @@ tags: 存储
 excerpt: sgdisk常用操作。
 ---
 
-与fdisk创建MBR分区一样，sgdisk是一个创建GPT分区的工具，如果你还不了解GPT分区，请参考The difference between booting MBR and GPT with GRUB。
+与fdisk创建MBR分区一样，sgdisk是一个创建GPT分区的工具，如果你还不了解GPT分区，请参考[The difference between booting MBR and GPT with GRUB](http://www.anchor.com.au/blog/2012/10/the-difference-between-booting-mbr-and-gpt-with-grub/)。
 
 # 查看所有GPT分区
 
