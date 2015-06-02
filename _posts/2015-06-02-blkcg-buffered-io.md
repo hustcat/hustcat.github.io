@@ -139,3 +139,5 @@ static inline void __generic_make_request(struct bio *bio)
 # 其它参考资料
 
 * [Dynamic writeback throttling](https://lwn.net/Articles/405076/)。
+* [Integrated IO controller for buffered+direct writes](Integrated IO controller for buffered+direct writes)
+* [blk-throttle: Throttle buffered WRITE in balance_dirty_pages()](https://lwn.net/Articles/446121/)
