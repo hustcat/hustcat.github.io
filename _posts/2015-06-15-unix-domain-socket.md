@@ -89,10 +89,11 @@ SKB_MAX_ALLOC的计算很复杂：
 #define SKB_MAX_ALLOC		(SKB_MAX_ORDER(0, 2))///16000
 ```
 
-SMP_CACHE_BYTES为L1 cache line，一般为64 bytes
-sizeof(struct skb_shared_info) = 344 bytes
-SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) = 384 bytes
-SKB_MAX_ALLOC = 4096*4 – 384 = 16000 bytes
+* SMP_CACHE_BYTES为L1 cache line，一般为64 bytes
+* sizeof(struct skb_shared_info) = 344 bytes
+* SKB_DATA_ALIGN(sizeof(struct skb_shared_info)) = 384 bytes
+* SKB_MAX_ALLOC = 4096*4 – 384 = 16000 bytes
+
 可以看到，SKB_MAX_ALLOC刚好为16000。也就是说，UNIX domain socket，每个packet的max size为16000字节。
 
 ## 测试
