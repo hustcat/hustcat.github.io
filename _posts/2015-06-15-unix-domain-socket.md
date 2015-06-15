@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Unix domain socket的实现及分片
-date: 2015-06-05 19:50:30
+date: 2015-06-15 19:50:30
 categories: Linux
 tags: network
 excerpt: Unix domain socket的实现及分片。
