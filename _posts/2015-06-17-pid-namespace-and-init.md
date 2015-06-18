@@ -21,6 +21,7 @@ PID namespace在2.6.24由OpenVZ团队加入内核，不同PID namespace的进程
 我们知道，在Linux中是用进程来模拟线程：
 
 *（1）单线程的进程就是该进程自身，用户看到的线程TID和PID实际上都是内核中进程的PID。
+
 *（2）多线程的进程实际上是一组进程（进程数和线程数相同），称为Thread Group（线程组），该线程组中的每个进程（线程）有各自的PID和统一的TGID。用户使用gettid()来获取线程的TID时，内核实际返回的是进程的PID；使用getpid()获取线程的公共PID时，内核返回的是进程的TGID。TGID实际上就是Thread Group Leader（最早存在的进程）的PID。
 
 ** 注意，进程组与线程组的区别？**
@@ -33,6 +34,7 @@ PID namespace在2.6.24由OpenVZ团队加入内核，不同PID namespace的进程
 由于PID namespace 的引入，进程ID变得稍稍复杂：
 
 *（1）全局ID为进程在内核本身和init namespace的唯一ID，即init进程的namespace的ID。
+
 *（2）局部ID为进程在某个特定namespace中的ID。对每个ID类型，它们在所属的namespace内部有效，但类型相同、值也相同的ID可能出现在不同的命名空间中。
 
 task_struct有4种PID：the process ID (PID), the thread group ID(TGID)， the process group ID (PGID), and the session ID (SID)。同一个group的进程会共享PGID和SID。
@@ -66,6 +68,7 @@ struct task_struct {
 	/* PID/PID hash table linkage. */
 	struct pid_link pids[PIDTYPE_MAX];///PID
 	struct list_head thread_group; ///线程链表
+```
 
 加入namespace后，task_struct的pid/tgid字段用于描述进程在全局的ID，即init_ns中的ID。
 
