@@ -492,7 +492,7 @@ orphan(parent)和orphan(child)都在simple_init创建的PID namespace，而ns_ru
 # Docker容器init进程
 
 容器的第一个进程为容器的init进程。容器的启动过程实际上就创建容器init进程的过程：
-![](/assets/2015-06-18-pid-namespace-and-init-5.png)
+![](/assets/2015-06-18-pid-namespace-and-init-5.jpg)
 
 ## 创建exec.Cmd
 
@@ -754,7 +754,7 @@ Docker命令[docker exec](https://docs.docker.com/reference/commandline/cli/#exe
 ## 流程
 
 命令的整个实现流程如下：
-![](/assets/2015-06-18-pid-namespace-and-init-6.png)
+![](/assets/2015-06-18-pid-namespace-and-init-6.jpg)
 
 ```sh
 [debug] server.go:1226 Calling POST /containers/{name:.*}/exec
