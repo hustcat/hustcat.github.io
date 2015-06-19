@@ -449,6 +449,11 @@ root         8     1  0 11:43 pts/0    00:00:00 ps -ef
 ```
 只列出了当前PID namespace中的进程。
 
+* update@2015/6/19 *
+
+> 今天一个业务同学发现在ps -ef不能看到的pid，在/proc目录下也没有对应的目录，但却可以cd /proc/$pid。后来我发现原来所谓的pid是mysqld的一个线程。也就是说，对于线程，ls /proc/不会列出对应的目录，但实际上这个目录是存在的。后面找时间看看这里的实现？？
+
+
 ## unshare与setns
 
 系统调用unshare用于创建新的(PID)namespace，setns用于将进程加入到已经存在的namespace(/proc/<PID>/ns/pid)。但值得注意的是，调用者(caller)不会加入到新的(指定的)namespace，只有调用者的子进程才会进入新的(指定的)namespace。
