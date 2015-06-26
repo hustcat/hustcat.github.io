@@ -1,6 +1,6 @@
 ---
 layout: post
-title: Ceph practice: RBD snapshot
+title: Ceph practice：RBD snapshot
 date: 2015-06-26 20:00:30
 categories: Linux
 tags: ceph
