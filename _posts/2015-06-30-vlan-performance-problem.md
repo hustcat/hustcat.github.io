@@ -11,6 +11,8 @@ excerpt: CentOS6.5下VLAN设备的性能问题。
 
 之前做的一些网络性能的测试都是在三层网络测试的，最近在大二层网络重新测试TDocker的网络性能时，发现物理机的性能比容器还差，在容器内部可以跑60w+，物理机器却只能跑45w+。这与100w+的预期相差太远。
 
+由于在大二层的网络下引入了VLAN设备（由于linux bridge不支持VLAN而引入），所以初步怀疑问题出在VLAN network device。
+
 使用perf看一下，发现dev_queue_xmit中的一个spin lock占用了大量的CPU，达到70%+。
 ![](/assets/2015-06-30-vlan-performance-problem-1.png)
 
