@@ -141,4 +141,4 @@ hello ceph
 
 # 其它
 
-你可以从[这里](https://github.com/hustcat/docker-1.3.2/tree/rbd)Docker rbd storage driver的代码，更多信息请参考[#14800](https://github.com/docker/docker/pull/14800/)
+你可以从[这里](https://github.com/hustcat/docker-1.3.2/tree/rbd)获取Docker rbd storage driver的代码，更多信息请参考[#14800](https://github.com/docker/docker/pull/14800/)。
