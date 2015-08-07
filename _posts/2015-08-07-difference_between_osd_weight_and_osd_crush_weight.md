@@ -252,3 +252,4 @@ int crush_adjust_straw_bucket_item_weight(struct crush_bucket_straw *bucket, int
 
 * [Difference Between 'Ceph Osd Reweight' and 'Ceph Osd Crush Reweight'](http://cephnotes.ksperis.com/blog/2014/12/23/difference-between-ceph-osd-reweight-and-ceph-osd-crush-reweight)
 * [CRUSH map](http://ceph.com/docs/master/rados/operations/crush-map/#crush-map-bucket-types)
+* [[ceph-users] Difference between "ceph osd reweight" and "ceph osd crush reweight"](http://lists.ceph.com/pipermail/ceph-users-ceph.com/2014-June/040967.html)
