@@ -218,7 +218,7 @@ static int bucket_straw_choose(struct crush_bucket_straw *bucket,
 
 整体流程：
 
-![](/assets/2015-08-07-difference-between-osd-weight-and-osd-cruash-weight.jpg)
+![](/assets/2015-08-07-difference-between-osd-weight-and-osd-cruash-weight.png)
 
 具体实现：
 
