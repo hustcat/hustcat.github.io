@@ -42,6 +42,37 @@ Crush weight实际上为bucket item weight，[下面](http://ceph.com/docs/maste
 
 简单来说，bucket weight表示设备(device)的容量，1TB对应1.00。bucket weight是所有item weight之和，item weight的变化会影响bucket weight的变化，也就是osd.X会影响host。
 
+如果通过ceph-deploy来部署osd，defaultweight的计算：
+参考/etc/init.d/ceph
+
+```sh
+if [ "$type" = "osd" ]; then
+get_conf update_crush "" "osd crush update on start"
+if [ "${update_crush:-1}" = "1" -o "{$update_crush:-1}" = "true" ]; then
+    # update location in crush
+    get_conf osd_location_hook "$BINDIR/ceph-crush-location" "osd crush location hook"
+    osd_location=`$osd_location_hook --cluster ceph --id $id --type osd`
+    get_conf osd_weight "" "osd crush initial weight"
+    defaultweight="$(do_cmd "df $osd_data/. | tail -1 | awk '{ d= \$2/1073741824 ; r = sprintf(\"%.2f\", d); print r }'")"
+    get_conf osd_keyring "$osd_data/keyring" "keyring"
+    do_cmd "timeout 10 $BINDIR/ceph \
+    --name=osd.$id \
+    --keyring=$osd_keyring \
+    osd crush create-or-move \
+    -- \
+    $id \
+    ${osd_weight:-${defaultweight:-1}} \
+    $osd_location"
+fi
+fi
+```
+
+注意
+
+```
+defaultweight="$(do_cmd "df $osd_data/. | tail -1 | awk '{ d= \$2/1073741824 ; r = sprintf(\"%.2f\", d); print r }'")"
+```
+
 osd weight的取值为0~1。osd reweight并不会影响host。当osd被踢出集群时，osd weight被设置0，加入集群时，设置为1。
 
 > Note that 'ceph osd reweight' is not a persistent setting.  When an OSD
