@@ -26,7 +26,7 @@ excerpt: Ceph性能调优——Journal与tcmalloc
 可以看到：
 
 * （1)SSD journal带来了一倍的性能提升；
-* （2)使用tcmalloc 2.1，并调整参数后，也带来了将近一倍的性能提升；
+* （2)使用tcmalloc 2.1，并调整max thread cache参数后，也带来了将近一倍的性能提升；
 * （3)副本数量对性能的影响也很大。
 
 # tcmalloc的问题
