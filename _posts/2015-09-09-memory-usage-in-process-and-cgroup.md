@@ -25,7 +25,7 @@ excerpt: Memory usage in Linux process and cgroup
 
 与进程内存统计相关的几个文件：
 
-* /proc/<pid>/stat
+* /proc/[pid]/stat
 
 ```
 (23) vsize  %lu
