@@ -572,14 +572,14 @@ if (err < 0) {
 
 > FileStore::read 91.12_head/4a392b12/rbd_data.134d2ae8944a.0000000000000001/3//91 0~4194304/4194304
 
-参考[log](/assets/rbd_read.log)
+参考[log](/assets/rbd_read.log)。
 
 
 如果我们读取rbd_data.1368238e1f29.0000000000000002，parent(user1_image1@snap)也会返回ENOENT。这时librbd会构造一个4M的zero block：
 
 > error opening file /var/lib/ceph/osd/ceph-0/current/91.2a_head/rbd\udata.1368238e1f29.0000000000000002__head_EB9D38AA__5b with flags=2: (2) No such file or directory
 
-参考[log](assets/rbd_read2.log)
+参考[log2](assets/rbd_read2.log)。
 
 如下：
 
@@ -642,7 +642,7 @@ void Striper::StripedReadResult::assemble_result(CephContext *cct, bufferlist& b
 
 ![](/assets/2015-09-15-ceph-rbd-internal-read-2.jpg)
 
-![](/assets/2015-09-15-ceph-rbd-internal-read-3.jpg)
+![](/assets/2015-09-15-ceph-rbd-internal-read-3.png)
 
 
 # 参考
