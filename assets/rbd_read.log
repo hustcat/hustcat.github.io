@@ -1,0 +1,34 @@
+2015-09-16 14:37:30.577594 7fc8d14ff7e0 20 librbd: open_image: ictx = 0xcd9ae0 name = 'user1_image2' id = '' snap_name = ''
+2015-09-16 14:37:30.582850 7fc8d14ff7e0 20 librbd: detect format of user1_image2 : new
+2015-09-16 14:37:30.586621 7fc8d14ff7e0 10 librbd::ImageCtx: init_layout stripe_unit 4194304 stripe_count 1 object_size 4194304 prefix rbd_data.1368238e1f29 format rbd_data.1368238e1f29.%016llx
+2015-09-16 14:37:30.589485 7fc8d14ff7e0 20 librbd: ictx_refresh 0xcd9ae0
+2015-09-16 14:37:30.591106 7fc8d14ff7e0 20 librbd: open_image: ictx = 0xce1ec0 name = '' id = '134d2ae8944a' snap_name = ''
+2015-09-16 14:37:30.596783 7fc8d14ff7e0 10 librbd::ImageCtx: init_layout stripe_unit 4194304 stripe_count 1 object_size 4194304 prefix rbd_data.134d2ae8944a format rbd_data.134d2ae8944a.%016llx
+2015-09-16 14:37:30.596796 7fc8d14ff7e0 20 librbd: ictx_refresh 0xce1ec0
+2015-09-16 14:37:30.600450 7fc8d14ff7e0 20 librbd: new snapshot id=3 name=user1_image1_snap2 size=107374182400 features=1
+2015-09-16 14:37:30.600461 7fc8d14ff7e0 20 librbd: new snapshot id=2 name=user1_image1_snap size=107374182400 features=1
+2015-09-16 14:37:30.600531 7fc8d14ff7e0 20 librbd: aio_read 0xcd9ae0 completion 0xcda8e0 [4194304,4194304]
+2015-09-16 14:37:30.600539 7fc8d14ff7e0 20 librbd: ictx_check 0xcd9ae0
+2015-09-16 14:37:30.600568 7fc8d14ff7e0 20 librbd:  oid rbd_data.1368238e1f29.0000000000000001 0~4194304 from [0,4194304]
+2015-09-16 14:37:30.600577 7fc8d14ff7e0 20 librbd::AioRequest: send 0xcddcf0 rbd_data.1368238e1f29.0000000000000001 0~4194304
+2015-09-16 14:37:30.600645 7fc8d14ff7e0 20 librbd::AioCompletion: AioCompletion::finish_adding_requests 0xcda8e0 pending 1
+2015-09-16 14:37:30.601827 7fc8c53a5700 20 librbd::AioRequest: should_complete 0xcddcf0 rbd_data.1368238e1f29.0000000000000001 0~4194304 r = -2
+2015-09-16 14:37:30.601892 7fc8c53a5700 10 librbd::ImageCtx: prune_parent_extents image overlap 107374182400, object overlap 4194304 from image extents [4194304,4194304]
+2015-09-16 14:37:30.601899 7fc8c53a5700 20 librbd::AioRequest: read_from_parent this = 0xcddcf0 parent completion 0x7fc8a4000b90 extents [4194304,4194304]
+2015-09-16 14:37:30.601902 7fc8c53a5700 20 librbd: aio_read 0xce1ec0 completion 0x7fc8a4000b90 [4194304,4194304]
+2015-09-16 14:37:30.601904 7fc8c53a5700 20 librbd: ictx_check 0xce1ec0
+2015-09-16 14:37:30.601919 7fc8c53a5700 20 librbd:  oid rbd_data.134d2ae8944a.0000000000000001 0~4194304 from [0,4194304]
+2015-09-16 14:37:30.601923 7fc8c53a5700 20 librbd::AioRequest: send 0x7fc8a40011f0 rbd_data.134d2ae8944a.0000000000000001 0~4194304
+2015-09-16 14:37:30.602125 7fc8c53a5700 20 librbd::AioCompletion: AioCompletion::finish_adding_requests 0x7fc8a4000b90 pending 1
+2015-09-16 14:37:30.683832 7fc8c53a5700 20 librbd::AioRequest: should_complete 0x7fc8a40011f0 rbd_data.134d2ae8944a.0000000000000001 0~4194304 r = 0
+2015-09-16 14:37:30.683847 7fc8c53a5700 10 librbd::AioCompletion: C_AioRead::finish() 0x7fc8a40011c0 r = 0
+2015-09-16 14:37:30.683849 7fc8c53a5700 10 librbd::AioCompletion:  got {0=4194304} for [0,4194304] bl 4194304
+2015-09-16 14:37:30.683877 7fc8c53a5700 20 librbd::AioCompletion: AioCompletion::complete_request() 0x7fc8a4000b90 complete_cb=0x7fc8ce865890 pending 1
+2015-09-16 14:37:30.683881 7fc8c53a5700 20 librbd::AioCompletion: AioCompletion::finalize() 0x7fc8a4000b90 rval 4194304 read_buf 0 read_bl 0xcddd40
+2015-09-16 14:37:30.683892 7fc8c53a5700 20 librbd::AioCompletion: AioCompletion::finalize() moving resulting 4194304 bytes to bl 0xcddd40
+2015-09-16 14:37:30.683902 7fc8c53a5700 20 librbd::AioRequest: should_complete 0xcddcf0 rbd_data.1368238e1f29.0000000000000001 0~4194304 r = 4194304
+2015-09-16 14:37:30.683905 7fc8c53a5700 10 librbd::AioCompletion: C_AioRead::finish() 0xcdd810 r = 4194304
+2015-09-16 14:37:30.683906 7fc8c53a5700 10 librbd::AioCompletion:  got {} for [0,4194304] bl 4194304
+2015-09-16 14:37:30.683916 7fc8c53a5700 20 librbd::AioCompletion: AioCompletion::complete_request() 0xcda8e0 complete_cb=0x7fc8ce866e00 pending 1
+2015-09-16 14:37:30.683918 7fc8c53a5700 20 librbd::AioCompletion: AioCompletion::finalize() 0xcda8e0 rval 4194304 read_buf 0x7fff31dd3560 read_bl 0
+2015-09-16 14:37:30.684741 7fc8c53a5700 20 librbd::AioCompletion: AioCompletion::finalize() copied resulting 4194304 bytes to 0x7fff31dd3560

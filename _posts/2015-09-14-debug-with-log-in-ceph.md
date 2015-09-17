@@ -104,10 +104,10 @@ ostream& operator<<(ostream& out, const hobject_t& o)
 
 以e59e945d/greeting/head//91为例：
 
-> e59e945d = hobject_t.hash
-> greeting = hobject_t.oid(即user object id)
-> head = hobject_t.snap
-> 91 = hobject_t.pool
+>  e59e945d = hobject_t.hash
+>  greeting = hobject_t.oid(即user object id)
+>  head = hobject_t.snap
+>  91 = hobject_t.pool
 
 *** pg_t: ***
 

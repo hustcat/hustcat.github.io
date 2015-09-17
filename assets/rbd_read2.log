@@ -1,0 +1,64 @@
+2015-09-17 11:16:43.995404 7f38c1a2b7e0 20 librbd: open_image: ictx = 0x1c57e40 name = 'user1_image2' id = '' snap_name = ''
+2015-09-17 11:16:44.000940 7f38c1a2b7e0 20 librbd: detect format of user1_image2 : new
+2015-09-17 11:16:44.004848 7f38c1a2b7e0 10 librbd::ImageCtx: init_layout stripe_unit 4194304 stripe_count 1 object_size 4194304 prefix rbd_data.1368238e1f29 format rbd_data.1368238e1f29.%016llx
+2015-09-17 11:16:44.007143 7f38c1a2b7e0 20 librbd: ictx_refresh 0x1c57e40
+2015-09-17 11:16:44.008826 7f38c1a2b7e0 20 librbd: open_image: ictx = 0x1c5e6a0 name = '' id = '134d2ae8944a' snap_name = ''
+2015-09-17 11:16:44.015027 7f38c1a2b7e0 10 librbd::ImageCtx: init_layout stripe_unit 4194304 stripe_count 1 object_size 4194304 prefix rbd_data.134d2ae8944a format rbd_data.134d2ae8944a.%016llx
+2015-09-17 11:16:44.015041 7f38c1a2b7e0 20 librbd: ictx_refresh 0x1c5e6a0
+2015-09-17 11:16:44.018962 7f38c1a2b7e0 20 librbd: new snapshot id=3 name=user1_image1_snap2 size=107374182400 features=1
+2015-09-17 11:16:44.018974 7f38c1a2b7e0 20 librbd: new snapshot id=2 name=user1_image1_snap size=107374182400 features=1
+2015-09-17 11:16:44.019048 7f38c1a2b7e0 20 librbd: aio_read 0x1c57e40 completion 0x1c5b9a0 [8388608,4194304]
+2015-09-17 11:16:44.019058 7f38c1a2b7e0 20 librbd: ictx_check 0x1c57e40
+2015-09-17 11:16:44.019068 7f38c1a2b7e0 10 striper file_to_extents 8388608~4194304 format rbd_data.1368238e1f29.%016llx
+2015-09-17 11:16:44.019072 7f38c1a2b7e0 20 striper  su 4194304 sc 1 os 4194304 stripes_per_object 1
+2015-09-17 11:16:44.019077 7f38c1a2b7e0 20 striper  off 8388608 blockno 2 stripeno 2 stripepos 0 objectsetno 2 objectno 2 block_start 0 block_off 0 0~4194304
+2015-09-17 11:16:44.019098 7f38c1a2b7e0 20 striper object_truncate_size 2 0->0
+2015-09-17 11:16:44.019103 7f38c1a2b7e0 20 striper  added new extent(rbd_data.1368238e1f29.0000000000000002 (2) in @91 0~4194304 -> [])
+2015-09-17 11:16:44.019109 7f38c1a2b7e0 15 striper file_to_extents  extent(rbd_data.1368238e1f29.0000000000000002 (2) in @91 0~4194304 -> [0,4194304]) in @91
+2015-09-17 11:16:44.019117 7f38c1a2b7e0 20 librbd:  oid rbd_data.1368238e1f29.0000000000000002 0~4194304 from [0,4194304]
+2015-09-17 11:16:44.019129 7f38c1a2b7e0 20 librbd::AioRequest: send 0x1c630d0 rbd_data.1368238e1f29.0000000000000002 0~4194304
+2015-09-17 11:16:44.019239 7f38c1a2b7e0 20 librbd::AioCompletion: AioCompletion::finish_adding_requests 0x1c5b9a0 pending 1
+2015-09-17 11:16:44.023858 7f38b58d2700 20 librbd::AioRequest: should_complete 0x1c630d0 rbd_data.1368238e1f29.0000000000000002 0~4194304 r = -2
+2015-09-17 11:16:44.023886 7f38b58d2700 10 striper extent_to_file 2 0~4194304
+2015-09-17 11:16:44.023889 7f38b58d2700 20 striper  stripes_per_object 1
+2015-09-17 11:16:44.023891 7f38b58d2700 20 striper  object 0~4194304 -> file 8388608~4194304
+2015-09-17 11:16:44.023896 7f38b58d2700 10 librbd::ImageCtx: prune_parent_extents image overlap 107374182400, object overlap 4194304 from image extents [8388608,4194304]
+2015-09-17 11:16:44.023903 7f38b58d2700 20 librbd::AioRequest: read_from_parent this = 0x1c630d0 parent completion 0x7f388c000e00 extents [8388608,4194304]
+2015-09-17 11:16:44.023909 7f38b58d2700 20 librbd: aio_read 0x1c5e6a0 completion 0x7f388c000e00 [8388608,4194304]
+2015-09-17 11:16:44.023911 7f38b58d2700 20 librbd: ictx_check 0x1c5e6a0
+2015-09-17 11:16:44.023914 7f38b58d2700 10 striper file_to_extents 8388608~4194304 format rbd_data.134d2ae8944a.%016llx
+2015-09-17 11:16:44.023919 7f38b58d2700 20 striper  su 4194304 sc 1 os 4194304 stripes_per_object 1
+2015-09-17 11:16:44.023924 7f38b58d2700 20 striper  off 8388608 blockno 2 stripeno 2 stripepos 0 objectsetno 2 objectno 2 block_start 0 block_off 0 0~4194304
+2015-09-17 11:16:44.023930 7f38b58d2700 20 striper object_truncate_size 2 0->0
+2015-09-17 11:16:44.023933 7f38b58d2700 20 striper  added new extent(rbd_data.134d2ae8944a.0000000000000002 (2) in @91 0~4194304 -> [])
+2015-09-17 11:16:44.023939 7f38b58d2700 15 striper file_to_extents  extent(rbd_data.134d2ae8944a.0000000000000002 (2) in @91 0~4194304 -> [0,4194304]) in @91
+2015-09-17 11:16:44.023945 7f38b58d2700 20 librbd:  oid rbd_data.134d2ae8944a.0000000000000002 0~4194304 from [0,4194304]
+2015-09-17 11:16:44.023950 7f38b58d2700 20 librbd::AioRequest: send 0x7f388c001ac0 rbd_data.134d2ae8944a.0000000000000002 0~4194304
+2015-09-17 11:16:44.024106 7f38b58d2700 20 librbd::AioCompletion: AioCompletion::finish_adding_requests 0x7f388c000e00 pending 1
+2015-09-17 11:16:44.025471 7f38b58d2700 20 librbd::AioRequest: should_complete 0x7f388c001ac0 rbd_data.134d2ae8944a.0000000000000002 0~4194304 r = -2
+2015-09-17 11:16:44.025484 7f38b58d2700 10 striper extent_to_file 2 0~4194304
+2015-09-17 11:16:44.025487 7f38b58d2700 20 striper  stripes_per_object 1
+2015-09-17 11:16:44.025488 7f38b58d2700 20 striper  object 0~4194304 -> file 8388608~4194304
+2015-09-17 11:16:44.025491 7f38b58d2700 10 librbd::ImageCtx: prune_parent_extents image overlap 0, object overlap 0 from image extents []
+2015-09-17 11:16:44.025494 7f38b58d2700 10 librbd::AioCompletion: C_AioRead::finish() 0x7f388c001a90 r = -2
+2015-09-17 11:16:44.025496 7f38b58d2700 10 librbd::AioCompletion:  got {} for [0,4194304] bl 0
+2015-09-17 11:16:44.025502 7f38b58d2700 10 striper add_partial_sparse_result(0x7f388c000ee8) 0 covering {0=0} (offset 0) to [0,4194304]
+2015-09-17 11:16:44.025510 7f38b58d2700 20 striper   t 0~4194304 bl has 0 off 0
+2015-09-17 11:16:44.025512 7f38b58d2700 20 striper   t 0~4194304 bl has 0 off 0
+2015-09-17 11:16:44.025514 7f38b58d2700 20 striper   s at end
+2015-09-17 11:16:44.025524 7f38b58d2700 20 librbd::AioCompletion: AioCompletion::complete_request() 0x7f388c000e00 complete_cb=0x7f38c154d890 pending 1
+2015-09-17 11:16:44.025530 7f38b58d2700 20 librbd::AioCompletion: AioCompletion::finalize() 0x7f388c000e00 rval 4194304 read_buf 0 read_bl 0x1c63120
+2015-09-17 11:16:44.025536 7f38b58d2700 10 striper assemble_result(0x7f388c000ee8) zero_tail=1
+2015-09-17 11:16:44.025546 7f38b58d2700 20 striper assemble_result(0x7f388c000ee8) 0~4194304 0 bytes
+2015-09-17 11:16:44.027579 7f38b58d2700 20 librbd::AioCompletion: AioCompletion::finalize() moving resulting 4194304 bytes to bl 0x1c63120
+2015-09-17 11:16:44.027599 7f38b58d2700 20 librbd::AioRequest: should_complete 0x1c630d0 rbd_data.1368238e1f29.0000000000000002 0~4194304 r = 4194304
+2015-09-17 11:16:44.027603 7f38b58d2700 10 librbd::AioCompletion: C_AioRead::finish() 0x1c5b660 r = 4194304
+2015-09-17 11:16:44.027604 7f38b58d2700 10 librbd::AioCompletion:  got {} for [0,4194304] bl 4194304
+2015-09-17 11:16:44.027607 7f38b58d2700 10 striper add_partial_sparse_result(0x1c5ba88) 4194304 covering {0=4194304} (offset 0) to [0,4194304]
+2015-09-17 11:16:44.027611 7f38b58d2700 20 striper   t 0~4194304 bl has 4194304 off 0
+2015-09-17 11:16:44.027613 7f38b58d2700 20 striper   s has 4194304, copying
+2015-09-17 11:16:44.027619 7f38b58d2700 20 librbd::AioCompletion: AioCompletion::complete_request() 0x1c5b9a0 complete_cb=0x7f38c154ee00 pending 1
+2015-09-17 11:16:44.027626 7f38b58d2700 20 librbd::AioCompletion: AioCompletion::finalize() 0x1c5b9a0 rval 4194304 read_buf 0x7fff1afa73f0 read_bl 0
+2015-09-17 11:16:44.027628 7f38b58d2700 10 striper assemble_result(0x1c5ba88) zero_tail=1
+2015-09-17 11:16:44.027630 7f38b58d2700 20 striper assemble_result(0x1c5ba88) 0~4194304 4194304 bytes
+2015-09-17 11:16:44.028567 7f38b58d2700 20 librbd::AioCompletion: AioCompletion::finalize() copied resulting 4194304 bytes to 0x7fff1afa73f0
