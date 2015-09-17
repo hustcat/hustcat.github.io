@@ -579,7 +579,7 @@ if (err < 0) {
 
 > error opening file /var/lib/ceph/osd/ceph-0/current/91.2a_head/rbd\udata.1368238e1f29.0000000000000002__head_EB9D38AA__5b with flags=2: (2) No such file or directory
 
-参考[log2](assets/rbd_read2.log)。
+参考[log2](/assets/rbd_read2.log)。
 
 如下：
 
