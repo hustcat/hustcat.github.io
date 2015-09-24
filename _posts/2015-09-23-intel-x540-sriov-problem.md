@@ -20,7 +20,7 @@ excerpt: Intel X540 SR-IOV initialize failed:PF still in reset state.Is the PF i
 
 简单来说，VF在初始化，会检查PF是否处于reset状态，如果是，就会返回错误IXGBE_ERR_RESET_FAILED。
 
-![](/assets/2015-09-24-intel-x540-sriov-failed-1.png)
+![](/assets/2015-09-24-intel-x540-sriov-failed.png)
 
 ```c
 ///ixgbe_type.h
