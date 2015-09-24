@@ -4,7 +4,7 @@ title: The reason of Intel X540 SR-IOV initialize failed
 date: 2015-09-23 18:27:30
 categories: Linux
 tags: network
-excerpt: Intel X540 SR-IOV initialize failed: PF still in reset state.  Is the PF interface up?
+excerpt: Intel X540 SR-IOV initialize failed:PF still in reset state.Is the PF interface up?
 ---
 
 # 问题
