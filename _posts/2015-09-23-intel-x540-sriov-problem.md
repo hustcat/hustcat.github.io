@@ -165,7 +165,7 @@ Alexander Duyck的[回答](http://sourceforge.net/p/e1000/mailman/message/344858
 
 简单来说，这是两者实现的区别，igbvf由于忽略了PF的状态，最后VF会分配一个随机的MAC地址。而ixgbevf会让VF从PF获取一个一致的MAC地址（This forced the interface to wait until the PF was up and ready to assign MAC addresses so that the VF should have a consistent address），这需要PF已经UP。所以，ixgbevf发现PF没有UP，就会返回错误。
 
-但是，内核的实现确有些区别，从[这里](https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c#L2673)可以看出，内核选择了与igb相同的方式。
+但是，内核的实现确有些区别，从[这里](https://github.com/torvalds/linux/blob/master/drivers/net/ethernet/intel/ixgbevf/ixgbevf_main.c#L2673)可以看出，内核主线代码选择了与igb相同的方式。
 
 ```c
 /**
