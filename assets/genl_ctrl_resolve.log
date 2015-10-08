@@ -1,0 +1,138 @@
+Tracing "netlink_sendmsg"... Ctrl-C to end.
+  2)               |  netlink_sendmsg() {
+  2)   0.089 us    |    pid_vnr();
+  2)               |    __alloc_skb() {
+  2)   0.079 us    |      kmem_cache_alloc_node();
+  2)               |      __kmalloc_reserve() {
+  2)               |        __kmalloc_node_track_caller() {
+  2)   0.039 us    |          kmalloc_slab();
+  2)   0.581 us    |        }
+  2)   0.909 us    |      }
+  2)   0.121 us    |      ksize();
+  2)   1.926 us    |    }
+  2)   0.035 us    |    skb_put();
+  2)   0.034 us    |    cap_netlink_send();
+  2)               |    netlink_unicast() {
+  2)   0.108 us    |      netlink_trim();
+  2)               |      netlink_getsockbyportid() {
+  2)               |        netlink_lookup() {
+  2)   0.036 us    |          _raw_read_lock();
+  2)   0.507 us    |        }
+  2)   0.857 us    |      }
+  2)   0.123 us    |      netlink_skb_set_owner_r();
+  2)               |      genl_rcv() {
+  2)   0.129 us    |        down_read();
+  2)               |        netlink_rcv_skb() {
+  2)               |          genl_rcv_msg() {
+  2)               |            genl_lock() {
+  2)   0.230 us    |              mutex_lock();
+  2)   0.508 us    |            }
+  2)               |            genl_family_rcv_msg() {
+  2)               |              genl_unlock() {
+  2)   0.038 us    |                mutex_unlock();
+  2)   0.302 us    |              }
+  2)               |              __netlink_dump_start() {
+  2)   0.066 us    |                kmem_cache_alloc_trace();
+  2)               |                netlink_lookup() {
+  2)   0.033 us    |                  _raw_read_lock();
+  2)   0.310 us    |                }
+  2)   0.037 us    |                mutex_lock();
+  2)   0.033 us    |                try_module_get();
+  2)   0.037 us    |                mutex_unlock();
+  2)               |                netlink_dump() {
+  2)   0.035 us    |                  mutex_lock();
+  2)               |                  netlink_alloc_skb() {
+  2)               |                    netlink_getsockbyportid() {
+  2)               |                      netlink_lookup() {
+  2)   0.157 us    |                        _raw_read_lock();
+  2)   0.429 us    |                      }
+  2)   0.685 us    |                    }
+  2)               |                    __alloc_skb() {
+  2)   0.040 us    |                      kmem_cache_alloc_node();
+  2)               |                      __kmalloc_reserve() {
+  2)               |                        __kmalloc_node_track_caller() {
+  2)   0.038 us    |                          kmalloc_slab();
+  2)   0.317 us    |                        }
+  2)   0.600 us    |                      }
+  2)   0.062 us    |                      ksize();
+  2)   1.434 us    |                    }
+  2)   2.690 us    |                  }
+  2)   0.037 us    |                  netlink_skb_set_owner_r();
+  2)               |                  genl_lock_dumpit() {
+  2)               |                    genl_lock() {
+  2)   0.035 us    |                      mutex_lock();
+  2)   0.297 us    |                    }
+  2)               |                    ctrl_dumpfamily() {
+  2)               |                      ctrl_fill_info() {
+  2)               |                        genlmsg_put() {
+  2)               |                          __nlmsg_put() {
+  2)   0.035 us    |                            skb_put();
+  2)   0.316 us    |                          }
+  2)   0.680 us    |                        }
+  2)   0.038 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   0.038 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   0.038 us    |                        skb_put();
+  2)   0.033 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   0.034 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   6.738 us    |                      }
+  2)               |                      ctrl_fill_info() {
+  2)               |                        genlmsg_put() {
+  2)               |                          __nlmsg_put() {
+  2)   0.037 us    |                            skb_put();
+  2)   0.309 us    |                          }
+  2)   0.577 us    |                        }
+  2)   0.035 us    |                        skb_put();
+  2)   0.036 us    |                        skb_put();
+  2)   0.036 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   0.034 us    |                        skb_put();
+  2)   0.033 us    |                        skb_put();
+  2)   0.036 us    |                        skb_put();
+  2)   0.033 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   0.037 us    |                        skb_put();
+  2)   0.038 us    |                        skb_put();
+  2)   0.034 us    |                        skb_put();
+  2)   4.850 us    |                      }
+  2) + 12.551 us   |                    }
+  2)               |                    genl_unlock() {
+  2)   0.036 us    |                      mutex_unlock();
+  2)   0.318 us    |                    }
+  2) + 13.938 us   |                  }
+  2)   0.038 us    |                  mutex_unlock();
+  2)   0.039 us    |                  sk_filter();
+  2)               |                  __netlink_sendskb() {
+  2)               |                    skb_queue_tail() {
+  2)   0.037 us    |                      _raw_spin_lock_irqsave();
+  2)   0.048 us    |                      _raw_spin_unlock_irqrestore();
+  2)   0.574 us    |                    }
+  2)   0.063 us    |                    sock_def_readable();
+  2)   1.190 us    |                  }
+  2) + 19.849 us   |                }
+  2) + 21.947 us   |              }
+  2)               |              genl_lock() {
+  2)   0.038 us    |                mutex_lock();
+  2)   0.299 us    |              }
+  2) + 23.721 us   |            }
+  2)               |            genl_unlock() {
+  2)   0.035 us    |              mutex_unlock();
+  2)   0.290 us    |            }
+  2) + 25.507 us   |          }
+  2)   0.044 us    |          skb_pull();
+  2) + 26.240 us   |        }
+  2)   0.036 us    |        up_read();
+  2) + 27.223 us   |      }
+  2)   0.059 us    |      consume_skb();
+  2) + 29.968 us   |    }
+  2)   0.068 us    |    put_pid();
+  2) + 35.172 us   |  }
+
+Ending tracing...
