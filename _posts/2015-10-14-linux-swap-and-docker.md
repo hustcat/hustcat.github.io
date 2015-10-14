@@ -236,8 +236,11 @@ Killed process 3897 (stress) total-vm:1579488kB, anon-rss:1048132kB, file-rss:12
 对于3.16以下的内核，有下面的限制：
 
 > Following cgroups' swappiness can't be changed.
+>
 > （1）root cgroup (uses /proc/sys/vm/swappiness).
+>
 > （2）a cgroup which uses hierarchy and it has other cgroup(s) below it.
+>
 > （3）a cgroup which uses hierarchy and not the root of hierarchy.
 
 ```c
