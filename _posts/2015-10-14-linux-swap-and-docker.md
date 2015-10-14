@@ -15,18 +15,24 @@ excerpt: Linux swap and docker
 
 对于file cache，内核只需要将page的数据回写到文件后即可。对于anonymous page，内核需要将page的数据写到swap spac，swap space主要就用于存储被换出的modified anonymous pages。
 
-关于swap，有以下几点需要说明：
+关于swap，有以下几点需要[说明](http://www.linuxjournal.com/article/10678)：
 
 ```
-（1）Swap space does not inherently slow down your system. In fact, not having swap space doesn't mean you won't swap pages. It merely means that Linux has fewer choices about what RAM can be reused when a demand hits. Thus, it is possible for the throughput of a system that has no swap space to be lower than that of a system that has some.
+（1）Swap space does not inherently slow down your system. In fact, not having swap space doesn't 
+mean you won't swap pages. It merely means that Linux has fewer choices about what RAM can be reused
+when a demand hits. Thus, it is possible for the throughput of a system that has no swap space to
+be lower than that of a system that has some.
 
-Swap并不意味着会使用系统变慢。实际上，没有swap也并不是意味着系统不会换出page（注：比如file cache），只是意味着内核在重用page时少了一些选择（注：不能重用modified anonymous pages）。
+Swap并不意味着会使用系统变慢。实际上，没有swap也并不是意味着系统不会换出page（注：比如file
+cache），只是意味着内核在重用page时少了一些选择（注：不能重用modified anonymous pages）。
 
-（2）Swap space is used for modified anonymous pages only. Your programs, shared libraries and filesystem cache are never written there under any circumstances.
+（2）Swap space is used for modified anonymous pages only. Your programs, shared libraries and
+filesystem cache are never written there under any circumstances.
 
 Swap space仅用于被修改的匿名页。
 
-（3）Given items 1 and 2 above, the philosophy of “minimization of swap space” is really just a concern about wasted disk space.
+（3）Given items 1 and 2 above, the philosophy of “minimization of swap space” is really just a
+concern about wasted disk space.
 ```
 
 # swappiness
