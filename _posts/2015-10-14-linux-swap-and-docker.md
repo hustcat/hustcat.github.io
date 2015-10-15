@@ -72,6 +72,8 @@ enum lru_list {
 
 内核回收内存时，会在[get_scan_out](https://bitbucket.org/hustcat/kernel-3.10.83/src/45696be22496205daa0a8f818fe80805b45bee97/mm/vmscan.c?at=master&fileviewer=file-view-default#vmscan.c-1653)中计算每个链表中回收的page数量：
 
+![](/assets/2015-10-14-linux-swap-and-docker-func.jpg)
+
 ```c
 /*
  * Determine how aggressively the anon and file LRU lists should be
