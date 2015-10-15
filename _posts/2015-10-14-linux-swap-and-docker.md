@@ -3,7 +3,7 @@ layout: post
 title: Linux swap and docker
 date: 2015-10-14 18:16:30
 categories: Linux
-tags: memory
+tags: memory cgroup
 excerpt: Linux swap and docker
 ---
 
