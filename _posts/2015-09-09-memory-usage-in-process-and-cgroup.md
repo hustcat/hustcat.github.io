@@ -3,7 +3,7 @@ layout: post
 title: Linux中进程内存与cgroup内存的统计
 date: 2015-09-09 20:27:30
 categories: Linux
-tags: memory
+tags: memory cgroup
 excerpt: Memory usage in Linux process and cgroup
 ---
 
