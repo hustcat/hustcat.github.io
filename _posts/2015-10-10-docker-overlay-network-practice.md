@@ -3,7 +3,7 @@ layout: post
 title: Docker native overlay network practice
 date: 2015-10-10 20:07:30
 categories: Linux
-tags: docker
+tags: docker network
 excerpt: Docker native overlay network practice
 ---
 
