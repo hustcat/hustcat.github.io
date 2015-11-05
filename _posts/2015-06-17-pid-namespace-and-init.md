@@ -3,7 +3,7 @@ layout: post
 title: PID namespace与Docker容器init进程
 date: 2015-06-17 22:00:30
 categories: Linux
-tags: namespace
+tags: namespace docker
 excerpt: PID namespace与Docker容器init进程。
 ---
 
@@ -490,9 +490,9 @@ orphan(parent)和orphan(child)都在simple_init创建的PID namespace，而ns_ru
 
 ## 主要参考
 
-* http://lwn.net/Articles/531419/
-* http://lwn.net/Articles/532748/
-* http://lwn.net/Articles/259217/
+* [Namespaces in operation, part 3: PID namespaces](http://lwn.net/Articles/531419/)
+* [Namespaces in operation, part 4: more on PID namespaces](http://lwn.net/Articles/532748/)
+* [PID namespaces in the 2.6.24 kernel](http://lwn.net/Articles/259217/)
 
 # Docker容器init进程
 
