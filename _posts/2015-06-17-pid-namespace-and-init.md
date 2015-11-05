@@ -594,6 +594,48 @@ func(container *libcontainer.Config, console, dataPath, init string, child *os.F
 
 *** 另外，注意到createCommand并没有使用参数init。***
 
+## Run exec.Cmd
+
+封装好exec.Cmd对象后，接下来就是要运行exec.Cmd（即dockerinit），并一直等待子进程结束。从这里可以看到，docker daemon做为dockerinit的父进程，并且一直等待容器退出，并且获取其退出码。
+
+```go
+func Exec(container *libcontainer.Config, stdin io.Reader, stdout, stderr io.Writer, console, dataPath string, args []string, createCommand CreateCommand, startCallback func()) (int, error) {
+
+	///exec.Cmd
+	command := createCommand(container, console, dataPath, os.Args[0], syncPipe.Child(), args)
+
+	command.Stdin = stdin
+	command.Stdout = stdout
+	command.Stderr = stderr
+
+	///run exec.Cmd
+	if err := command.Start(); err != nil {
+		return -1, err
+	}
+
+	///与dockerinit同步，等待dockerinit启动
+	// Sync with child
+	if err := syncPipe.ReadFromChild(); err != nil {
+		command.Process.Kill()
+		command.Wait()
+		return -1, err
+	}
+
+	if startCallback != nil {
+		startCallback()
+	}
+
+	///等待容器的init进程退出
+	if err := command.Wait(); err != nil {
+		if _, ok := err.(*exec.ExitError); !ok {
+			return -1, err
+		}
+	}
+
+	///返回容器的退出码
+	return command.ProcessState.Sys().(syscall.WaitStatus).ExitStatus(), nil
+```
+
 ## 引导init
 
 docker执行/data/docker/init/dockerinit-1.3.6 native -console  -pipe 3 -root /data/docker/execdriver/native/$id -- /bin/sh -c /sbin/init命令，通过dockerinit来引导执行用户指定的init进程，作为容器的init进程：
