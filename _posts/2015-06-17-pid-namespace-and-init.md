@@ -594,6 +594,62 @@ func(container *libcontainer.Config, console, dataPath, init string, child *os.F
 
 *** 另外，注意到createCommand并没有使用参数init。***
 
+## dockerinit
+
+dockerinit的路径保存在native.driver.initPath：
+
+```go
+//native/driver.go
+type driver struct {
+	root             string
+	initPath         string
+	activeContainers map[string]*activeContainer
+	sync.Mutex
+}
+
+func NewDriver(root, initPath string) (*driver, error) {
+...
+	return &driver{
+		root:             root,
+		initPath:         initPath, ///dockerinit路径
+		activeContainers: make(map[string]*activeContainer),
+	}, nil
+}
+```
+
+docker daemon在启动时，如果发现没有$ROOT/init/dockerinit_$VERION程序时，就会拷贝docker到$ROOT/init/dockerinit_$VERION：
+
+```go
+//daemon/daemon.go
+func NewDaemonFromDirectory(config *Config, eng *engine.Engine) (*Daemon, error) {
+...
+	localCopy := path.Join(config.Root, "init", fmt.Sprintf("dockerinit-%s", dockerversion.VERSION))
+	sysInitPath := utils.DockerInitPath(localCopy)
+	if sysInitPath == "" {
+		return nil, fmt.Errorf("Could not locate dockerinit: This usually means docker was built incorrectly. See http://docs.docker.com/contributing/devenvironment for official build instructions.")
+	}
+
+	if sysInitPath != localCopy {
+		// When we find a suitable dockerinit binary (even if it's our local binary), we copy it into config.Root at localCopy for future use (so that the original can go away without that being a problem, for example during a package upgrade).
+		if err := os.Mkdir(path.Dir(localCopy), 0700); err != nil && !os.IsExist(err) {
+			return nil, err
+		}
+		if _, err := utils.CopyFile(sysInitPath, localCopy); err != nil {
+			return nil, err
+		}
+		if err := os.Chmod(localCopy, 0700); err != nil {
+			return nil, err
+		}
+		sysInitPath = localCopy
+	}
+	///create execdriver
+	sysInfo := sysinfo.New(false)
+	ed, err := execdrivers.NewDriver(config.ExecDriver, config.Root, sysInitPath, sysInfo)
+	if err != nil {
+		return nil, err
+	}
+```
+
 ## Run exec.Cmd
 
 封装好exec.Cmd对象后，接下来就是要运行exec.Cmd（即dockerinit），并一直等待子进程结束。从这里可以看到，docker daemon做为dockerinit的父进程，并且一直等待容器退出，并且获取其退出码。
