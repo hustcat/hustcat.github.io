@@ -11,7 +11,7 @@ excerpt: tcp_tw_recycle和tcp_timestamp的问题
 
 很多文章都讨论了对外提供服务的服务器，慎用tcp_tw_recycle。这里不再详细讨论，只是简单总结一下。
 
-TCP规范中规定的处于TIME_WAIT的TCP连接必须等待2MSL时间（而是rto或者60s）。但在linux中，如果开启了tcp_tw_recycle，TIME_WAIT的TCP连接就不会等待2MSL时间，从而达到快速重用（回收）处于TIME_WAIT状态的tcp连接的目的。这就可能导致连接收到之前连接的数据。为此，linux在打开tcp_tw_recycle的情况下，会记录下TIME_WAIT连接的对端（peer）信息，包括IP地址、时间戳等：
+TCP规范中规定的处于TIME_WAIT的TCP连接必须等待2MSL时间。但在linux中，如果开启了tcp_tw_recycle，TIME_WAIT的TCP连接就不会等待2MSL时间（而是rto或者60s），从而达到快速重用（回收）处于TIME_WAIT状态的tcp连接的目的。这就可能导致连接收到之前连接的数据。为此，linux在打开tcp_tw_recycle的情况下，会记录下TIME_WAIT连接的对端（peer）信息，包括IP地址、时间戳等：
 
 ```c
 struct inet_peer
