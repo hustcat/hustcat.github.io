@@ -253,7 +253,7 @@ static void tcp_v4_send_ack(struct sk_buff *skb, u32 seq, u32 ack,
 
 # 测试
 
-我们假设client2、client1位于NAT（10.193.1.158之后），server运行在10.239.228.10，并假设client2的内核先启动，这样就会导致client2的时间戳>client1的时间戳。
+我们假设client2、client1位于NAT（10.193.x.x之后），server运行在10.239.x.x，并假设client2的内核先启动，这样就会导致client2的时间戳>client1的时间戳。
 然后依次在client2、client1运行测试客户端程序。在server端抓包，结果如下：
 
 ![](/assets/2015-11-16-tcp_tw_recycle1.png)
