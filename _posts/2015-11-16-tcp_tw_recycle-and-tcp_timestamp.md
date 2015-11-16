@@ -1,10 +1,9 @@
-
 ---
 layout: post
 title: tcp_tw_recycle和tcp_timestamp的问题
 date: 2015-11-16 18:16:30
 categories: Linux
-tags: network tcp
+tags: network
 excerpt: tcp_tw_recycle和tcp_timestamp的问题
 ---
 
