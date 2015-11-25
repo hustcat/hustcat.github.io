@@ -1,0 +1,36 @@
+# ./kprobe -s 'p:igbvf_vlan_rx_kill_vid'
+igbvf_vlan_rx_kill_vid [igbvf]
+Tracing kprobe igbvf_vlan_rx_kill_vid. Ctrl-C to end.
+           <...>-81052 [009] d... 2593096.508895: igbvf_vlan_rx_kill_vid: (igbvf_vlan_rx_kill_vid+0x0/0x90 [igbvf])
+           <...>-81052 [009] d... 2593096.508909: <stack trace>
+ => vlan_device_event
+ => notifier_call_chain
+ => raw_notifier_call_chain
+ => call_netdevice_notifiers
+ => dev_close_many
+ => dev_close
+ => dev_change_net_namespace
+ => do_setlink
+ => rtnl_newlink
+ => rtnetlink_rcv_msg
+ => netlink_rcv_skb
+ => rtnetlink_rcv
+ => netlink_unicast
+ => netlink_sendmsg
+ => sock_sendmsg
+ => ___sys_sendmsg
+ => __sys_sendmsg
+ => SyS_sendmsg
+ => tracesys
+
+# ./kprobe -s 'p:dev_change_net_namespace'
+dev_change_net_namespace
+Tracing kprobe dev_change_net_namespace. Ctrl-C to end.
+           <...>-81099 [006] d... 2604862.031771: dev_change_net_namespace: (dev_change_net_namespace+0x0/0x280)
+           <...>-81099 [006] d... 2604862.031781: <stack trace>
+ => ops_exit_list
+ => cleanup_net
+ => process_one_work
+ => worker_thread
+ => kthread
+ => ret_from_fork

@@ -42,6 +42,7 @@ concern about wasted disk space.
 内核参数vm.swappiness可以控制内核在回收内存时，对anonymous page 的处理策略（[回收匿名页数量的比例](https://github.com/torvalds/linux/blob/master/Documentation/sysctl/vm.txt#L728)）。
 
 > anon_prio = vm.swappiness
+>
 > file_prio = 200 - vm.swappiness
 
 vm.swappiness取值从0~100，默认值会60。此时file_prio=160，内核回收的file cache的比例会大一些。如果vm.swappiness=0，内核回收内存时，就不会回收匿名页，直到系统的free+file cache < high water mark in a zone（注：仅对于全局回收，不包括mem cgroup引起的回收）。
@@ -66,8 +67,11 @@ enum lru_list {
 ```
 
 > inactive_anon   - # anonymous and swap cache memory on inactive LRU list.
+>
 > active_anon - #anonymous and swap cache memory on active LRU list.
+>
 > inactive_file   - # file-backed memory on inactive LRU list.
+>
 > active_file - # file-backed memory on active LRU list.
 
 内核回收内存时，会在[get_scan_out](https://bitbucket.org/hustcat/kernel-3.10.83/src/45696be22496205daa0a8f818fe80805b45bee97/mm/vmscan.c?at=master&fileviewer=file-view-default#vmscan.c-1653)中计算每个链表中回收的page数量：
