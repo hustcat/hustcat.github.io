@@ -10,7 +10,7 @@ excerpt: fork systemcall hanged cause by gprof
 # 问题
 某业务反应程序执行fork时一直卡住，并导致CPU 100%：
 
-![](/assests/2015-12-10-fork-problem-1.png)
+![](/assets/2015-12-10-fork-problem-1.png)
 
 使用gdb，发现调用栈处于一直处于fork：
 
@@ -24,7 +24,7 @@ excerpt: fork systemcall hanged cause by gprof
 
 使用perf来看，内核一直在执行copy_pte_range：
  
-![](/assests/2015-12-10-fork-problem-2.png)
+![](/assets/2015-12-10-fork-problem-2.png)
 
 使用strace，发现fork一直返回ERESTARTNOINTR：
 
