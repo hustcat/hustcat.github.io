@@ -292,6 +292,12 @@ static inline void put_net(struct net *net)
 }
 ```
 
+# 进程与netnamespace
+
+当进程结束时，也会尝试删除netnamespace：
+
+![](/assets/2015-11-20-sriov-netnamespace-problem-3.jpg)
+
 # 总结
 
 当容器异常停掉之后，导致socket没有及时释放（socket中的数据没有确认完），从而引起netnamespace没有及时释放，再引起netnamespace中的VF设备没有回到init netnamespace。
