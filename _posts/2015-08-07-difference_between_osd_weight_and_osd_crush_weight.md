@@ -21,7 +21,7 @@ excerpt: Difference Between 'ceph osd weight' and 'ceph osd crush weight'。
 2       1.36                    osd.2   up      1
 ```
 
-其中，第二列对应osd weight，最后一列对应osd crush weight。
+其中，第二列对应osd crush weight，最后一列对应osd weight。
 
 Crush weight实际上为bucket item weight，[下面](http://ceph.com/docs/master/rados/operations/crush-map/#crush-map-bucket-types)是关于bucket item weight的描述：
 
