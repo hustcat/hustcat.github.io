@@ -296,5 +296,8 @@ DVR实现的网络比较复杂，VM与external之间的链路也很长，大量�
 # 相关资料
 
 * [Scenario: High Availability using Distributed Virtual Routing (DVR)](http://docs.openstack.org/liberty/networking-guide/scenario-dvr-ovs.html)
+* [install guide: Add the Networking service](http://docs.openstack.org/liberty/install-guide-rdo/neutron.html)
+* [Networking service command-line client](http://docs.openstack.org/cli-reference/neutron.html)
+* [Distributed Virtual Routing – Floating IPs](http://assafmuller.com/2015/04/15/distributed-virtual-routing-floating-ips/)
 
 
