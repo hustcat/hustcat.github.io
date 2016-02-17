@@ -1,3 +1,4 @@
+future: true
 permalink: /:title/
 url: http://hustcat.github.io
 name: YY哥
