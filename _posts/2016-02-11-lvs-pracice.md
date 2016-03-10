@@ -371,6 +371,52 @@ telnet> quit
 
 关于LVS-TUN更多的信息参考[这里](http://www.austintek.com/LVS/LVS-HOWTO/HOWTO/LVS-HOWTO.LVS-Tun.html).
 
+
+# LVS与Docker
+
+很多时候，我们希望用LVS来对Docker容器进行负载均衡，那么面临一个问题，tunnel隧道如何创建呢？
+
+有两种选择，一种是在容器内部建立。这种方式有两个问题：一是需要容器必须使用flat network；另外，在容器内部动态创建隧道也不方便，也会影响镜像的发布。
+
+第二种选择就是在Host创建，然后转发给容器。这种方式，容器本身不需要做任何配置，更加方便，而且不也需要flat network。
+
+对于第二种方式，我们假设Host为172.17.42.40/16，容器使用bridge方式，容器的IP为172.18.0.2/16。我们只需要配置iptables就可以了：
+
+```sh
+# iptables -t nat -A PREROUTING -d $VIP/32 -p tcp --dport $VPORT -j DNAT --to-destination $CONTAINER_IP:$CONTAINER_PORT 
+```
+
+比如:
+
+```sh
+# iptables -t nat -A PREROUTING -d 172.17.42.200/32 -p tcp --dport 36000 -j DNAT --to-destination 172.18.0.2:22
+```
+
+***  /etc/keepalived/keepalived.conf ***
+
+```
+virtual_server 172.17.42.200 36000 {
+    delay_loop 6
+    lb_algo rr
+    lb_kind TUN
+    nat_mask 255.255.0.0
+    persistence_timeout 50
+    protocol TCP
+
+    real_server 172.17.42.40 36000 {
+        weight 1
+        TCP_CHECK {
+                connect_timeout 3
+                nb_get_retry 3
+                delay_before_retry 3
+                connect_port 22
+            }
+        }
+    }
+}
+```
+
+
 # 其它相关资料
 
 * [6. LVS: The ARP Problem](http://www.austintek.com/LVS/LVS-HOWTO/HOWTO/LVS-HOWTO.arp_problem.html#the_problem)
