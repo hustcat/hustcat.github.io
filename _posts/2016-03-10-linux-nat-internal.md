@@ -3,7 +3,7 @@ layout: post
 title: Linux NAT internal
 date: 2016-03-10 23:00:30
 categories: Linux
-tags: Network 
+tags: network nat iptables
 excerpt: Linux NAT internal
 ---
 
