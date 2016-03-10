@@ -9,13 +9,13 @@ excerpt: Linux NAT internal
 
 Linux的NAT功能是在iptables中实现的，先看一下iptables整体框架：
 
-![](/assets/2016-03-10-linux-nat-internal-01.gif)
+![](/assets/netfilter/2016-03-10-linux-nat-internal-01.gif)
 
 # SNAT实现
 
 整体流程：
 
-![](/assets/2016-03-10-linux-nat-internal-02.jpg)
+![](/assets/netfilter/2016-03-10-linux-nat-internal-02.jpg)
 
 对于SNAT，在xt_snat_target_v0中根据action修改nf_conn->tuplehash[IP_CT_DIR_REPLY].tuple。然后在nf_nat_packet中发送数据。
 
@@ -85,7 +85,7 @@ A <-> G <-> S
 
 # DNAT实现
  
-![](/assets/2016-03-10-linux-nat-internal-03.jpg)
+![](/assets/netfilter/2016-03-10-linux-nat-internal-03.jpg)
 
 理解DNAT/SNAT的一个关键点在于，内核在conntrack的基础上，根据iptables的DNAT/SNAT规则修改REPLY tuple。当内核收到reply packet时，就可以从conntrack得到REPLY tuple，然后就可以得到对应的ORIGINAL tuple，再对ORIGINAL tuple取反得到inverse tuple，最后，再根据inverse tuple，修改reply packet的源地址（DNAT），或者目标址（SNAT）［注：这是对reply packet!］。
 
