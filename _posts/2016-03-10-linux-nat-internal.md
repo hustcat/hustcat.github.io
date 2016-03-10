@@ -11,6 +11,8 @@ Linux的NAT功能是在iptables中实现的，先看一下iptables整体框架�
 
 ![](/assets/netfilter/2016-03-10-linux-nat-internal-01.gif)
 
+图片来自[这里](http://vbird.dic.ksu.edu.tw/linux_server/0250simple_firewall.php)。
+
 # SNAT实现
 
 整体流程：
@@ -128,3 +130,5 @@ iptables -t nat -A PREROUTING -i $WAN -p tcp --dport 80 -j DNAT --to-destination
 * [Linux NAT(Network Address Translation) Router Explained](http://www.slashroot.in/linux-nat-network-address-translation-router-explained)
 
 * [第九章、防火墙与 NAT 服务器](http://vbird.dic.ksu.edu.tw/linux_server/0250simple_firewall.php)
+
+* [netfilter 链接跟踪机制与NAT原理](http://www.cnblogs.com/liushaodong/archive/2013/02/26/2933593.html)
