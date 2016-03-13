@@ -77,7 +77,7 @@ static bool nf_nat_ipv4_manip_pkt(struct sk_buff *skb,
 
 A <-> G <-> S
 
-经过SNAT修改后，nf_conn->tuplehash的两个tuple为{<A->S>，<S->G>}，当G收到A发过的packet<A->S>时，会修改packet的源地址为<G->S>（根据tuple[REPLY]=<S->G>），然后发送给S；当G收到S返回的packet<S->G>时，会修改packet的目的地址为<S->A> （根据tuple[ORIGINAL]=<A->S>），然后返回给A。
+经过SNAT修改后，nf_conn->tuplehash的两个tuple为{(A->S)，(S->G)}，当G收到A发过的packet(A->S)时，会修改packet的源地址为(G->S)（根据tuple[REPLY]=(S->G) ），然后发送给S；当G收到S返回的packet(S->G)时，会修改packet的目的地址为(S->A) （根据tuple[ORIGINAL]=(A->S) ），然后返回给A。
 
 值得注意的是：
 
@@ -126,9 +126,8 @@ iptables -t nat -A PREROUTING -i $WAN -p tcp --dport 80 -j DNAT --to-destination
 # related posts
 
 * [Address Spoofing with iptables in Linux](https://sandilands.info/sgordon/address-spoofing-with-iptables-in-linux)
-
 * [Linux NAT(Network Address Translation) Router Explained](http://www.slashroot.in/linux-nat-network-address-translation-router-explained)
-
 * [第九章、防火墙与 NAT 服务器](http://vbird.dic.ksu.edu.tw/linux_server/0250simple_firewall.php)
-
+* [Linux Netfilter实现机制和扩展技术](https://www.ibm.com/developerworks/cn/linux/l-ntflt/)
 * [netfilter 链接跟踪机制与NAT原理](http://www.cnblogs.com/liushaodong/archive/2013/02/26/2933593.html)
+* [iptables深入解析-nat篇](http://blog.chinaunix.net/uid-20786208-id-5145525.html)
