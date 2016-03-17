@@ -96,7 +96,7 @@ packet将选择flannel.1作为出口，同时，根据iptables SNAT规则，将p
 从接口docker0发出，再转给nginx-0。
 
 在node2上对VXLAN port抓包：
-![](/assets/flannel/flanne-and-kube-service-01.jpg)
+![](/assets/flannel/flanne-and-kube-service-01.png)
 
 
 * difference between flannel and docker overlay
