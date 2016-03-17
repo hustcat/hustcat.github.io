@@ -283,10 +283,14 @@ static void vlan_dev_set_rx_mode(struct net_device *vlan_dev)
 
 Intel 82576对unicast filtering的支持：
 
-> 24 exact-matched packets for unicast and multicast frames 
+> 24 exact-matched packets for unicast and multicast frames
+>
 > 4096-bit hash filter for unicast frames
+>
 > Lower processor utilization
+>
 > Promiscuous (unicast and multicast) transfer mode support 
+>
 > Optional filtering of invalid frames
 
 详细参考[这里](http://www.intel.com/content/www/us/en/embedded/products/networking/82576-gbe-controller-brief.html)
