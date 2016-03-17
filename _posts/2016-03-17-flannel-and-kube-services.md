@@ -101,9 +101,13 @@ packet将选择flannel.1作为出口，同时，根据iptables SNAT规则，将p
 
 * difference between flannel and docker overlay
 
-flannel中连接容器的bridge（docker0）与vxlan设备（flannel.1）是相互独立的，而docker overlay是将vxlan设备直接作为bridge的端口，即flannel中docker0是NAT bridge，docker overlay是Host bridge。
+flannel中连接容器的bridge（docker0）与vxlan设备（flannel.1）是相互独立的，而docker overlay是将vxlan设备直接作为bridge的端口。
 
-这样的缺点是当跨节点的容器通信时，看不到对方的IP。比如nginx-0中看到源地IP地址是flannel.1的IP地址。
+> 这里之前理解有点问题，SNAT是由于docker的参数"--ip-masq=false"引起的，
+>
+> kube建议的参数是"--iptables=false --ip-masq=false"
+>
+> 这样的缺点是当跨节点的容器通信时，看不到对方的IP。比如nginx-0中看到源地IP地址是flannel.1的IP地址。
 
 这样的优点是从node可以直接访问容器。比如可以直接从node1访问nginx-0。这一点是kubernetes中的services的基础。Docker overlay中的host是不能直接与容器通信的。
 
