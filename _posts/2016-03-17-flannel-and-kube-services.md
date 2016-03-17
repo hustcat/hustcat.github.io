@@ -75,7 +75,7 @@ default via 172.17.42.1 dev eth0
 
 * network topology
 
-![](/assets/flannle/flanne-and-kube-service-00.jpg)
+![](/assets/flannel/flanne-and-kube-service-00.jpg)
 
 
 * packet flow
@@ -96,7 +96,7 @@ packet将选择flannel.1作为出口，同时，根据iptables SNAT规则，将p
 从接口docker0发出，再转给nginx-0。
 
 在node2上对VXLAN port抓包：
-![](/assets/flannle/flanne-and-kube-service-01.jpg)
+![](/assets/flannel/flanne-and-kube-service-01.jpg)
 
 
 * difference between flannel and docker overlay
