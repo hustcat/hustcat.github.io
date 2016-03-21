@@ -99,6 +99,7 @@ IPVLAN发送的数据的流程如下：
 我们来看看，IPVLAN是如何做到不需要ARP广播时。我们考虑 node2.ns0(10.1.1.2) -> node3(172.17.42.43)。
 
 在ipvlan_xmit_mode_l3中，会将skb->dev改为下层的物理设备：
+
 ```c
 static int ipvlan_xmit_mode_l3(struct sk_buff *skb, struct net_device *dev)
 {
@@ -107,7 +108,9 @@ static int ipvlan_xmit_mode_l3(struct sk_buff *skb, struct net_device *dev)
 	return ipvlan_process_outbound(skb, ipvlan);
 }
 ```
+
 然后在ipvlan_process_v4_outbound重新计算路由，然后再走二层的发送过程（ip_local_out）:
+
 ```c
 static int ipvlan_process_v4_outbound(struct sk_buff *skb)
 {
@@ -135,6 +138,7 @@ static int ipvlan_process_v4_outbound(struct sk_buff *skb)
 	skb_dst_set(skb, &rt->dst);
 	err = ip_local_out(skb); ///send
 ```
+
 从这里可以看到，路由和二层广播都是在下层物理设备进行的。所以，当IPVLAN设备访问外部时，它并不需要ARP广播。
 
 ### receive
