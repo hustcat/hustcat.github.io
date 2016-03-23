@@ -129,9 +129,11 @@ void neigh_app_ns(struct neighbour *n)
 ```
 
 我们必须将内核参数app_solicit设置为大于0的值:
+
 ```sh
 #echo 3 > /proc/sys/net/ipv4/neigh/flannel.1/app_solicit
 ```
+
 flannel将vxlan设备的app_solicit值设置为3:
 
 ```go	
