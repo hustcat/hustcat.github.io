@@ -132,7 +132,7 @@ Tracing kprobe rtnl_notify. Ctrl-C to end.
  => __sys_sendmsg
  => SyS_sendmsg
  => entry_SYSCALL_64_fastpath
- ```
+```
 
 ```
 ping -> socket -> L3 -> veth -> bridge -> L3 forward -> neighbor
