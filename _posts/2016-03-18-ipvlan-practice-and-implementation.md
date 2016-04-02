@@ -9,7 +9,7 @@ excerpt: ipvlan practice and implementation
 
 ## Introduce
 
-IPVLAN支持两种模式: L2 mode and L3 mode。l2 mode的功能与实现与MACVLAN差不多，IPVLAN设备本身处理(ARP)广播/多播。
+IPVLAN支持两种模式: L2 mode and L3 mode。L2 mode的功能与实现原理与MACVLAN差不多，IPVLAN设备本身处理(ARP)广播/多播。只不过，MACVLAN是通过MAC查找MACVLAN设备，而IPVLAN是通过IP查找IPVLAN设备。
 
 L3的功能和实现比较有意思。在L3的情况下，IPVLAN设备本身不会处理二层协议和路由，而是由IPVLAN对应的下层设备负责处理。注意，这里的负责并不是说由下层设备替IPVLAN处理，IPVLAN设备本身不会发送、也不会接收（ARP）广播，这与IP tunnel比较类似。
 

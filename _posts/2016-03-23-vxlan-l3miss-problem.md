@@ -77,6 +77,67 @@ out:
 
 所以，flannel中的l3miss必须基于neigh_app_ns实现。而对于docker overlay的实现，vxlan设备作为bridge的端口，ARP请求是由bridge转发过来的，可以走到vxlan_ip_miss的逻辑，所以它的l3miss必须基于arp_reduce实现。
 
+当从容器ping其它容器时，内核的发起ARP请求的时候函数调用流程(flannel)：
+
+```
+# ./kprobe -s 'r:rtnl_notify'
+rtnl_notify
+Tracing kprobe rtnl_notify. Ctrl-C to end.
+            ping-26142 [000] d.s1 2986893.114240: rtnl_notify: (__neigh_notify+0xbe/0xe0 <- rtnl_notify)
+            ping-26142 [000] d.s1 2986893.114259: <stack trace>
+ => neigh_app_ns
+ => arp_solicit
+ => neigh_probe
+ => __neigh_event_send
+ => neigh_resolve_output
+ => ip_finish_output2
+ => ip_finish_output
+ => ip_output
+ => ip_forward_finish
+ => ip_forward
+ => ip_rcv_finish
+ => ip_rcv
+ => __netif_receive_skb_core
+ => __netif_receive_skb
+ => netif_receive_skb_internal
+ => netif_receive_skb_sk
+ => NF_HOOK.clone.0
+ => br_handle_frame_finish
+ => NF_HOOK_THRESH
+ => br_nf_pre_routing_finish
+ => NF_HOOK_THRESH
+ => br_nf_pre_routing
+ => nf_iterate
+ => nf_hook_slow
+ => br_handle_frame
+ => __netif_receive_skb_core
+ => __netif_receive_skb
+ => process_backlog
+ => napi_poll
+ => net_rx_action
+ => __do_softirq
+ => do_softirq_own_stack
+ => do_softirq
+ => __local_bh_enable_ip
+ => ip_finish_output2
+ => ip_finish_output
+ => ip_output
+ => ip_local_out_sk
+ => ip_send_skb
+ => ip_push_pending_frames
+ => raw_sendmsg
+ => inet_sendmsg
+ => sock_sendmsg
+ => ___sys_sendmsg
+ => __sys_sendmsg
+ => SyS_sendmsg
+ => entry_SYSCALL_64_fastpath
+ ```
+
+```
+ping -> socket -> L3 -> veth -> bridge -> L3 forward -> neighbor
+```
+
 到这里，就明白了为什么flannel不需要设置L3MISS，而docker overlay必须设置L3MISS。
 
 另外，每个运行flannel的host的所有容器，在VXLAN设备中生成邻居表项的L2地址都一样。所以，相对于docker overlay的实现，flannel中VXLAN设备的(MAC->VTEP)转发表会小很多（等于Host数量）。
