@@ -507,7 +507,7 @@ tx-udp_tnl-segmentation: on
 
 对于UDP encapsulation packet，不会对外层UDP进行分片，只会对根据PMTU对内层packet进行分片。
 
-## GSO for UDP encapsulation packet
+### GSO for UDP encapsulation packet
 
 ![](/assets/ip_fragment/udp_tunnel_fragment.jpg)
 
