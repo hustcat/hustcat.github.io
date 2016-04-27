@@ -580,6 +580,8 @@ static int handle_offloads(struct sk_buff *skb)
 
 所以，不管怎样，减少flannel.1的MTU都是必要的。
 
+* (2) Should enable UDP RSS for vxlan ?
+
 # Related posts
 * [UDP Encapsulation in Linux](https://www.netdev01.org/docs/herbert-UDP-Encapsulation-Linux.pdf)
 * [TCP/IP over VXLAN Bandwidth Overheads](http://packetpushers.net/vxlan-udp-ip-ethernet-bandwidth-overheads/)
