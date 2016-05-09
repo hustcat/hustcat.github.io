@@ -20,7 +20,7 @@ Driver devicemapper failed to remove root filesystem ... : Device is Busy
 ```
 另外，想让DM工作稳定，需要udev的支持，而udev没有静态库。最后，Docker希望通过容器之间共享pagecache，试想，如果一台机器上有几百个容器，如果每个容器都打开一份glibc，这会浪费许多内存。由于DM工作在块层，很难实现pagecache的共享。
 
-因此，很多人都不建议在生产环境使用DM（[1](http://batmat.net/2015/08/26/docker-storage-driver-dont-use-devicemapper/)）。
+因此，很多人都不建议在生产环境使用DM（[1](http://batmat.net/2015/08/26/docker-storage-driver-dont-use-devicemapper/)、[2](http://www.projectatomic.io/blog/2015/06/notes-on-fedora-centos-and-docker-storage-drivers/)）。
 
 个人在使用DM的过程中也遇到一些问题，包括导致内核crash的问题（[1](https://github.com/docker/docker/issues/9862)，[2](https://www.redhat.com/archives/dm-devel/2015-May/msg00113.html)）。但总的来说，还是比较稳定的，这可能是因为我们单机支持的容器数量不会太多的缘故吧。
 
