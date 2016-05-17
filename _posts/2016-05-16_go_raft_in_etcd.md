@@ -183,7 +183,7 @@ etcd-node2: warning: heartbeat near election timeout: 181.195585ms
 
 整体函数调用：
 
-![](/assets/put_2phrase_commit.jpg)
+![](/assets/etcd/put_2phrase_commit.jpg)
 
 * 第一个阶段：
 
