@@ -10,7 +10,6 @@ beian:
 cnzz: 
 weibo: hustcat
 github: hustcat
-highlighter: true
 paginate: 20
 truncate: true
 about: "YY哥(hustcat)"
