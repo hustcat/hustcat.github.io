@@ -85,14 +85,14 @@ func (s *server) leaderLoop() {
 follower收到leader发送的心跳消息后，主要做以下几件事件：
 
 （1）比较req.Term与self.currentTerm。 <br/>
-如果req.Term < self.currentTerm，意味着此时leader已经落后于follower，follower会返回失败给leader，而且会将自己的[currentIndex、log.currentIndex、log.commitIndex] 返回给leader； <br/>
+如果req.Term < self.currentTerm，意味着此时leader已经落后于follower，follower会返回失败给leader，而且会将自己的[ currentIndex、log.currentIndex、log.commitIndex ] 返回给leader； <br/>
 如果req.Term > self.currentTerm，follower会更新自己的currentTerm。
 
 （3）将log entry写到本地log file；
 
 （4）将req.CommitIndex之前所有log entry commit（即apply）；至此，req.CommitIndex之前的修改在leader和follower都已经落地；（注意本次接收的log entries并没有commit）
 
-（5）follower将自己的<currentIndex、log.currentIndex、log.commitIndex>信息返回给leader。
+（5）follower将自己的[ currentIndex、log.currentIndex、log.commitIndex ]信息返回给leader。
 
 
 * （3）leader收到follower的心跳回复（AppendEntriesResponse）
