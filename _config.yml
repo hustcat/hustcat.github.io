@@ -11,5 +11,6 @@ cnzz:
 weibo: hustcat
 github: hustcat
 paginate: 20
+highlighter: rouge
 truncate: true
 about: "YY哥(hustcat)"
