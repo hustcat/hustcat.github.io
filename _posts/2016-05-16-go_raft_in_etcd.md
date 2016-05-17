@@ -84,15 +84,18 @@ func (s *server) leaderLoop() {
 
 follower收到leader发送的心跳消息后，主要做以下几件事件：
 
-（1）比较req.Term与self.currentTerm。 <br/>
-如果req.Term < self.currentTerm，意味着此时leader已经落后于follower，follower会返回失败给leader，而且会将自己的[ currentIndex、log.currentIndex、log.commitIndex ] 返回给leader； <br/>
-如果req.Term > self.currentTerm，follower会更新自己的currentTerm。
+1）比较req.Term与self.currentTerm。 <br/>
 
-（3）将log entry写到本地log file；
+> 如果req.Term < self.currentTerm，意味着此时leader已经落后于follower，follower会返回失败给leader，<br/>
+> 而且会将自己的[ currentIndex、log.currentIndex、log.commitIndex ] 返回给leader； <br/>
+> 如果req.Term > self.currentTerm，follower会更新自己的currentTerm。
 
-（4）将req.CommitIndex之前所有log entry commit（即apply）；至此，req.CommitIndex之前的修改在leader和follower都已经落地；（注意本次接收的log entries并没有commit）
+2）将log entry写到本地log file；
 
-（5）follower将自己的[ currentIndex、log.currentIndex、log.commitIndex ]信息返回给leader。
+3）将req.CommitIndex之前所有log entry commit（即apply）； <br/>
+至此，req.CommitIndex之前的修改在leader和follower都已经落地；（注意本次接收的log entries并没有commit）
+
+4）follower将自己的[ currentIndex、log.currentIndex、log.commitIndex ]信息返回给leader。
 
 
 * （3）leader收到follower的心跳回复（AppendEntriesResponse）
@@ -700,7 +703,7 @@ func (s *server) processRequestVoteRequest(req *RequestVoteRequest) (*RequestVot
 
 如果在某个点，由于网络波动原因，B没有在election timoute时间内收到A的心跳，B就会发起选举，这时，A和C都会投赞成票，导致leader从A -> B。也就是说，网络波动等原因很容易引起[leader变来变去](https://github.com/coreos/etcd/issues/868)。这可以通过增加follower的election timeout值来规避。
 
-*** 2.x如何解决这个问题？***
+*** v2.x如何解决这个问题？***
 
 
 * (3) follower -> leader
