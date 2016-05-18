@@ -5,22 +5,17 @@ comments: no
 ---
 
 ---
-###自我介绍
+### 自我介绍
 
 {{ site.about }}
 
 专业打杂程序员，全栈工程师，擅长打杂，吹牛逼...
 
-典型的复合型专业人才、涉猎众多交叉学科：
+关注 Linux kernel、Docker/Kubernetes、Networking、Distributed Storage...
 
-> Linux kernel, MySQL/InnoDB/SQLite/Ceph, Docker/Kubernetes...
-
-格言
-
-> 阅码无数，心中无码
 
 ---
-###经历
+### 经历
 
 * 2004.09 ~ 2011.04 游学于武汉某985职业技术学院 —— 关山口职业技术学院
 
@@ -29,7 +24,7 @@ comments: no
 
 ----
 
-###联系方式：
+### 联系方式：
 
 {% if site.qq %}
 ＱＱ：[{{ site.qq }}](tencent://message/?uin={{ site.qq }})
@@ -39,6 +34,8 @@ comments: no
 邮箱：[{{ site.email }}](mailto:{{ site.email }})
 
 GitHub：[http://github.com/{{ site.github }}](http://github.com/{{ site.github }})
+
+Twitter: [hustcat](https://twitter.com/hustcat)
 
 @cnblogs：[hustcat](http://hustcat.cnblogs.com)
 
