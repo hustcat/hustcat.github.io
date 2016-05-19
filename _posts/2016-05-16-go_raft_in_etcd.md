@@ -13,7 +13,7 @@ excerpt: Raft consensus algorithm(go-raft) implementation in etcd
 
 * （1）leader发送心跳（AppendEntriesRequest）
 
-Leader向follower发送心跳的间隔时间，用于向follower表时leader状态正常，默认时间为50ms。Leader在发送心跳的时候，会发送log entry。
+Leader向follower发送心跳的间隔时间，用于向follower表示leader状态正常，默认时间为50ms。Leader在发送心跳的时候，会发送log entry。
 
 ```go
 //--------------------------------------
@@ -63,7 +63,7 @@ func (p *Peer) flush() {
 
 	if entries != nil { ///send log entry
 		p.sendAppendEntriesRequest(newAppendEntriesRequest(term, prevLogIndex, prevLogTerm, p.server.log.CommitIndex(), p.server.name, entries))
-	} else {
+	} else { ///no log entry mean log entries for this peer has compacted, peer shoud do snapshot and redo the log entry after snapshot
 		p.sendSnapshotRequest(newSnapshotRequest(p.server.name, p.server.snapshot))
 	}
 }
@@ -80,6 +80,74 @@ func (s *server) leaderLoop() {
 	}
 ```
 
+leader会记录给每个follower已经完成发送并且已经由follower确认的log entry的最新Index(p.getPrevLogIndex())。但是leader做快照的时候，会删除已经commit的log entry。 <br/>
+考虑一种情况，如果follower在某个点挂了，过了很长时间才恢复，当它重新加入集群时，leader对该follower节点尝试发送prevLogIndex之后的log entries，但由于这部分log entries已经可能删除。log.getEntriesAfter返回nil，那么follower应该如果追赶这部分丢失的log entries呢？ <br/>
+实际上，在这种情况下，leader会给follower发送一个SnapshotRequest，follower转入Snapshotting状态；然后leader再把snapshot数据发送给follower，follower从快照恢复数据；leader再从snapshot.LastIndex开始给该follower发送log entry。
+
+```
+### follower
+[etcd] May 19 03:17:44.885 INFO      | node1 starting in peer mode
+[etcd] May 19 03:17:44.885 INFO      | node1: state changed from 'initialized' to 'follower'.
+[etcd] May 19 03:17:44.902 DEBUG     | [recv] POST http://172.17.42.40:7001/snapshot
+[etcd] May 19 03:17:44.902 INFO      | node1: state changed from 'follower' to 'snapshotting'.
+[etcd] May 19 03:17:44.908 DEBUG     | [recv] POST http://172.17.42.40:7001/snapshotRecovery
+
+```
+
+*** leader ***
+
+```go
+// Sends an Snapshot request to the peer through the transport.
+func (p *Peer) sendSnapshotRequest(req *SnapshotRequest) {
+	///(0) send SnapshotRequest
+	resp := p.server.Transporter().SendSnapshotRequest(p.server, p, req)
+
+	// If successful, the peer should have been to snapshot state
+	// Send it the snapshot!
+	p.setLastActivity(time.Now())
+
+	if resp.Success {
+		p.sendSnapshotRecoveryRequest() /// (1) send snapshot data
+	} else {
+		debugln("peer.snap.failed: ", p.Name)
+		return
+	}
+
+}
+```
+
+*** follower ***
+
+1) follower -> Snapshotting
+
+```go
+func (s *server) processSnapshotRequest(req *SnapshotRequest) *SnapshotResponse {
+	// If the follower’s log contains an entry at the snapshot’s last index with a term
+	// that matches the snapshot’s last term, then the follower already has all the
+	// information found in the snapshot and can reply false.
+	entry := s.log.getEntry(req.LastIndex)
+
+	if entry != nil && entry.Term() == req.LastTerm {
+		return newSnapshotResponse(false)
+	}
+
+	// Update state.
+	s.setState(Snapshotting) ///state change to Snapshotting
+
+	return newSnapshotResponse(true)
+}
+```
+
+2) follower recovery snapshot
+
+```go
+func (s *server) SnapshotRecoveryRequest(req *SnapshotRecoveryRequest) *SnapshotRecoveryResponse {
+	ret, _ := s.send(req)
+	resp, _ := ret.(*SnapshotRecoveryResponse)
+	return resp
+}
+```
+
 * （2）follower接收心跳请求
 
 follower收到leader发送的心跳消息后，主要做以下几件事件：
@@ -87,7 +155,7 @@ follower收到leader发送的心跳消息后，主要做以下几件事件：
 1）比较req.Term与self.currentTerm。 <br/>
 
 > 如果req.Term < self.currentTerm，意味着此时leader已经落后于follower，follower会返回失败给leader，<br/>
-> 而且会将自己的[ currentIndex、log.currentIndex、log.commitIndex ] 返回给leader； <br/>
+> 而且会将自己的[ currentTerm.currentIndex、log.commitIndex ] 返回给leader； <br/>
 > 如果req.Term > self.currentTerm，follower会更新自己的currentTerm。
 
 2）将log entry写到本地log file；
@@ -95,7 +163,7 @@ follower收到leader发送的心跳消息后，主要做以下几件事件：
 3）将req.CommitIndex之前所有log entry commit（即apply）； <br/>
 至此，req.CommitIndex之前的修改在leader和follower都已经落地；（注意本次接收的log entries并没有commit）
 
-4）follower将自己的[ currentIndex、log.currentIndex、log.commitIndex ]信息返回给leader。
+4）follower将自己的[ currentTerm.currentIndex、log.commitIndex ]信息返回给leader。
 
 
 * （3）leader收到follower的心跳回复（AppendEntriesResponse）
