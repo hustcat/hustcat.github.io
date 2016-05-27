@@ -1,0 +1,2187 @@
+Tracing "ovl_unlink"... Ctrl-C to end.
+  2)               |  ovl_unlink [overlay]() {
+  2)               |    ovl_do_remove [overlay]() {
+  2)   0.120 us    |      ovl_dentry_real [overlay]();
+  2)   0.063 us    |      ovl_dentry_real [overlay]();
+  2)               |      ovl_want_write [overlay]() {
+  2)               |        mnt_want_write() {
+  2)   0.173 us    |          __sb_start_write();
+  2)   0.135 us    |          __mnt_want_write();
+  2)   0.968 us    |        }
+  2)   1.363 us    |      }
+  2)               |      ovl_copy_up [overlay]() {
+  2)   0.067 us    |        ovl_path_type [overlay]();
+  2)   0.433 us    |      }
+  2)   0.033 us    |      ovl_path_type [overlay]();
+  2)               |      prepare_creds() {
+  2)   0.048 us    |        kmem_cache_alloc();
+  2)   0.373 us    |      }
+  2)   0.036 us    |      override_creds();
+  2)               |      ovl_remove_and_whiteout [overlay]() {
+  2)   0.035 us    |        ovl_workdir [overlay]();
+  2)   0.034 us    |        ovl_dentry_upper [overlay]();
+  2)               |        ovl_lock_rename_workdir [overlay]() {
+  2)               |          lock_rename() {
+  2)   0.181 us    |            mutex_lock();
+  2)   0.143 us    |            d_ancestor();
+  2)   0.049 us    |            d_ancestor();
+  2)   0.112 us    |            mutex_lock();
+  2)   0.036 us    |            mutex_lock();
+  2)   1.938 us    |          }
+  2)   2.244 us    |        }
+  2)               |        ovl_lookup_temp [overlay]() {
+  2)               |          lookup_one_len() {
+  2)   0.055 us    |            full_name_hash();
+  2)               |            inode_permission() {
+  2)               |              __inode_permission() {
+  2)               |                generic_permission() {
+  2)               |                  capable_wrt_inode_uidgid() {
+  2)               |                    ns_capable() {
+  2)   0.041 us    |                      cap_capable();
+  2)   0.416 us    |                    }
+  2)   0.792 us    |                  }
+  2)   1.108 us    |                }
+  2)   1.499 us    |              }
+  2)   1.783 us    |            }
+  2)               |            __lookup_hash() {
+  2)               |              lookup_dcache() {
+  2)               |                d_lookup() {
+  2)   0.265 us    |                  __d_lookup();
+  2)   0.545 us    |                }
+  2)               |                d_alloc() {
+  2)               |                  __d_alloc() {
+  2)   0.126 us    |                    kmem_cache_alloc();
+  2)   0.043 us    |                    d_set_d_op();
+  2)   0.772 us    |                  }
+  2)   0.050 us    |                  _raw_spin_lock();
+  2)   1.389 us    |                }
+  2)   2.430 us    |              }
+  2)               |              lookup_real() {
+  2)               |                xfs_vn_lookup() {
+  2)               |                  xfs_lookup() {
+  2)               |                    xfs_ilock_map_shared() {
+  2)               |                      xfs_ilock() {
+  2)   0.151 us    |                        down_read();
+  2)   0.471 us    |                      }
+  2)   0.804 us    |                    }
+  2)               |                    xfs_dir_lookup() {
+  2)               |                      xfs_default_hashname() {
+  2)   0.086 us    |                        xfs_da_hashname();
+  2)   0.435 us    |                      }
+  2)   0.281 us    |                      xfs_dir2_sf_lookup();
+  2)   1.490 us    |                    }
+  2)               |                    xfs_iunlock_map_shared() {
+  2)               |                      xfs_iunlock() {
+  2)   0.036 us    |                        up_read();
+  2)   0.350 us    |                      }
+  2)   0.660 us    |                    }
+  2)   3.820 us    |                  }
+  2)               |                  d_instantiate() {
+  2)               |                    __d_instantiate() {
+  2)   0.048 us    |                      _raw_spin_lock();
+  2)   0.736 us    |                    }
+  2)   1.054 us    |                  }
+  2)               |                  d_rehash() {
+  2)   0.033 us    |                    _raw_spin_lock();
+  2)               |                    _d_rehash() {
+  2)   0.039 us    |                      __d_rehash();
+  2)   0.439 us    |                    }
+  2)   1.055 us    |                  }
+  2)   6.923 us    |                }
+  2)   7.305 us    |              }
+  2) + 10.305 us   |            }
+  2) + 13.016 us   |          }
+  2) + 13.994 us   |        }
+  2)               |        vfs_whiteout() {
+  2)               |          inode_permission() {
+  2)               |            __inode_permission() {
+  2)               |              generic_permission() {
+  2)               |                capable_wrt_inode_uidgid() {
+  2)               |                  ns_capable() {
+  2)   0.035 us    |                    cap_capable();
+  2)   0.298 us    |                  }
+  2)   0.558 us    |                }
+  2)   0.836 us    |              }
+  2)   1.110 us    |            }
+  2)   1.387 us    |          }
+  2)               |          xfs_vn_mknod() {
+  2)   0.051 us    |            xfs_get_acl();
+  2)   0.037 us    |            current_umask();
+  2)               |            xfs_create() {
+  2)               |              xfs_qm_vop_dqalloc() {
+  2)               |                xfs_ilock() {
+  2)   0.034 us    |                  down_write();
+  2)   0.379 us    |                }
+  2)   0.196 us    |                mutex_lock();
+  2)   0.038 us    |                mutex_unlock();
+  2)               |                xfs_iunlock() {
+  2)   0.034 us    |                  up_write();
+  2)   0.320 us    |                }
+  2)   2.223 us    |              }
+  2)               |              xfs_trans_alloc() {
+  2)   0.079 us    |                __sb_start_write();
+  2)               |                _xfs_trans_alloc() {
+  2)               |                  kmem_zone_zalloc() {
+  2)               |                    kmem_zone_alloc() {
+  2)   0.241 us    |                      kmem_cache_alloc();
+  2)   0.590 us    |                    }
+  2)   0.898 us    |                  }
+  2)   1.542 us    |                }
+  2)   2.140 us    |              }
+  2)               |              xfs_trans_reserve() {
+  2)               |                xfs_icsb_modify_counters() {
+  2)   0.039 us    |                  xfs_icsb_counter_disabled();
+  2)   0.035 us    |                  xfs_icsb_lock_cntr();
+  2)   0.038 us    |                  xfs_icsb_counter_disabled();
+  2)   0.033 us    |                  xfs_icsb_unlock_cntr();
+  2)   1.231 us    |                }
+  2)               |                xfs_log_reserve() {
+  2)               |                  xlog_ticket_alloc() {
+  2)               |                    kmem_zone_zalloc() {
+  2)               |                      kmem_zone_alloc() {
+  2)   0.223 us    |                        kmem_cache_alloc();
+  2)   0.564 us    |                      }
+  2)   0.840 us    |                    }
+  2)   1.355 us    |                  }
+  2)               |                  xlog_grant_push_ail() {
+  2)   0.074 us    |                    xlog_space_left();
+  2)   0.417 us    |                  }
+  2)               |                  xlog_grant_head_check() {
+  2)   0.036 us    |                    xlog_space_left();
+  2)   0.337 us    |                  }
+  2)   3.057 us    |                }
+  2)   4.892 us    |              }
+  2)               |              xfs_ilock() {
+  2)   0.035 us    |                down_write();
+  2)   0.291 us    |              }
+  2)               |              xfs_trans_reserve_quota_bydquots() {
+  2)               |                xfs_trans_alloc_dqinfo() {
+  2)               |                  kmem_zone_zalloc() {
+  2)               |                    kmem_zone_alloc() {
+  2)   0.305 us    |                      kmem_cache_alloc();
+  2)   0.568 us    |                    }
+  2)   1.133 us    |                  }
+  2)   1.537 us    |                }
+  2)               |                xfs_trans_dqresv() {
+  2)   0.038 us    |                  mutex_lock();
+  2)               |                  xfs_trans_mod_dquot() {
+  2)   0.046 us    |                    xfs_trans_get_dqtrx();
+  2)   0.676 us    |                  }
+  2)               |                  xfs_trans_mod_dquot() {
+  2)   0.055 us    |                    xfs_trans_get_dqtrx();
+  2)   0.440 us    |                  }
+  2)   0.036 us    |                  mutex_unlock();
+  2)   2.742 us    |                }
+  2)   5.164 us    |              }
+  2)   0.038 us    |              xfs_dir_canenter();
+  2)               |              xfs_dir_ialloc() {
+  2)               |                xfs_ialloc() {
+  2)               |                  xfs_dialloc() {
+  2)               |                    xfs_ialloc_ag_select() {
+  2)   0.290 us    |                      xfs_perag_get();
+  2)   0.046 us    |                      xfs_perag_put();
+  2)   0.978 us    |                    }
+  2)   0.059 us    |                    xfs_perag_get();
+  2)               |                    xfs_ialloc_read_agi() {
+  2)               |                      xfs_read_agi() {
+  2)               |                        xfs_trans_read_buf_map() {
+  2)   0.054 us    |                          xfs_trans_buf_item_match();
+  2)               |                          xfs_buf_read_map() {
+  2)               |                            xfs_buf_get_map() {
+  2)               |                              _xfs_buf_find() {
+  2)   0.041 us    |                                xfs_perag_get();
+  2)   0.096 us    |                                _raw_spin_lock();
+  2)   0.039 us    |                                xfs_perag_put();
+  2)               |                                xfs_buf_trylock() {
+  2)               |                                  down_trylock() {
+  2)   0.165 us    |                                    _raw_spin_lock_irqsave();
+  2)   0.044 us    |                                    _raw_spin_unlock_irqrestore();
+  2)   0.819 us    |                                  }
+  2)   1.140 us    |                                }
+  2)   4.054 us    |                              }
+  2)   4.396 us    |                            }
+  2)   4.921 us    |                          }
+  2)               |                          _xfs_trans_bjoin() {
+  2)   0.174 us    |                            xfs_buf_item_init();
+  2)               |                            xfs_trans_add_item() {
+  2)               |                              kmem_zone_zalloc() {
+  2)               |                                kmem_zone_alloc() {
+  2)   0.091 us    |                                  kmem_cache_alloc();
+  2)   0.350 us    |                                }
+  2)   0.659 us    |                              }
+  2)   0.963 us    |                            }
+  2)   1.949 us    |                          }
+  2)   8.034 us    |                        }
+  2)   8.399 us    |                      }
+  2)   0.044 us    |                      xfs_perag_get();
+  2)   0.036 us    |                      xfs_perag_put();
+  2)   9.514 us    |                    }
+  2)   0.033 us    |                    xfs_perag_put();
+  2)               |                    xfs_dialloc_ag() {
+  2)   0.040 us    |                      xfs_perag_get();
+  2)               |                      xfs_inobt_init_cursor() {
+  2)               |                        kmem_zone_zalloc() {
+  2)               |                          kmem_zone_alloc() {
+  2)   0.209 us    |                            kmem_cache_alloc();
+  2)   0.459 us    |                          }
+  2)   0.742 us    |                        }
+  2)   1.230 us    |                      }
+  2)               |                      xfs_inobt_lookup() {
+  2)               |                        xfs_btree_lookup() {
+  2)   0.036 us    |                          xfs_inobt_init_ptr_from_cur();
+  2)               |                          xfs_btree_lookup_get_block() {
+  2)               |                            xfs_btree_read_buf_block() {
+  2)   0.046 us    |                              xfs_btree_ptr_to_daddr();
+  2)               |                              xfs_trans_read_buf_map() {
+  2)   0.074 us    |                                xfs_trans_buf_item_match();
+  2)               |                                xfs_buf_read_map() {
+  2)               |                                  xfs_buf_get_map() {
+  2)               |                                    _xfs_buf_find() {
+  2)   0.042 us    |                                      xfs_perag_get();
+  2)   0.033 us    |                                      _raw_spin_lock();
+  2)   0.039 us    |                                      xfs_perag_put();
+  2)               |                                      xfs_buf_trylock() {
+  2)               |                                        down_trylock() {
+  2)   0.160 us    |                                          _raw_spin_lock_irqsave();
+  2)   0.042 us    |                                          _raw_spin_unlock_irqrestore();
+  2)   0.833 us    |                                        }
+  2)   1.088 us    |                                      }
+  2)   3.640 us    |                                    }
+  2)   4.066 us    |                                  }
+  2)   4.491 us    |                                }
+  2)               |                                _xfs_trans_bjoin() {
+  2)               |                                  xfs_buf_item_init() {
+  2)               |                                    kmem_zone_zalloc() {
+  2)               |                                      kmem_zone_alloc() {
+  2)   0.184 us    |                                        kmem_cache_alloc();
+  2)   0.438 us    |                                      }
+  2)   0.713 us    |                                    }
+  2)   0.036 us    |                                    xfs_log_item_init();
+  2)   0.036 us    |                                    xfs_buf_hold();
+  2)   0.033 us    |                                    xfs_buf_item_get_format();
+  2)   1.998 us    |                                  }
+  2)               |                                  xfs_trans_add_item() {
+  2)               |                                    kmem_zone_zalloc() {
+  2)               |                                      kmem_zone_alloc() {
+  2)   0.039 us    |                                        kmem_cache_alloc();
+  2)   0.299 us    |                                      }
+  2)   0.572 us    |                                    }
+  2)   0.919 us    |                                  }
+  2)   3.529 us    |                                }
+  2)   8.977 us    |                              }
+  2)   0.044 us    |                              xfs_btree_set_refs();
+  2)   9.901 us    |                            }
+  2)   0.175 us    |                            xfs_btree_setbuf();
+  2) + 10.880 us   |                          }
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_key_addr() {
+  2)   0.106 us    |                              xfs_btree_key_offset();
+  2)   0.464 us    |                            }
+  2)   0.739 us    |                          }
+  2)   0.033 us    |                          xfs_inobt_key_diff();
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_key_addr() {
+  2)   0.036 us    |                              xfs_btree_key_offset();
+  2)   0.294 us    |                            }
+  2)   0.547 us    |                          }
+  2)   0.033 us    |                          xfs_inobt_key_diff();
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_key_addr() {
+  2)   0.036 us    |                              xfs_btree_key_offset();
+  2)   0.291 us    |                            }
+  2)   0.542 us    |                          }
+  2)   0.032 us    |                          xfs_inobt_key_diff();
+  2)               |                          xfs_btree_ptr_addr() {
+  2)               |                            xfs_btree_ptr_offset() {
+  2)   0.035 us    |                              xfs_inobt_get_maxrecs();
+  2)   0.414 us    |                            }
+  2)   0.699 us    |                          }
+  2)               |                          xfs_btree_lookup_get_block() {
+  2)               |                            xfs_btree_read_buf_block() {
+  2)   0.099 us    |                              xfs_btree_ptr_to_daddr();
+  2)               |                              xfs_trans_read_buf_map() {
+  2)   0.093 us    |                                xfs_trans_buf_item_match();
+  2)               |                                xfs_buf_read_map() {
+  2)               |                                  xfs_buf_get_map() {
+  2)               |                                    _xfs_buf_find() {
+  2)   0.039 us    |                                      xfs_perag_get();
+  2)   0.035 us    |                                      _raw_spin_lock();
+  2)   0.038 us    |                                      xfs_perag_put();
+  2)               |                                      xfs_buf_trylock() {
+  2)               |                                        down_trylock() {
+  2)   0.048 us    |                                          _raw_spin_lock_irqsave();
+  2)   0.043 us    |                                          _raw_spin_unlock_irqrestore();
+  2)   0.579 us    |                                        }
+  2)   0.832 us    |                                      }
+  2)   3.489 us    |                                    }
+  2)   3.749 us    |                                  }
+  2)   4.367 us    |                                }
+  2)               |                                _xfs_trans_bjoin() {
+  2)   0.113 us    |                                  xfs_buf_item_init();
+  2)               |                                  xfs_trans_add_item() {
+  2)               |                                    kmem_zone_zalloc() {
+  2)               |                                      kmem_zone_alloc() {
+  2)   0.039 us    |                                        kmem_cache_alloc();
+  2)   0.458 us    |                                      }
+  2)   0.733 us    |                                    }
+  2)   1.001 us    |                                  }
+  2)   1.717 us    |                                }
+  2)   7.046 us    |                              }
+  2)   0.035 us    |                              xfs_btree_set_refs();
+  2)   7.987 us    |                            }
+  2)   0.263 us    |                            xfs_btree_setbuf();
+  2)   8.737 us    |                          }
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_rec_addr() {
+  2)   0.053 us    |                              xfs_btree_rec_offset();
+  2)   0.332 us    |                            }
+  2)   0.136 us    |                            xfs_inobt_init_key_from_rec();
+  2)   1.033 us    |                          }
+  2)   0.035 us    |                          xfs_inobt_key_diff();
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_rec_addr() {
+  2)   0.034 us    |                              xfs_btree_rec_offset();
+  2)   0.292 us    |                            }
+  2)   0.100 us    |                            xfs_inobt_init_key_from_rec();
+  2)   0.875 us    |                          }
+  2)   0.035 us    |                          xfs_inobt_key_diff();
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_rec_addr() {
+  2)   0.036 us    |                              xfs_btree_rec_offset();
+  2)   0.293 us    |                            }
+  2)   0.101 us    |                            xfs_inobt_init_key_from_rec();
+  2)   0.882 us    |                          }
+  2)   0.036 us    |                          xfs_inobt_key_diff();
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_rec_addr() {
+  2)   0.036 us    |                              xfs_btree_rec_offset();
+  2)   0.292 us    |                            }
+  2)   0.102 us    |                            xfs_inobt_init_key_from_rec();
+  2)   0.879 us    |                          }
+  2)   0.032 us    |                          xfs_inobt_key_diff();
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_rec_addr() {
+  2)   0.033 us    |                              xfs_btree_rec_offset();
+  2)   0.295 us    |                            }
+  2)   0.120 us    |                            xfs_inobt_init_key_from_rec();
+  2)   0.901 us    |                          }
+  2)   0.032 us    |                          xfs_inobt_key_diff();
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_rec_addr() {
+  2)   0.035 us    |                              xfs_btree_rec_offset();
+  2)   0.292 us    |                            }
+  2)   0.093 us    |                            xfs_inobt_init_key_from_rec();
+  2)   0.871 us    |                          }
+  2)   0.035 us    |                          xfs_inobt_key_diff();
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_rec_addr() {
+  2)   0.035 us    |                              xfs_btree_rec_offset();
+  2)   0.288 us    |                            }
+  2)   0.032 us    |                            xfs_inobt_init_key_from_rec();
+  2)   0.811 us    |                          }
+  2)   0.032 us    |                          xfs_inobt_key_diff();
+  2)               |                          xfs_lookup_get_search_key() {
+  2)               |                            xfs_btree_rec_addr() {
+  2)   0.032 us    |                              xfs_btree_rec_offset();
+  2)   0.295 us    |                            }
+  2)   0.036 us    |                            xfs_inobt_init_key_from_rec();
+  2)   0.814 us    |                          }
+  2)   0.032 us    |                          xfs_inobt_key_diff();
+  2) + 36.699 us   |                        }
+  2) + 36.984 us   |                      }
+  2)               |                      xfs_inobt_get_rec() {
+  2)               |                        xfs_btree_get_rec() {
+  2)   0.038 us    |                          xfs_btree_get_block();
+  2)               |                          xfs_btree_rec_addr() {
+  2)   0.035 us    |                            xfs_btree_rec_offset();
+  2)   0.360 us    |                          }
+  2)   0.984 us    |                        }
+  2)   1.357 us    |                      }
+  2)               |                      xfs_inobt_update() {
+  2)               |                        xfs_btree_update() {
+  2)   0.037 us    |                          xfs_btree_get_block();
+  2)               |                          xfs_btree_rec_addr() {
+  2)   0.036 us    |                            xfs_btree_rec_offset();
+  2)   0.390 us    |                          }
+  2)   0.051 us    |                          xfs_btree_copy_recs();
+  2)               |                          xfs_btree_log_recs() {
+  2)   0.048 us    |                            xfs_trans_buf_set_type();
+  2)   0.034 us    |                            xfs_btree_rec_offset();
+  2)   0.036 us    |                            xfs_btree_rec_offset();
+  2)               |                            xfs_trans_log_buf() {
+  2)               |                              xfs_buf_item_log() {
+  2)   0.061 us    |                                xfs_buf_item_log_segment();
+  2)   0.385 us    |                              }
+  2)   0.793 us    |                            }
+  2)   1.949 us    |                          }
+  2)   0.036 us    |                          xfs_btree_is_lastrec();
+  2)   3.820 us    |                        }
+  2)   4.172 us    |                      }
+  2)               |                      xfs_ialloc_log_agi() {
+  2)   0.166 us    |                        xfs_btree_offsets();
+  2)   0.035 us    |                        xfs_trans_buf_set_type();
+  2)               |                        xfs_trans_log_buf() {
+  2)               |                          xfs_buf_item_log() {
+  2)   0.061 us    |                            xfs_buf_item_log_segment();
+  2)   0.337 us    |                          }
+  2)   0.621 us    |                        }
+  2)   1.620 us    |                      }
+  2)               |                      xfs_btree_del_cursor() {
+  2)   0.098 us    |                        xfs_trans_brelse();
+  2)               |                        xfs_trans_brelse() {
+  2)               |                          xfs_trans_del_item() {
+  2)               |                            xfs_trans_free_item_desc() {
+  2)   0.051 us    |                              kmem_cache_free();
+  2)   0.328 us    |                            }
+  2)   0.605 us    |                          }
+  2)   0.031 us    |                          xfs_buf_item_dirty();
+  2)               |                          xfs_buf_item_relse() {
+  2)   0.102 us    |                            xfs_buf_rele();
+  2)               |                            xfs_buf_item_free() {
+  2)   0.035 us    |                              xfs_buf_item_free_format();
+  2)   0.101 us    |                              kmem_cache_free();
+  2)   0.629 us    |                            }
+  2)   1.381 us    |                          }
+  2)               |                          xfs_buf_unlock() {
+  2)               |                            up() {
+  2)   0.036 us    |                              _raw_spin_lock_irqsave();
+  2)   0.043 us    |                              _raw_spin_unlock_irqrestore();
+  2)   0.575 us    |                            }
+  2)   0.844 us    |                          }
+  2)   0.056 us    |                          xfs_buf_rele();
+  2)   4.324 us    |                        }
+  2)   0.391 us    |                        kmem_cache_free();
+  2)   5.582 us    |                      }
+  2)   0.163 us    |                      xfs_trans_mod_sb();
+  2)   0.036 us    |                      xfs_perag_put();
+  2) + 53.856 us   |                    }
+  2) + 65.966 us   |                  }
+  2)               |                  xfs_iget() {
+  2)   0.042 us    |                    xfs_perag_get();
+  2)               |                    xfs_iget_cache_hit() {
+  2)   0.119 us    |                      _raw_spin_lock();
+  2)               |                      inode_init_always() {
+  2)   0.036 us    |                        __mutex_init();
+  2)   0.780 us    |                      }
+  2)   0.036 us    |                      _raw_spin_lock();
+  2)   0.034 us    |                      _raw_spin_lock();
+  2)               |                      __xfs_inode_clear_reclaim_tag() {
+  2)               |                        __xfs_inode_clear_reclaim() {
+  2)   0.036 us    |                          _raw_spin_lock();
+  2)   0.501 us    |                        }
+  2)   1.478 us    |                      }
+  2)               |                      xfs_ilock() {
+  2)   0.040 us    |                        down_write();
+  2)   0.332 us    |                      }
+  2)   0.033 us    |                      _raw_spin_lock();
+  2)   5.114 us    |                    }
+  2)   0.035 us    |                    xfs_perag_put();
+  2)   0.039 us    |                    _raw_spin_lock();
+  2)   6.706 us    |                  }
+  2)   0.036 us    |                  current_kernel_time();
+  2)               |                  xfs_trans_ijoin() {
+  2)   0.036 us    |                    xfs_isilocked();
+  2)               |                    xfs_trans_add_item() {
+  2)               |                      kmem_zone_zalloc() {
+  2)               |                        kmem_zone_alloc() {
+  2)   0.037 us    |                          kmem_cache_alloc();
+  2)   0.300 us    |                        }
+  2)   0.570 us    |                      }
+  2)   0.930 us    |                    }
+  2)   1.621 us    |                  }
+  2)               |                  xfs_trans_log_inode() {
+  2)   0.036 us    |                    xfs_isilocked();
+  2)   0.313 us    |                  }
+  2)               |                  xfs_setup_inode() {
+  2)               |                    inode_sb_list_add() {
+  2)   0.037 us    |                      _raw_spin_lock();
+  2)   0.359 us    |                    }
+  2)   0.036 us    |                    set_nlink();
+  2)   0.067 us    |                    xfs_diflags_to_iflags();
+  2)   0.044 us    |                    init_special_inode();
+  2)   1.687 us    |                  }
+  2) + 78.219 us   |                }
+  2) + 78.626 us   |              }
+  2)               |              xfs_trans_ijoin() {
+  2)   0.034 us    |                xfs_isilocked();
+  2)               |                xfs_trans_add_item() {
+  2)               |                  kmem_zone_zalloc() {
+  2)               |                    kmem_zone_alloc() {
+  2)   0.037 us    |                      kmem_cache_alloc();
+  2)   0.299 us    |                    }
+  2)   0.571 us    |                  }
+  2)   0.966 us    |                }
+  2)   1.695 us    |              }
+  2)               |              xfs_dir_createname() {
+  2)   0.067 us    |                xfs_dir_ino_validate();
+  2)               |                xfs_default_hashname() {
+  2)   0.043 us    |                  xfs_da_hashname();
+  2)   0.300 us    |                }
+  2)               |                xfs_dir2_sf_addname() {
+  2)   0.076 us    |                  xfs_dir2_sf_lookup();
+  2)   0.161 us    |                  xfs_dir2_sf_addname_pick();
+  2)               |                  xfs_dir2_sf_addname_easy() {
+  2)   0.101 us    |                    xfs_idata_realloc();
+  2)               |                    xfs_dir3_sfe_put_ino() {
+  2)   0.047 us    |                      xfs_dir2_sf_put_ino();
+  2)   0.398 us    |                    }
+  2)   1.130 us    |                  }
+  2)               |                  xfs_trans_log_inode() {
+  2)   0.036 us    |                    xfs_isilocked();
+  2)   0.299 us    |                  }
+  2)   2.944 us    |                }
+  2)   4.228 us    |              }
+  2)               |              xfs_trans_ichgtime() {
+  2)   0.036 us    |                xfs_isilocked();
+  2)               |                current_fs_time() {
+  2)   0.032 us    |                  current_kernel_time();
+  2)   0.036 us    |                  timespec_trunc();
+  2)   0.978 us    |                }
+  2)   1.606 us    |              }
+  2)               |              xfs_trans_log_inode() {
+  2)   0.032 us    |                xfs_isilocked();
+  2)   0.409 us    |              }
+  2)               |              xfs_qm_vop_create_dqattach() {
+  2)   0.034 us    |                xfs_isilocked();
+  2)   0.039 us    |                mutex_lock();
+  2)   0.034 us    |                mutex_unlock();
+  2)               |                xfs_trans_mod_dquot() {
+  2)   0.044 us    |                  xfs_trans_get_dqtrx();
+  2)   0.453 us    |                }
+  2)   1.893 us    |              }
+  2)   0.046 us    |              xfs_bmap_finish();
+  2)               |              xfs_trans_commit() {
+  2)               |                xfs_trans_apply_dquot_deltas() {
+  2)               |                  xfs_trans_dqlockedjoin() {
+  2)   0.036 us    |                    mutex_lock();
+  2)               |                    xfs_trans_dqjoin() {
+  2)               |                      xfs_trans_add_item() {
+  2)               |                        kmem_zone_zalloc() {
+  2)               |                          kmem_zone_alloc() {
+  2)   0.038 us    |                            kmem_cache_alloc();
+  2)   0.306 us    |                          } /* kmem_zone_alloc */
+  2)   0.578 us    |                        }
+  2)   0.958 us    |                      }
+  2)   1.295 us    |                    }
+  2)   1.860 us    |                  }
+  2)   0.089 us    |                  xfs_qm_adjust_dqlimits();
+  2)   0.100 us    |                  xfs_qm_adjust_dqtimers();
+  2)   0.037 us    |                  xfs_trans_log_dquot();
+  2)   3.383 us    |                }
+  2)               |                xfs_log_commit_cil() {
+  2)               |                  xlog_cil_prepare_log_vecs() {
+  2)               |                    xfs_buf_item_size() {
+  2)               |                      xfs_buf_item_size_segment() {
+  2)   0.060 us    |                        xfs_next_bit();
+  2)   0.044 us    |                        xfs_next_bit();
+  2)   0.055 us    |                        xfs_next_bit();
+  2)   0.996 us    |                      }
+  2)   1.376 us    |                    }
+  2)               |                    kmem_zalloc() {
+  2)               |                      kmem_alloc() {
+  2)               |                        __kmalloc() {
+  2)   0.040 us    |                          kmalloc_slab();
+  2)   0.490 us    |                        }
+  2)   0.789 us    |                      }
+  2)   1.092 us    |                    }
+  2)               |                    xfs_buf_item_format() {
+  2)               |                      xfs_buf_item_format_segment() {
+  2)   0.045 us    |                        xfs_next_bit();
+  2)   0.036 us    |                        xfs_next_bit();
+  2)   0.036 us    |                        xfs_buf_offset();
+  2)   0.046 us    |                        xfs_next_bit();
+  2)   0.035 us    |                        xfs_buf_offset();
+  2)   1.409 us    |                      }
+  2)   1.823 us    |                    }
+  2)               |                    kmem_alloc() {
+  2)               |                      __kmalloc() {
+  2)   0.045 us    |                        kmalloc_slab();
+  2)   0.372 us    |                      }
+  2)   0.626 us    |                    }
+  2)               |                    xfs_buf_item_size() {
+  2)               |                      xfs_buf_item_size_segment() {
+  2)   0.044 us    |                        xfs_next_bit();
+  2)   0.051 us    |                        xfs_next_bit();
+  2)   0.590 us    |                      }
+  2)   0.852 us    |                    }
+  2)               |                    kmem_zalloc() {
+  2)               |                      kmem_alloc() {
+  2)               |                        __kmalloc() {
+  2)   0.032 us    |                          kmalloc_slab();
+  2)   0.306 us    |                        }
+  2)   0.566 us    |                      }
+  2)   0.839 us    |                    }
+  2)               |                    xfs_buf_item_format() {
+  2)               |                      xfs_buf_item_format_segment() {
+  2)   0.033 us    |                        xfs_next_bit();
+  2)   0.045 us    |                        xfs_next_bit();
+  2)   0.036 us    |                        xfs_buf_offset();
+  2)   1.093 us    |                      }
+  2)   1.520 us    |                    }
+  2)               |                    kmem_alloc() {
+  2)               |                      __kmalloc() {
+  2)   0.038 us    |                        kmalloc_slab();
+  2)   0.310 us    |                      }
+  2)   0.636 us    |                    }
+  2)   0.084 us    |                    xfs_inode_item_size();
+  2)               |                    kmem_zalloc() {
+  2)               |                      kmem_alloc() {
+  2)               |                        __kmalloc() {
+  2)   0.036 us    |                          kmalloc_slab();
+  2)   0.304 us    |                        }
+  2)   0.566 us    |                      }
+  2)   0.836 us    |                    }
+  2)   0.081 us    |                    xfs_inode_item_format();
+  2)               |                    kmem_alloc() {
+  2)               |                      __kmalloc() {
+  2)   0.039 us    |                        kmalloc_slab();
+  2)   0.313 us    |                      }
+  2)   0.571 us    |                    }
+  2)   0.069 us    |                    xfs_inode_item_size();
+  2)               |                    kmem_zalloc() {
+  2)               |                      kmem_alloc() {
+  2)               |                        __kmalloc() {
+  2)   0.032 us    |                          kmalloc_slab();
+  2)   0.308 us    |                        }
+  2)   0.569 us    |                      }
+  2)   0.839 us    |                    }
+  2)   0.101 us    |                    xfs_inode_item_format();
+  2)               |                    kmem_alloc() {
+  2)               |                      __kmalloc() {
+  2)   0.039 us    |                        kmalloc_slab();
+  2)   0.310 us    |                      }
+  2)   0.570 us    |                    }
+  2)   0.032 us    |                    xfs_qm_dquot_logitem_size();
+  2)               |                    kmem_zalloc() {
+  2)               |                      kmem_alloc() {
+  2)               |                        __kmalloc() {
+  2)   0.035 us    |                          kmalloc_slab();
+  2)   0.305 us    |                        }
+  2)   0.606 us    |                      }
+  2)   0.878 us    |                    }
+  2)   0.034 us    |                    xfs_qm_dquot_logitem_format();
+  2)               |                    kmem_alloc() {
+  2)               |                      __kmalloc() {
+  2)   0.037 us    |                        kmalloc_slab();
+  2)   0.350 us    |                      }
+  2)   0.607 us    |                    }
+  2) + 20.055 us   |                  }
+  2)   0.068 us    |                  down_read();
+  2)               |                  xlog_cil_insert_items() {
+  2)               |                    xfs_cil_prepare_item() {
+  2)               |                      kmem_free() {
+  2)               |                        kfree() {
+  2)   0.277 us    |                          __slab_free();
+  2)   0.790 us    |                        }
+  2)   1.064 us    |                      }
+  2)               |                      kmem_free() {
+  2)               |                        kfree() {
+  2)   0.060 us    |                          __slab_free();
+  2)   0.432 us    |                        }
+  2)   0.693 us    |                      }
+  2)   2.481 us    |                    }
+  2)               |                    xfs_cil_prepare_item() {
+  2)               |                      kmem_free() {
+  2)               |                        kfree() {
+  2)   0.187 us    |                          __slab_free();
+  2)   0.530 us    |                        }
+  2)   0.790 us    |                      }
+  2)               |                      kmem_free() {
+  2)               |                        kfree() {
+  2)   0.041 us    |                          __slab_free();
+  2)   0.312 us    |                        }
+  2)   0.569 us    |                      }
+  2)   1.912 us    |                    }
+  2)               |                    xfs_cil_prepare_item() {
+  2)               |                      kmem_free() {
+  2)               |                        kfree() {
+  2)   0.151 us    |                          __slab_free();
+  2)   0.433 us    |                        }
+  2)   0.790 us    |                      }
+  2)               |                      kmem_free() {
+  2)               |                        kfree() {
+  2)   0.040 us    |                          __slab_free();
+  2)   0.314 us    |                        }
+  2)   0.707 us    |                      }
+  2)   2.249 us    |                    }
+  2)               |                    xfs_cil_prepare_item() {
+  2)               |                      kmem_free() {
+  2)               |                        kfree() {
+  2)   0.142 us    |                          __slab_free();
+  2)   0.460 us    |                        }
+  2)   0.720 us    |                      }
+  2)               |                      kmem_free() {
+  2)   0.130 us    |                        kfree();
+  2)   0.395 us    |                      }
+  2)   1.726 us    |                    }
+  2)               |                    xfs_cil_prepare_item() {
+  2)               |                      kmem_free() {
+  2)   0.073 us    |                        kfree();
+  2)   0.335 us    |                      }
+  2)               |                      kmem_free() {
+  2)   0.059 us    |                        kfree();
+  2)   0.321 us    |                      }
+  2)   1.384 us    |                    }
+  2)   0.035 us    |                    _raw_spin_lock();
+  2) + 11.867 us   |                  }
+  2)               |                  xfs_log_done() {
+  2)               |                    xlog_ungrant_log_space() {
+  2)   0.050 us    |                      xfs_log_space_wake();
+  2)   0.420 us    |                    }
+  2)               |                    xfs_log_ticket_put() {
+  2)   0.101 us    |                      kmem_cache_free();
+  2)   0.380 us    |                    }
+  2)   1.349 us    |                  }
+  2)               |                  xfs_trans_unreserve_and_mod_sb() {
+  2)               |                    xfs_icsb_modify_counters() {
+  2)   0.032 us    |                      xfs_icsb_counter_disabled();
+  2)   0.042 us    |                      xfs_icsb_lock_cntr();
+  2)   0.036 us    |                      xfs_icsb_counter_disabled();
+  2)   0.031 us    |                      xfs_icsb_unlock_cntr();
+  2)   1.094 us    |                    }
+  2)               |                    xfs_icsb_modify_counters() {
+  2)   0.035 us    |                      xfs_icsb_counter_disabled();
+  2)   0.104 us    |                      mutex_lock();
+  2)   0.034 us    |                      xfs_icsb_counter_disabled();
+  2)   0.119 us    |                      _raw_spin_lock();
+  2)   0.134 us    |                      xfs_mod_incore_sb_unlocked();
+  2)               |                      xfs_icsb_balance_counter() {
+  2)   0.036 us    |                        _raw_spin_lock();
+  2)               |                        xfs_icsb_balance_counter_locked() {
+  2)               |                          xfs_icsb_disable_counter() {
+  2)   0.032 us    |                            xfs_icsb_counter_disabled();
+  2)   0.346 us    |                          }
+  2)   0.700 us    |                        }
+  2)   1.241 us    |                      }
+  2)   0.036 us    |                      mutex_unlock();
+  2)   3.574 us    |                    }
+  2)   5.253 us    |                  }
+  2)               |                  xfs_trans_free_items() {
+  2)   0.035 us    |                    xfs_buf_item_committing();
+  2)               |                    xfs_buf_item_unlock() {
+  2)   0.046 us    |                      xfs_bitmap_empty();
+  2)               |                      xfs_buf_unlock() {
+  2)               |                        up() {
+  2)   0.038 us    |                          _raw_spin_lock_irqsave();
+  2)   0.044 us    |                          _raw_spin_unlock_irqrestore();
+  2)   0.579 us    |                        }
+  2)   0.841 us    |                      }
+  2)   0.041 us    |                      xfs_buf_rele();
+  2)   1.784 us    |                    }
+  2)               |                    xfs_trans_free_item_desc() {
+  2)   0.036 us    |                      kmem_cache_free();
+  2)   0.379 us    |                    }
+  2)   0.035 us    |                    xfs_buf_item_committing();
+  2)               |                    xfs_buf_item_unlock() {
+  2)   0.036 us    |                      xfs_bitmap_empty();
+  2)               |                      xfs_buf_unlock() {
+  2)               |                        up() {
+  2)   0.040 us    |                          _raw_spin_lock_irqsave();
+  2)   0.043 us    |                          _raw_spin_unlock_irqrestore();
+  2)   0.729 us    |                        }
+  2)   1.017 us    |                      }
+  2)   0.041 us    |                      xfs_buf_rele();
+  2)   2.051 us    |                    }
+  2)               |                    xfs_trans_free_item_desc() {
+  2)   0.041 us    |                      kmem_cache_free();
+  2)   0.301 us    |                    }
+  2)   0.032 us    |                    xfs_inode_item_committing();
+  2)               |                    xfs_inode_item_unlock() {
+  2)   0.038 us    |                      xfs_isilocked();
+  2)               |                      xfs_iunlock() {
+  2)   0.041 us    |                        up_write();
+  2)   0.330 us    |                      }
+  2)   0.911 us    |                    }
+  2)               |                    xfs_trans_free_item_desc() {
+  2)   0.035 us    |                      kmem_cache_free();
+  2)   0.298 us    |                    }
+  2)   0.035 us    |                    xfs_inode_item_committing();
+  2)               |                    xfs_inode_item_unlock() {
+  2)   0.034 us    |                      xfs_isilocked();
+  2)               |                      xfs_iunlock() {
+  2)   0.039 us    |                        up_write();
+  2)   0.297 us    |                      }
+  2)   0.821 us    |                    }
+  2)               |                    xfs_trans_free_item_desc() {
+  2)   0.040 us    |                      kmem_cache_free();
+  2)   0.323 us    |                    }
+  2)   0.035 us    |                    xfs_qm_dquot_logitem_committing();
+  2)               |                    xfs_qm_dquot_logitem_unlock() {
+  2)   0.035 us    |                      mutex_unlock();
+  2)   0.319 us    |                    }
+  2)               |                    xfs_trans_free_item_desc() {
+  2)   0.040 us    |                      kmem_cache_free();
+  2)   0.308 us    |                    }
+  2) + 11.739 us   |                  }
+  2)   0.032 us    |                  up_read();
+  2) + 52.152 us   |                }
+  2)               |                xfs_trans_free() {
+  2)   0.038 us    |                  xfs_extent_busy_clear();
+  2)   0.079 us    |                  __sb_end_write();
+  2)               |                  xfs_trans_free_dqinfo() {
+  2)   0.139 us    |                    kmem_cache_free();
+  2)   0.401 us    |                  }
+  2)   0.155 us    |                  kmem_cache_free();
+  2)   1.724 us    |                }
+  2) + 58.106 us   |              }
+  2)   0.045 us    |              xfs_qm_dqrele();
+  2)               |              xfs_qm_dqrele() {
+  2)   0.035 us    |                mutex_lock();
+  2)               |                xfs_qm_dqput() {
+  2)   0.037 us    |                  mutex_unlock();
+  2)   0.322 us    |                }
+  2)   0.866 us    |              }
+  2) ! 166.579 us  |            }
+  2)   0.035 us    |            xfs_init_security();
+  2)               |            d_instantiate() {
+  2)   0.038 us    |              _raw_spin_lock();
+  2)               |              __d_instantiate() {
+  2)   0.036 us    |                _raw_spin_lock();
+  2)   0.032 us    |                _raw_spin_lock();
+  2)   0.636 us    |              }
+  2)   1.200 us    |            }
+  2)   0.033 us    |            _raw_spin_lock();
+  2)               |            unlock_new_inode() {
+  2)   0.033 us    |              _raw_spin_lock();
+  2)               |              wake_up_bit() {
+  2)   0.134 us    |                bit_waitqueue();
+  2)   0.038 us    |                __wake_up_bit();
+  2)   0.681 us    |              }
+  2)   1.388 us    |            }
+  2) ! 171.812 us  |          }
+  2) ! 173.878 us  |        }
+  2)   0.046 us    |        ovl_dentry_upper [overlay]();
+  2)               |        lookup_one_len() {
+  2)   0.047 us    |          full_name_hash();
+  2)               |          inode_permission() {
+  2)               |            __inode_permission() {
+  2)   0.045 us    |              generic_permission();
+  2)   0.306 us    |            }
+  2)   0.578 us    |          }
+  2)               |          __lookup_hash() {
+  2)               |            lookup_dcache() {
+  2)               |              d_lookup() {
+  2)               |                __d_lookup() {
+  2)   0.049 us    |                  _raw_spin_lock();
+  2)   0.368 us    |                }
+  2)   0.644 us    |              }
+  2)   0.928 us    |            }
+  2)   1.221 us    |          }
+  2)   2.639 us    |        }
+  2)               |        vfs_rename() {
+  2)               |          may_delete() {
+  2)               |            inode_permission() {
+  2)               |              __inode_permission() {
+  2)               |                generic_permission() {
+  2)               |                  capable_wrt_inode_uidgid() {
+  2)               |                    ns_capable() {
+  2)   0.039 us    |                      cap_capable();
+  2)   0.296 us    |                    }
+  2)   0.560 us    |                  }
+  2)   0.835 us    |                }
+  2)   1.112 us    |              }
+  2)   1.409 us    |            }
+  2)   1.732 us    |          }
+  2)               |          inode_permission() {
+  2)               |            __inode_permission() {
+  2)   0.048 us    |              generic_permission();
+  2)   0.303 us    |            }
+  2)   0.582 us    |          }
+  2)               |          kstrdup() {
+  2)               |            __kmalloc_track_caller() {
+  2)   0.032 us    |              kmalloc_slab();
+  2)   0.349 us    |            }
+  2)   0.767 us    |          }
+  2)   0.036 us    |          _raw_spin_lock();
+  2)               |          lock_two_nondirectories() {
+  2)   0.036 us    |            mutex_lock();
+  2)   0.325 us    |          }
+  2)               |          xfs_vn_rename() {
+  2)               |            xfs_rename() {
+  2)   0.276 us    |              xfs_sort_for_rename();
+  2)               |              xfs_trans_alloc() {
+  2)   0.060 us    |                __sb_start_write();
+  2)               |                _xfs_trans_alloc() {
+  2)               |                  kmem_zone_zalloc() {
+  2)               |                    kmem_zone_alloc() {
+  2)   0.040 us    |                      kmem_cache_alloc();
+  2)   0.316 us    |                    }
+  2)   0.590 us    |                  }
+  2)   0.852 us    |                }
+  2)   1.411 us    |              }
+  2)               |              xfs_trans_reserve() {
+  2)               |                xfs_icsb_modify_counters() {
+  2)   0.033 us    |                  xfs_icsb_counter_disabled();
+  2)   0.036 us    |                  xfs_icsb_lock_cntr();
+  2)   0.035 us    |                  xfs_icsb_counter_disabled();
+  2)   0.034 us    |                  xfs_icsb_unlock_cntr();
+  2)   1.103 us    |                }
+  2)               |                xfs_log_reserve() {
+  2)               |                  xlog_ticket_alloc() {
+  2)               |                    kmem_zone_zalloc() {
+  2)               |                      kmem_zone_alloc() {
+  2)   0.040 us    |                        kmem_cache_alloc();
+  2)   0.326 us    |                      }
+  2)   0.851 us    |                    }
+  2)   1.163 us    |                  }
+  2)               |                  xlog_grant_push_ail() {
+  2)   0.049 us    |                    xlog_space_left();
+  2)   0.414 us    |                  }
+  2)               |                  xlog_grant_head_check() {
+  2)   0.049 us    |                    xlog_space_left();
+  2)   0.343 us    |                  }
+  2)   2.798 us    |                }
+  2)   4.492 us    |              }
+  2)   0.094 us    |              xfs_qm_vop_rename_dqattach();
+  2)               |              xfs_lock_inodes() {
+  2)               |                xfs_ilock() {
+  2)   0.036 us    |                  down_write();
+  2)   0.376 us    |                }
+  2)               |                xfs_ilock() {
+  2)   0.035 us    |                  down_write();
+  2)   0.296 us    |                }
+  2)               |                xfs_ilock() {
+  2)   0.123 us    |                  down_write();
+  2)   0.378 us    |                } /* xfs_ilock */
+  2)   1.949 us    |              }
+  2)               |              xfs_trans_ijoin() {
+  2)   0.036 us    |                xfs_isilocked();
+  2)               |                xfs_trans_add_item() {
+  2)               |                  kmem_zone_zalloc() {
+  2)               |                    kmem_zone_alloc() {
+  2)   0.039 us    |                      kmem_cache_alloc();
+  2)   0.309 us    |                    }
+  2)   0.579 us    |                  }
+  2)   0.848 us    |                }
+  2)   1.386 us    |              }
+  2)               |              xfs_trans_ijoin() {
+  2)   0.035 us    |                xfs_isilocked();
+  2)               |                xfs_trans_add_item() {
+  2)               |                  kmem_zone_zalloc() {
+  2)               |                    kmem_zone_alloc() {
+  2)   0.039 us    |                      kmem_cache_alloc();
+  2)   0.300 us    |                    }
+  2)   0.569 us    |                  }
+  2)   0.896 us    |                }
+  2)   1.527 us    |              }
+  2)               |              xfs_trans_ijoin() {
+  2)   0.030 us    |                xfs_isilocked();
+  2)               |                xfs_trans_add_item() {
+  2)               |                  kmem_zone_zalloc() {
+  2)               |                    kmem_zone_alloc() {
+  2)   0.040 us    |                      kmem_cache_alloc();
+  2)   0.301 us    |                    }
+  2)   0.576 us    |                  }
+  2)   0.842 us    |                }
+  2)   1.366 us    |              }
+  2)   0.044 us    |              xfs_bmap_cancel();
+  2)               |              xfs_trans_cancel() {
+  2)               |                xfs_trans_unreserve_and_mod_sb() {
+  2)               |                  xfs_icsb_modify_counters() {
+  2)   0.036 us    |                    xfs_icsb_counter_disabled();
+  2)   0.035 us    |                    xfs_icsb_lock_cntr();
+  2)   0.033 us    |                    xfs_icsb_counter_disabled();
+  2)   0.036 us    |                    xfs_icsb_unlock_cntr();
+  2)   1.100 us    |                  }
+  2)   1.384 us    |                }
+  2)   0.034 us    |                xfs_trans_unreserve_and_mod_dquots();
+  2)               |                xfs_log_done() {
+  2)               |                  xlog_ungrant_log_space() {
+  2)   0.033 us    |                    xfs_log_space_wake();
+  2)   0.331 us    |                  }
+  2)               |                  xfs_log_ticket_put() {
+  2)   0.060 us    |                    kmem_cache_free();
+  2)   0.323 us    |                  }
+  2)   1.173 us    |                }
+  2)               |                xfs_trans_free_items() {
+  2)               |                  xfs_inode_item_unlock() {
+  2)   0.036 us    |                    xfs_isilocked();
+  2)               |                    xfs_iunlock() {
+  2)   0.033 us    |                      up_write();
+  2)   0.300 us    |                    }
+  2)   0.834 us    |                  }
+  2)               |                  xfs_trans_free_item_desc() {
+  2)   0.057 us    |                    kmem_cache_free();
+  2)   0.396 us    |                  }
+  2)               |                  xfs_inode_item_unlock() {
+  2)   0.033 us    |                    xfs_isilocked();
+  2)               |                    xfs_iunlock() {
+  2)   0.035 us    |                      up_write();
+  2)   0.370 us    |                    }
+  2)   0.897 us    |                  }
+  2)               |                  xfs_trans_free_item_desc() {
+  2)   0.041 us    |                    kmem_cache_free();
+  2)   0.303 us    |                  }
+  2)               |                  xfs_inode_item_unlock() {
+  2)   0.035 us    |                    xfs_isilocked();
+  2)               |                    xfs_iunlock() {
+  2)   0.036 us    |                      up_write();
+  2)   0.299 us    |                    }
+  2)   0.825 us    |                  }
+  2)               |                  xfs_trans_free_item_desc() {
+  2)   0.041 us    |                    kmem_cache_free();
+  2)   0.302 us    |                  }
+  2)   5.577 us    |                }
+  2)               |                xfs_trans_free() {
+  2)   0.035 us    |                  xfs_extent_busy_clear();
+  2)   0.062 us    |                  __sb_end_write();
+  2)   0.049 us    |                  xfs_trans_free_dqinfo();
+  2)   0.060 us    |                  kmem_cache_free();
+  2)   1.159 us    |                }
+  2) + 10.560 us   |              }
+  2) + 26.163 us   |            }
+  2) + 26.523 us   |          }
+  2)               |          unlock_two_nondirectories() {
+  2)   0.034 us    |            mutex_unlock();
+  2)   0.306 us    |          }
+  2)               |          dput() {
+  2)   0.035 us    |            _raw_spin_lock();
+  2)   0.298 us    |          }
+  2)   0.059 us    |          kfree();
+  2) + 33.166 us   |        }
+  2)               |        dput() {
+  2)   0.032 us    |          _raw_spin_lock();
+  2)   0.329 us    |        }
+  2)               |        ovl_cleanup [overlay]() {
+  2)   0.034 us    |          _raw_spin_lock();
+  2)               |          vfs_unlink() {
+  2)               |            may_delete() {
+  2)               |              inode_permission() {
+  2)               |                __inode_permission() {
+  2)               |                  generic_permission() {
+  2)               |                    capable_wrt_inode_uidgid() {
+  2)               |                      ns_capable() {
+  2)   0.037 us    |                        cap_capable();
+  2)   0.319 us    |                      }
+  2)   0.575 us    |                    }
+  2)   0.862 us    |                  }
+  2)   1.123 us    |                }
+  2)   1.386 us    |              }
+  2)   1.674 us    |            }
+  2)   0.032 us    |            mutex_lock();
+  2)               |            xfs_vn_unlink() {
+  2)               |              xfs_remove() {
+  2)   0.057 us    |                xfs_qm_dqattach();
+  2)   0.036 us    |                xfs_qm_dqattach();
+  2)               |                xfs_trans_alloc() {
+  2)   0.080 us    |                  __sb_start_write();
+  2)               |                  _xfs_trans_alloc() {
+  2)               |                    kmem_zone_zalloc() {
+  2)               |                      kmem_zone_alloc() {
+  2)   0.037 us    |                        kmem_cache_alloc();
+  2)   0.325 us    |                      }
+  2)   0.595 us    |                    }
+  2)   0.862 us    |                  }
+  2)   1.429 us    |                }
+  2)               |                xfs_trans_reserve() {
+  2)               |                  xfs_icsb_modify_counters() {
+  2)   0.030 us    |                    xfs_icsb_counter_disabled();
+  2)   0.035 us    |                    xfs_icsb_lock_cntr();
+  2)   0.036 us    |                    xfs_icsb_counter_disabled();
+  2)   0.032 us    |                    xfs_icsb_unlock_cntr();
+  2)   1.429 us    |                  }
+  2)               |                  xfs_log_reserve() {
+  2)               |                    xlog_ticket_alloc() {
+  2)               |                      kmem_zone_zalloc() {
+  2)               |                        kmem_zone_alloc() {
+  2)   0.042 us    |                          kmem_cache_alloc();
+  2)   0.378 us    |                        }
+  2)   0.653 us    |                      }
+  2)   0.999 us    |                    }
+  2)               |                    xlog_grant_push_ail() {
+  2)   0.033 us    |                      xlog_space_left();
+  2)   0.394 us    |                    }
+  2)               |                    xlog_grant_head_check() {
+  2)   0.033 us    |                      xlog_space_left();
+  2)   0.385 us    |                    }
+  2)   2.607 us    |                  }
+  2)   4.614 us    |                }
+  2)               |                xfs_lock_two_inodes() {
+  2)               |                  xfs_ilock() {
+  2)   0.034 us    |                    down_write();
+  2)   0.305 us    |                  }
+  2)               |                  xfs_ilock() {
+  2)   0.035 us    |                    down_write();
+  2)   0.292 us    |                  }
+  2)   1.142 us    |                }
+  2)               |                xfs_trans_ijoin() {
+  2)   0.035 us    |                  xfs_isilocked();
+  2)               |                  xfs_trans_add_item() {
+  2)               |                    kmem_zone_zalloc() {
+  2)               |                      kmem_zone_alloc() {
+  2)   0.036 us    |                        kmem_cache_alloc();
+  2)   0.302 us    |                      }
+  2)   0.576 us    |                    }
+  2)   0.849 us    |                  }
+  2)   1.373 us    |                }
+  2)               |                xfs_trans_ijoin() {
+  2)   0.036 us    |                  xfs_isilocked();
+  2)               |                  xfs_trans_add_item() {
+  2)               |                    kmem_zone_zalloc() {
+  2)               |                      kmem_zone_alloc() {
+  2)   0.040 us    |                        kmem_cache_alloc();
+  2)   0.299 us    |                      }
+  2)   0.568 us    |                    }
+  2)   0.835 us    |                  }
+  2)   1.360 us    |                }
+  2)               |                xfs_dir_removename() {
+  2)               |                  xfs_default_hashname() {
+  2)   0.040 us    |                    xfs_da_hashname();
+  2)   0.299 us    |                  }
+  2)               |                  xfs_dir2_sf_removename() {
+  2)   0.079 us    |                    xfs_da_compname();
+  2)               |                    xfs_dir3_sfe_get_ino() {
+  2)   0.044 us    |                      xfs_dir2_sf_get_ino();
+  2)   0.349 us    |                    }
+  2)   0.048 us    |                    xfs_idata_realloc();
+  2)               |                    xfs_trans_log_inode() {
+  2)   0.036 us    |                      xfs_isilocked();
+  2)   0.302 us    |                    }
+  2)   1.986 us    |                  }
+  2)   2.809 us    |                }
+  2)               |                xfs_trans_ichgtime() {
+  2)   0.034 us    |                  xfs_isilocked();
+  2)               |                  current_fs_time() {
+  2)   0.037 us    |                    current_kernel_time();
+  2)   0.036 us    |                    timespec_trunc();
+  2)   0.557 us    |                  }
+  2)   1.109 us    |                }
+  2)               |                xfs_trans_log_inode() {
+  2)   0.032 us    |                  xfs_isilocked();
+  2)   0.293 us    |                }
+  2)               |                xfs_droplink() {
+  2)               |                  xfs_trans_ichgtime() {
+  2)   0.036 us    |                    xfs_isilocked();
+  2)               |                    current_fs_time() {
+  2)   0.032 us    |                      current_kernel_time();
+  2)   0.036 us    |                      timespec_trunc();
+  2)   0.551 us    |                    }
+  2)   1.117 us    |                  }
+  2)   0.050 us    |                  drop_nlink();
+  2)               |                  xfs_trans_log_inode() {
+  2)   0.032 us    |                    xfs_isilocked();
+  2)   0.405 us    |                  }
+  2)               |                  xfs_iunlink() {
+  2)               |                    xfs_read_agi() {
+  2)               |                      xfs_trans_read_buf_map() {
+  2)   0.071 us    |                        xfs_trans_buf_item_match();
+  2)               |                        xfs_buf_read_map() {
+  2)               |                          xfs_buf_get_map() {
+  2)               |                            _xfs_buf_find() {
+  2)   0.070 us    |                              xfs_perag_get();
+  2)   0.036 us    |                              _raw_spin_lock();
+  2)   0.036 us    |                              xfs_perag_put();
+  2)               |                              xfs_buf_trylock() {
+  2)               |                                down_trylock() {
+  2)   0.036 us    |                                  _raw_spin_lock_irqsave();
+  2)   0.041 us    |                                  _raw_spin_unlock_irqrestore();
+  2)   0.568 us    |                                }
+  2)   0.835 us    |                              }
+  2)   2.162 us    |                            }
+  2)   2.423 us    |                          }
+  2)   2.700 us    |                        }
+  2)               |                        _xfs_trans_bjoin() {
+  2)   0.046 us    |                          xfs_buf_item_init();
+  2)               |                          xfs_trans_add_item() {
+  2)               |                            kmem_zone_zalloc() {
+  2)               |                              kmem_zone_alloc() {
+  2)   0.045 us    |                                kmem_cache_alloc();
+  2)   0.305 us    |                              }
+  2)   0.577 us    |                            }
+  2)   0.854 us    |                          }
+  2)   1.452 us    |                        }
+  2)   4.965 us    |                      }
+  2)   5.345 us    |                    }
+  2)   0.036 us    |                    xfs_trans_buf_set_type();
+  2)               |                    xfs_trans_log_buf() {
+  2)               |                      xfs_buf_item_log() {
+  2)   0.045 us    |                        xfs_buf_item_log_segment();
+  2)   0.321 us    |                      }
+  2)   0.595 us    |                    }
+  2)   6.786 us    |                  }
+  2)   9.896 us    |                }
+  2)   0.046 us    |                xfs_bmap_finish();
+  2)               |                xfs_trans_commit() {
+  2)   0.044 us    |                  xfs_trans_apply_dquot_deltas();
+  2)               |                  xfs_log_commit_cil() {
+  2)               |                    xlog_cil_prepare_log_vecs() {
+  2)   0.036 us    |                      xfs_inode_item_size();
+  2)               |                      kmem_zalloc() {
+  2)               |                        kmem_alloc() {
+  2)               |                          __kmalloc() {
+  2)   0.036 us    |                            kmalloc_slab();
+  2)   0.308 us    |                          }
+  2)   0.570 us    |                        }
+  2)   0.840 us    |                      }
+  2)   0.043 us    |                      xfs_inode_item_format();
+  2)               |                      kmem_alloc() {
+  2)               |                        __kmalloc() {
+  2)   0.034 us    |                          kmalloc_slab();
+  2)   0.316 us    |                        }
+  2)   0.571 us    |                      }
+  2)   0.051 us    |                      xfs_inode_item_size();
+  2)               |                      kmem_zalloc() {
+  2)               |                        kmem_alloc() {
+  2)               |                          __kmalloc() {
+  2)   0.036 us    |                            kmalloc_slab();
+  2)   0.305 us    |                          }
+  2)   0.567 us    |                        }
+  2)   0.839 us    |                      }
+  2)   0.060 us    |                      xfs_inode_item_format();
+  2)               |                      kmem_alloc() {
+  2)               |                        __kmalloc() {
+  2)   0.038 us    |                          kmalloc_slab();
+  2)   0.310 us    |                        }
+  2)   0.574 us    |                      }
+  2)               |                      xfs_buf_item_size() {
+  2)               |                        xfs_buf_item_size_segment() {
+  2)   0.048 us    |                          xfs_next_bit();
+  2)   0.055 us    |                          xfs_next_bit();
+  2)   0.035 us    |                          xfs_next_bit();
+  2)   1.302 us    |                        }
+  2)   1.652 us    |                      }
+  2)               |                      kmem_zalloc() {
+  2)               |                        kmem_alloc() {
+  2)               |                          __kmalloc() {
+  2)   0.033 us    |                            kmalloc_slab();
+  2)   0.308 us    |                          }
+  2)   0.658 us    |                        }
+  2)   0.927 us    |                      } /* kmem_zalloc */
+  2)               |                      xfs_buf_item_format() {
+  2)               |                        xfs_buf_item_format_segment() {
+  2)   0.033 us    |                          xfs_next_bit();
+  2)   0.035 us    |                          xfs_next_bit();
+  2)   0.036 us    |                          xfs_buf_offset();
+  2)   0.047 us    |                          xfs_next_bit();
+  2)   0.035 us    |                          xfs_buf_offset();
+  2)   1.412 us    |                        }
+  2)   1.679 us    |                      }
+  2)               |                      kmem_alloc() {
+  2)               |                        __kmalloc() {
+  2)   0.048 us    |                          kmalloc_slab();
+  2)   0.320 us    |                        }
+  2)   0.577 us    |                      }
+  2) + 11.165 us   |                    }
+  2)   0.039 us    |                    down_read();
+  2)               |                    xlog_cil_insert_items() {
+  2)               |                      xfs_cil_prepare_item() {
+  2)               |                        kmem_free() {
+  2)   0.081 us    |                          kfree();
+  2)   0.344 us    |                        }
+  2)               |                        kmem_free() {
+  2)   0.044 us    |                          kfree();
+  2)   0.302 us    |                        }
+  2)   1.143 us    |                      }
+  2)               |                      xfs_cil_prepare_item() {
+  2)               |                        kmem_free() {
+  2)   0.076 us    |                          kfree();
+  2)   0.339 us    |                        }
+  2)               |                        kmem_free() {
+  2)   0.038 us    |                          kfree();
+  2)   0.322 us    |                        }
+  2)   1.155 us    |                      }
+  2)               |                      xfs_cil_prepare_item() {
+  2)               |                        kmem_free() {
+  2)   0.090 us    |                          kfree();
+  2)   0.342 us    |                        }
+  2)               |                        kmem_free() {
+  2)   0.041 us    |                          kfree();
+  2)   0.297 us    |                        }
+  2)   1.129 us    |                      }
+  2)   0.036 us    |                      _raw_spin_lock();
+  2)   4.497 us    |                    }
+  2)               |                    xfs_log_done() {
+  2)               |                      xlog_ungrant_log_space() {
+  2)   0.035 us    |                        xfs_log_space_wake();
+  2)   0.314 us    |                      }
+  2)               |                      xfs_log_ticket_put() {
+  2)   0.041 us    |                        kmem_cache_free();
+  2)   0.303 us    |                      }
+  2)   1.115 us    |                    }
+  2)               |                    xfs_trans_unreserve_and_mod_sb() {
+  2)               |                      xfs_icsb_modify_counters() {
+  2)   0.032 us    |                        xfs_icsb_counter_disabled();
+  2)   0.044 us    |                        xfs_icsb_lock_cntr();
+  2)   0.035 us    |                        xfs_icsb_counter_disabled();
+  2)   0.038 us    |                        xfs_icsb_unlock_cntr();
+  2)   1.105 us    |                      }
+  2)   1.402 us    |                    }
+  2)               |                    xfs_trans_free_items() {
+  2)   0.036 us    |                      xfs_inode_item_committing();
+  2)               |                      xfs_inode_item_unlock() {
+  2)   0.032 us    |                        xfs_isilocked();
+  2)               |                        xfs_iunlock() {
+  2)   0.039 us    |                          up_write();
+  2)   0.460 us    |                        }
+  2)   0.994 us    |                      }
+  2)               |                      xfs_trans_free_item_desc() {
+  2)   0.039 us    |                        kmem_cache_free();
+  2)   0.305 us    |                      }
+  2)   0.035 us    |                      xfs_inode_item_committing();
+  2)               |                      xfs_inode_item_unlock() {
+  2)   0.039 us    |                        xfs_isilocked();
+  2)               |                        xfs_iunlock() {
+  2)   0.038 us    |                          up_write();
+  2)   0.367 us    |                        }
+  2)   0.981 us    |                      }
+  2)               |                      xfs_trans_free_item_desc() {
+  2)   0.039 us    |                        kmem_cache_free();
+  2)   0.301 us    |                      }
+  2)   0.036 us    |                      xfs_buf_item_committing();
+  2)               |                      xfs_buf_item_unlock() {
+  2)   0.033 us    |                        xfs_bitmap_empty();
+  2)               |                        xfs_buf_unlock() {
+  2)               |                          up() {
+  2)   0.032 us    |                            _raw_spin_lock_irqsave();
+  2)   0.044 us    |                            _raw_spin_unlock_irqrestore();
+  2)   0.656 us    |                          }
+  2)   0.915 us    |                        }
+  2)   0.039 us    |                        xfs_buf_rele();
+  2)   1.724 us    |                      }
+  2)               |                      xfs_trans_free_item_desc() {
+  2)   0.037 us    |                        kmem_cache_free();
+  2)   0.299 us    |                      }
+  2)   7.126 us    |                    }
+  2)   0.037 us    |                    up_read();
+  2) + 27.068 us   |                  }
+  2)               |                  xfs_trans_free() {
+  2)   0.033 us    |                    xfs_extent_busy_clear();
+  2)   0.062 us    |                    __sb_end_write();
+  2)   0.046 us    |                    xfs_trans_free_dqinfo();
+  2)   0.046 us    |                    kmem_cache_free();
+  2)   1.146 us    |                  }
+  2) + 28.980 us   |                }
+  2)   0.036 us    |                _raw_spin_lock();
+  2) + 56.645 us   |              }
+  2) + 57.016 us   |            }
+  2)   0.037 us    |            _raw_spin_lock();
+  2)   0.046 us    |            mutex_unlock();
+  2)   0.069 us    |            fsnotify();
+  2)               |            d_delete() {
+  2)   0.033 us    |              _raw_spin_lock();
+  2)               |              __d_drop() {
+  2)   0.076 us    |                __d_shrink();
+  2)   0.425 us    |              }
+  2)   0.031 us    |              __fsnotify_parent();
+  2)   1.337 us    |            }
+  2) + 61.962 us   |          }
+  2)               |          dput() {
+  2)   0.032 us    |            _raw_spin_lock();
+  2)   0.326 us    |          }
+  2) + 63.181 us   |        }
+  2)               |        d_drop() {
+  2)   0.039 us    |          _raw_spin_lock();
+  2)               |          __d_drop() {
+  2)   0.052 us    |            __d_shrink();
+  2)   0.320 us    |          }
+  2)   0.848 us    |        }
+  2)               |        dput() {
+  2)   0.036 us    |          _raw_spin_lock();
+  2)   0.033 us    |          _raw_spin_trylock();
+  2)   0.055 us    |          _raw_spin_trylock();
+  2)   0.037 us    |          dentry_lru_del();
+  2)   0.044 us    |          __d_drop();
+  2)               |          d_kill() {
+  2)   0.060 us    |            fsnotify();
+  2)               |            __fsnotify_inode_delete() {
+  2)               |              fsnotify_clear_marks_by_inode() {
+  2)   0.038 us    |                _raw_spin_lock();
+  2)   0.308 us    |              }
+  2)   0.590 us    |            }
+  2)               |            iput() {
+  2)   0.031 us    |              _raw_spin_lock();
+  2)               |              iput_final() {
+  2)   0.044 us    |                xfs_fs_drop_inode();
+  2)               |                evict() {
+  2)   0.040 us    |                  _raw_spin_lock();
+  2)               |                  inode_wait_for_writeback() {
+  2)   0.036 us    |                    _raw_spin_lock();
+  2)               |                    __inode_wait_for_writeback() {
+  2)   0.056 us    |                      bit_waitqueue();
+  2)   0.330 us    |                    }
+  2)   0.897 us    |                  }
+  2)               |                  xfs_fs_evict_inode() {
+  2)               |                    truncate_inode_pages() {
+  2)   0.075 us    |                      truncate_inode_pages_range();
+  2)   0.364 us    |                    }
+  2)               |                    clear_inode() {
+  2)   0.034 us    |                      _raw_spin_lock_irq();
+  2)   0.319 us    |                    }
+  2)               |                    xfs_inactive() {
+  2)   0.033 us    |                      is_bad_inode();
+  2)   0.037 us    |                      xfs_qm_dqattach();
+  2)               |                      xfs_trans_alloc() {
+  2)   0.061 us    |                        __sb_start_write();
+  2)               |                        _xfs_trans_alloc() {
+  2)               |                          kmem_zone_zalloc() {
+  2)               |                            kmem_zone_alloc() {
+  2)   0.039 us    |                              kmem_cache_alloc();
+  2)   0.321 us    |                            }
+  2)   0.593 us    |                          }
+  2)   0.856 us    |                        }
+  2)   1.404 us    |                      }
+  2)               |                      xfs_trans_reserve() {
+  2)               |                        xfs_log_reserve() {
+  2)               |                          xlog_ticket_alloc() {
+  2)               |                            kmem_zone_zalloc() {
+  2)               |                              kmem_zone_alloc() {
+  2)   0.038 us    |                                kmem_cache_alloc();
+  2)   0.321 us    |                              }
+  2)   0.595 us    |                            }
+  2)   0.877 us    |                          }
+  2)               |                          xlog_grant_push_ail() {
+  2)   0.035 us    |                            xlog_space_left();
+  2)   0.304 us    |                          }
+  2)               |                          xlog_grant_head_check() {
+  2)   0.037 us    |                            xlog_space_left();
+  2)   0.330 us    |                          }
+  2)   2.275 us    |                        }
+  2)   2.576 us    |                      }
+  2)               |                      xfs_ilock() {
+  2)   0.039 us    |                        down_write();
+  2)   0.310 us    |                      }
+  2)               |                      xfs_trans_ijoin() {
+  2)   0.036 us    |                        xfs_isilocked();
+  2)               |                        xfs_trans_add_item() {
+  2)               |                          kmem_zone_zalloc() {
+  2)               |                            kmem_zone_alloc() {
+  2)   0.041 us    |                              kmem_cache_alloc();
+  2)   0.302 us    |                            }
+  2)   0.572 us    |                          }
+  2)   0.841 us    |                        }
+  2)   1.367 us    |                      }
+  2)               |                      xfs_ifree() {
+  2)   0.033 us    |                        xfs_isilocked();
+  2)               |                        xfs_iunlink_remove() {
+  2)               |                          xfs_read_agi() {
+  2)               |                            xfs_trans_read_buf_map() {
+  2)   0.048 us    |                              xfs_trans_buf_item_match();
+  2)               |                              xfs_buf_read_map() {
+  2)               |                                xfs_buf_get_map() {
+  2)               |                                  _xfs_buf_find() {
+  2)   0.053 us    |                                    xfs_perag_get();
+  2)   0.037 us    |                                    _raw_spin_lock();
+  2)   0.036 us    |                                    xfs_perag_put();
+  2)               |                                    xfs_buf_trylock() {
+  2)               |                                      down_trylock() {
+  2)   0.036 us    |                                        _raw_spin_lock_irqsave();
+  2)   0.045 us    |                                        _raw_spin_unlock_irqrestore();
+  2)   0.739 us    |                                      }
+  2)   1.077 us    |                                    }
+  2)   2.651 us    |                                  }
+  2)   2.913 us    |                                }
+  2)   3.178 us    |                              }
+  2)               |                              _xfs_trans_bjoin() {
+  2)   0.032 us    |                                xfs_buf_item_init();
+  2)               |                                xfs_trans_add_item() {
+  2)               |                                  kmem_zone_zalloc() {
+  2)               |                                    kmem_zone_alloc() {
+  2)   0.039 us    |                                      kmem_cache_alloc();
+  2)   0.297 us    |                                    }
+  2)   0.572 us    |                                  }
+  2)   0.922 us    |                                }
+  2)   1.473 us    |                              }
+  2)   5.431 us    |                            }
+  2)   5.692 us    |                          }
+  2)               |                          xfs_imap_to_bp() {
+  2)               |                            xfs_trans_read_buf_map() {
+  2)   0.062 us    |                              xfs_trans_buf_item_match();
+  2)               |                              xfs_buf_read_map() {
+  2)               |                                xfs_buf_get_map() {
+  2)               |                                  _xfs_buf_find() {
+  2)   0.040 us    |                                    xfs_perag_get();
+  2)   0.036 us    |                                    _raw_spin_lock();
+  2)   0.038 us    |                                    xfs_perag_put();
+  2)               |                                    xfs_buf_trylock() {
+  2)               |                                      down_trylock() {
+  2)   0.033 us    |                                        _raw_spin_lock_irqsave();
+  2)   0.044 us    |                                        _raw_spin_unlock_irqrestore();
+  2)   0.576 us    |                                      }
+  2)   0.833 us    |                                    }
+  2)   3.372 us    |                                  }
+  2)   0.108 us    |                                  _xfs_buf_map_pages();
+  2)   4.038 us    |                                }
+  2)   4.306 us    |                              }
+  2)               |                              _xfs_trans_bjoin() {
+  2)               |                                xfs_buf_item_init() {
+  2)               |                                  kmem_zone_zalloc() {
+  2)               |                                    kmem_zone_alloc() {
+  2)   0.061 us    |                                      kmem_cache_alloc();
+  2)   0.321 us    |                                    }
+  2)   0.598 us    |                                  }
+  2)   0.035 us    |                                  xfs_log_item_init();
+  2)   0.032 us    |                                  xfs_buf_hold();
+  2)   0.036 us    |                                  xfs_buf_item_get_format();
+  2)   1.711 us    |                                }
+  2)               |                                xfs_trans_add_item() {
+  2)               |                                  kmem_zone_zalloc() {
+  2)               |                                    kmem_zone_alloc() {
+  2)   0.042 us    |                                      kmem_cache_alloc();
+  2)   0.307 us    |                                    }
+  2)   0.581 us    |                                  }
+  2)   0.849 us    |                                }
+  2)   3.136 us    |                              }
+  2)   8.237 us    |                            }
+  2)   0.051 us    |                            xfs_buf_offset();
+  2)   8.790 us    |                          }
+  2)               |                          xfs_trans_brelse() {
+  2)               |                            xfs_trans_del_item() {
+  2)               |                              xfs_trans_free_item_desc() {
+  2)   0.038 us    |                                kmem_cache_free();
+  2)   0.302 us    |                              }
+  2)   0.592 us    |                            }
+  2)   0.034 us    |                            xfs_buf_item_dirty();
+  2)               |                            xfs_buf_item_relse() {
+  2)   0.039 us    |                              xfs_buf_rele();
+  2)               |                              xfs_buf_item_free() {
+  2)   0.037 us    |                                xfs_buf_item_free_format();
+  2)   0.049 us    |                                kmem_cache_free();
+  2)   0.586 us    |                              }
+  2)   1.147 us    |                            }
+  2)               |                            xfs_buf_unlock() {
+  2)               |                              up() {
+  2)   0.033 us    |                                _raw_spin_lock_irqsave();
+  2)   0.044 us    |                                _raw_spin_unlock_irqrestore();
+  2)   1.047 us    |                              }
+  2)   1.381 us    |                            }
+  2)   0.038 us    |                            xfs_buf_rele();
+  2)   4.521 us    |                          }
+  2)   0.033 us    |                          xfs_trans_buf_set_type();
+  2)               |                          xfs_trans_log_buf() {
+  2)               |                            xfs_buf_item_log() {
+  2)   0.031 us    |                              xfs_buf_item_log_segment();
+  2)   0.367 us    |                            }
+  2)   0.651 us    |                          }
+  2) + 21.563 us   |                        }
+  2)               |                        xfs_difree() {
+  2)               |                          xfs_ialloc_read_agi() {
+  2)               |                            xfs_read_agi() {
+  2)               |                              xfs_trans_read_buf_map() {
+  2)   0.071 us    |                                xfs_trans_buf_item_match();
+  2)   0.398 us    |                              }
+  2)   0.661 us    |                            }
+  2)   0.042 us    |                            xfs_perag_get();
+  2)   0.047 us    |                            xfs_perag_put();
+  2)   1.493 us    |                          }
+  2)               |                          xfs_inobt_init_cursor() {
+  2)               |                            kmem_zone_zalloc() {
+  2)               |                              kmem_zone_alloc() {
+  2)   0.057 us    |                                kmem_cache_alloc();
+  2)   0.315 us    |                              }
+  2)   0.591 us    |                            }
+  2)   0.862 us    |                          }
+  2)               |                          xfs_inobt_lookup() {
+  2)               |                            xfs_btree_lookup() {
+  2)   0.036 us    |                              xfs_inobt_init_ptr_from_cur();
+  2)               |                              xfs_btree_lookup_get_block() {
+  2)               |                                xfs_btree_read_buf_block() {
+  2)   0.034 us    |                                  xfs_btree_ptr_to_daddr();
+  2)               |                                  xfs_trans_read_buf_map() {
+  2)   0.058 us    |                                    xfs_trans_buf_item_match();
+  2)               |                                    xfs_buf_read_map() {
+  2)               |                                      xfs_buf_get_map() {
+  2)               |                                        _xfs_buf_find() {
+  2)   0.058 us    |                                          xfs_perag_get();
+  2)   0.038 us    |                                          _raw_spin_lock();
+  2)   0.039 us    |                                          xfs_perag_put();
+  2)               |                                          xfs_buf_trylock() {
+  2)               |                                            down_trylock() {
+  2)   0.159 us    |                                              _raw_spin_lock_irqsave();
+  2)   0.044 us    |                                              _raw_spin_unlock_irqrestore();
+  2)   0.684 us    |                                            }
+  2)   0.939 us    |                                          }
+  2)   2.159 us    |                                        }
+  2)   2.429 us    |                                      }
+  2)   2.700 us    |                                    }
+  2)               |                                    _xfs_trans_bjoin() {
+  2)               |                                      xfs_buf_item_init() {
+  2)               |                                        kmem_zone_zalloc() {
+  2)               |                                          kmem_zone_alloc() {
+  2)   0.038 us    |                                            kmem_cache_alloc();
+  2)   0.299 us    |                                          }
+  2)   0.571 us    |                                        }
+  2)   0.032 us    |                                        xfs_log_item_init();
+  2)   0.035 us    |                                        xfs_buf_hold();
+  2)   0.034 us    |                                        xfs_buf_item_get_format();
+  2)   1.657 us    |                                      }
+  2)               |                                      xfs_trans_add_item() {
+  2)               |                                        kmem_zone_zalloc() {
+  2)               |                                          kmem_zone_alloc() {
+  2)   0.039 us    |                                            kmem_cache_alloc();
+  2)   0.303 us    |                                          }
+  2)   0.574 us    |                                        }
+  2)   0.843 us    |                                      }
+  2)   3.034 us    |                                    }
+  2)   6.532 us    |                                  }
+  2)   0.032 us    |                                  xfs_btree_set_refs();
+  2)   7.349 us    |                                }
+  2)   0.077 us    |                                xfs_btree_setbuf();
+  2)   7.940 us    |                              }
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_key_addr() {
+  2)   0.036 us    |                                  xfs_btree_key_offset();
+  2)   0.366 us    |                                }
+  2)   0.894 us    |                              }
+  2)   0.035 us    |                              xfs_inobt_key_diff();
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_key_addr() {
+  2)   0.037 us    |                                  xfs_btree_key_offset();
+  2)   0.318 us    |                                }
+  2)   0.654 us    |                              }
+  2)   0.034 us    |                              xfs_inobt_key_diff();
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_key_addr() {
+  2)   0.034 us    |                                  xfs_btree_key_offset();
+  2)   0.365 us    |                                }
+  2)   0.621 us    |                              }
+  2)   0.035 us    |                              xfs_inobt_key_diff();
+  2)               |                              xfs_btree_ptr_addr() {
+  2)               |                                xfs_btree_ptr_offset() {
+  2)   0.032 us    |                                  xfs_inobt_get_maxrecs();
+  2)   0.340 us    |                                }
+  2)   0.601 us    |                              }
+  2)               |                              xfs_btree_lookup_get_block() {
+  2)               |                                xfs_btree_read_buf_block() {
+  2)   0.033 us    |                                  xfs_btree_ptr_to_daddr();
+  2)               |                                  xfs_trans_read_buf_map() {
+  2)   0.076 us    |                                    xfs_trans_buf_item_match();
+  2)               |                                    xfs_buf_read_map() {
+  2)               |                                      xfs_buf_get_map() {
+  2)               |                                        _xfs_buf_find() {
+  2)   0.040 us    |                                          xfs_perag_get();
+  2)   0.037 us    |                                          _raw_spin_lock();
+  2)   0.037 us    |                                          xfs_perag_put();
+  2)               |                                          xfs_buf_trylock() {
+  2)               |                                            down_trylock() {
+  2)   0.036 us    |                                              _raw_spin_lock_irqsave();
+  2)   0.046 us    |                                              _raw_spin_unlock_irqrestore();
+  2)   0.589 us    |                                            }
+  2)   0.847 us    |                                          }
+  2)   2.164 us    |                                        }
+  2)   2.425 us    |                                      }
+  2)   2.683 us    |                                    }
+  2)               |                                    _xfs_trans_bjoin() {
+  2)   0.034 us    |                                      xfs_buf_item_init();
+  2)               |                                      xfs_trans_add_item() {
+  2)               |                                        kmem_zone_zalloc() {
+  2)               |                                          kmem_zone_alloc() {
+  2)   0.041 us    |                                            kmem_cache_alloc();
+  2)   0.306 us    |                                          }
+  2)   0.576 us    |                                        }
+  2)   0.843 us    |                                      }
+  2)   1.389 us    |                                    }
+  2)   4.874 us    |                                  }
+  2)   0.031 us    |                                  xfs_btree_set_refs();
+  2)   5.671 us    |                                }
+  2)   0.060 us    |                                xfs_btree_setbuf();
+  2)   6.223 us    |                              }
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_rec_addr() {
+  2)   0.032 us    |                                  xfs_btree_rec_offset();
+  2)   0.299 us    |                                }
+  2)   0.034 us    |                                xfs_inobt_init_key_from_rec();
+  2)   0.835 us    |                              }
+  2)   0.035 us    |                              xfs_inobt_key_diff();
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_rec_addr() {
+  2)   0.037 us    |                                  xfs_btree_rec_offset();
+  2)   0.292 us    |                                }
+  2)   0.035 us    |                                xfs_inobt_init_key_from_rec();
+  2)   0.840 us    |                              }
+  2)   0.035 us    |                              xfs_inobt_key_diff();
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_rec_addr() {
+  2)   0.037 us    |                                  xfs_btree_rec_offset();
+  2)   0.319 us    |                                }
+  2)   0.036 us    |                                xfs_inobt_init_key_from_rec();
+  2)   0.839 us    |                              }
+  2)   0.034 us    |                              xfs_inobt_key_diff();
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_rec_addr() {
+  2)   0.031 us    |                                  xfs_btree_rec_offset();
+  2)   0.359 us    |                                }
+  2)   0.041 us    |                                xfs_inobt_init_key_from_rec();
+  2)   1.157 us    |                              }
+  2)   0.036 us    |                              xfs_inobt_key_diff();
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_rec_addr() {
+  2)   0.036 us    |                                  xfs_btree_rec_offset();
+  2)   0.365 us    |                                }
+  2)   0.043 us    |                                xfs_inobt_init_key_from_rec();
+  2)   0.952 us    |                              }
+  2)   0.032 us    |                              xfs_inobt_key_diff();
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_rec_addr() {
+  2)   0.035 us    |                                  xfs_btree_rec_offset();
+  2)   0.291 us    |                                }
+  2)   0.042 us    |                                xfs_inobt_init_key_from_rec();
+  2)   0.812 us    |                              }
+  2)   0.035 us    |                              xfs_inobt_key_diff();
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_rec_addr() {
+  2)   0.036 us    |                                  xfs_btree_rec_offset();
+  2)   0.288 us    |                                }
+  2)   0.031 us    |                                xfs_inobt_init_key_from_rec();
+  2)   0.806 us    |                              }
+  2)   0.035 us    |                              xfs_inobt_key_diff();
+  2)               |                              xfs_lookup_get_search_key() {
+  2)               |                                xfs_btree_rec_addr() {
+  2)   0.037 us    |                                  xfs_btree_rec_offset();
+  2)   0.320 us    |                                }
+  2)   0.035 us    |                                xfs_inobt_init_key_from_rec();
+  2)   0.836 us    |                              }
+  2)   0.035 us    |                              xfs_inobt_key_diff();
+  2) + 31.492 us   |                            }
+  2) + 31.787 us   |                          }
+  2)               |                          xfs_inobt_get_rec() {
+  2)               |                            xfs_btree_get_rec() {
+  2)   0.035 us    |                              xfs_btree_get_block();
+  2)               |                              xfs_btree_rec_addr() {
+  2)   0.036 us    |                                xfs_btree_rec_offset();
+  2)   0.298 us    |                              }
+  2)   0.844 us    |                            }
+  2)   1.110 us    |                          }
+  2)               |                          xfs_inobt_update() {
+  2)               |                            xfs_btree_update() {
+  2)   0.036 us    |                              xfs_btree_get_block();
+  2)               |                              xfs_btree_rec_addr() {
+  2)   0.034 us    |                                xfs_btree_rec_offset();
+  2)   0.292 us    |                              }
+  2)   0.058 us    |                              xfs_btree_copy_recs();
+  2)               |                              xfs_btree_log_recs() {
+  2)   0.035 us    |                                xfs_trans_buf_set_type();
+  2)   0.035 us    |                                xfs_btree_rec_offset();
+  2)   0.036 us    |                                xfs_btree_rec_offset();
+  2)               |                                xfs_trans_log_buf() {
+  2)               |                                  xfs_buf_item_log() {
+  2)   0.033 us    |                                    xfs_buf_item_log_segment();
+  2)   0.296 us    |                                  }
+  2)   0.587 us    |                                }
+  2)   1.642 us    |                              } /* xfs_btree_log_recs */
+  2)   0.035 us    |                              xfs_btree_is_lastrec();
+  2)   3.256 us    |                            }
+  2)   3.519 us    |                          }
+  2)               |                          xfs_ialloc_log_agi() {
+  2)   0.049 us    |                            xfs_btree_offsets();
+  2)   0.037 us    |                            xfs_trans_buf_set_type();
+  2)               |                            xfs_trans_log_buf() {
+  2)               |                              xfs_buf_item_log() {
+  2)   0.047 us    |                                xfs_buf_item_log_segment();
+  2)   0.308 us    |                              }
+  2)   0.817 us    |                            }
+  2)   1.621 us    |                          }
+  2)   0.040 us    |                          xfs_perag_get();
+  2)   0.033 us    |                          xfs_perag_put();
+  2)   0.064 us    |                          xfs_trans_mod_sb();
+  2)               |                          xfs_btree_del_cursor() {
+  2)   0.049 us    |                            xfs_trans_brelse();
+  2)               |                            xfs_trans_brelse() {
+  2)               |                              xfs_trans_del_item() {
+  2)               |                                xfs_trans_free_item_desc() {
+  2)   0.048 us    |                                  kmem_cache_free();
+  2)   0.318 us    |                                }
+  2)   0.643 us    |                              }
+  2)   0.033 us    |                              xfs_buf_item_dirty();
+  2)               |                              xfs_buf_item_relse() {
+  2)   0.039 us    |                                xfs_buf_rele();
+  2)               |                                xfs_buf_item_free() {
+  2)   0.035 us    |                                  xfs_buf_item_free_format();
+  2)   0.036 us    |                                  kmem_cache_free();
+  2)   0.564 us    |                                }
+  2)   1.120 us    |                              }
+  2)               |                              xfs_buf_unlock() {
+  2)               |                                up() {
+  2)   0.037 us    |                                  _raw_spin_lock_irqsave();
+  2)   0.043 us    |                                  _raw_spin_unlock_irqrestore();
+  2)   0.614 us    |                                }
+  2)   0.894 us    |                              }
+  2)   0.040 us    |                              xfs_buf_rele();
+  2)   3.918 us    |                            }
+  2)   0.074 us    |                            kmem_cache_free();
+  2)   4.871 us    |                          }
+  2) + 48.262 us   |                        }
+  2)               |                        xfs_trans_log_inode() {
+  2)   0.034 us    |                          xfs_isilocked();
+  2)   0.297 us    |                        }
+  2)               |                        xfs_imap_to_bp() {
+  2)               |                          xfs_trans_read_buf_map() {
+  2)   0.040 us    |                            xfs_trans_buf_item_match();
+  2)               |                            xfs_buf_read_map() {
+  2)               |                              xfs_buf_get_map() {
+  2)               |                                _xfs_buf_find() {
+  2)   0.040 us    |                                  xfs_perag_get();
+  2)   0.036 us    |                                  _raw_spin_lock();
+  2)   0.049 us    |                                  xfs_perag_put();
+  2)               |                                  xfs_buf_trylock() {
+  2)               |                                    down_trylock() {
+  2)   0.036 us    |                                      _raw_spin_lock_irqsave();
+  2)   0.043 us    |                                      _raw_spin_unlock_irqrestore();
+  2)   0.597 us    |                                    }
+  2)   0.852 us    |                                  }
+  2)   2.117 us    |                                }
+  2)   0.033 us    |                                _xfs_buf_map_pages();
+  2)   2.658 us    |                              }
+  2)   2.953 us    |                            }
+  2)               |                            _xfs_trans_bjoin() {
+  2)               |                              xfs_buf_item_init() {
+  2)               |                                kmem_zone_zalloc() {
+  2)               |                                  kmem_zone_alloc() {
+  2)   0.038 us    |                                    kmem_cache_alloc();
+  2)   0.317 us    |                                  }
+  2)   0.591 us    |                                }
+  2)   0.035 us    |                                xfs_log_item_init();
+  2)   0.035 us    |                                xfs_buf_hold();
+  2)   0.033 us    |                                xfs_buf_item_get_format();
+  2)   1.672 us    |                              }
+  2)               |                              xfs_trans_add_item() {
+  2)               |                                kmem_zone_zalloc() {
+  2)               |                                  kmem_zone_alloc() {
+  2)   0.039 us    |                                    kmem_cache_alloc();
+  2)   0.292 us    |                                  }
+  2)   0.565 us    |                                }
+  2)   0.837 us    |                              }
+  2)   3.008 us    |                            }
+  2)   6.721 us    |                          }
+  2)   0.037 us    |                          xfs_buf_offset();
+  2)   7.558 us    |                        }
+  2) + 79.187 us   |                      }
+  2)               |                      xfs_trans_mod_dquot_byino() {
+  2)               |                        xfs_trans_alloc_dqinfo() {
+  2)               |                          kmem_zone_zalloc() {
+  2)               |                            kmem_zone_alloc() {
+  2)   0.073 us    |                              kmem_cache_alloc();
+  2)   0.415 us    |                            }
+  2)   0.689 us    |                          }
+  2)   0.947 us    |                        }
+  2)               |                        xfs_trans_mod_dquot() {
+  2)   0.045 us    |                          xfs_trans_get_dqtrx();
+  2)   0.396 us    |                        }
+  2)   1.969 us    |                      }
+  2)   0.032 us    |                      xfs_bmap_finish();
+  2)               |                      xfs_trans_commit() {
+  2)               |                        xfs_trans_apply_dquot_deltas() {
+  2)               |                          xfs_trans_dqlockedjoin() {
+  2)   0.043 us    |                            mutex_lock();
+  2)               |                            xfs_trans_dqjoin() {
+  2)               |                              xfs_trans_add_item() {
+  2)               |                                kmem_zone_zalloc() {
+  2)               |                                  kmem_zone_alloc() {
+  2)   0.038 us    |                                    kmem_cache_alloc();
+  2)   0.300 us    |                                  }
+  2)   0.573 us    |                                }
+  2)   0.838 us    |                              }
+  2)   1.098 us    |                            }
+  2)   1.627 us    |                          }
+  2)   0.067 us    |                          xfs_qm_adjust_dqlimits();
+  2)   0.055 us    |                          xfs_qm_adjust_dqtimers();
+  2)   0.033 us    |                          xfs_trans_log_dquot();
+  2)   2.883 us    |                        }
+  2)               |                        xfs_log_commit_cil() {
+  2)               |                          xlog_cil_prepare_log_vecs() {
+  2)   0.063 us    |                            xfs_inode_item_size();
+  2)               |                            kmem_zalloc() {
+  2)               |                              kmem_alloc() {
+  2)               |                                __kmalloc() {
+  2)   0.051 us    |                                  kmalloc_slab();
+  2)   0.342 us    |                                } /* __kmalloc */
+  2)   0.603 us    |                              }
+  2)   0.872 us    |                            }
+  2)   0.068 us    |                            xfs_inode_item_format();
+  2)               |                            kmem_alloc() {
+  2)               |                              __kmalloc() {
+  2)   0.035 us    |                                kmalloc_slab();
+  2)   0.331 us    |                              }
+  2)   0.594 us    |                            }
+  2)               |                            xfs_buf_item_size() {
+  2)               |                              xfs_buf_item_size_segment() {
+  2)   0.036 us    |                                xfs_next_bit();
+  2)   0.035 us    |                                xfs_next_bit();
+  2)   0.036 us    |                                xfs_next_bit();
+  2)   0.824 us    |                              }
+  2)   1.085 us    |                            }
+  2)               |                            kmem_zalloc() {
+  2)               |                              kmem_alloc() {
+  2)               |                                __kmalloc() {
+  2)   0.031 us    |                                  kmalloc_slab();
+  2)   0.301 us    |                                }
+  2)   0.569 us    |                              }
+  2)   0.837 us    |                            }
+  2)               |                            xfs_buf_item_format() {
+  2)               |                              xfs_buf_item_format_segment() {
+  2)   0.035 us    |                                xfs_next_bit();
+  2)   0.032 us    |                                xfs_next_bit();
+  2)   0.049 us    |                                xfs_buf_offset();
+  2)   0.036 us    |                                xfs_next_bit();
+  2)   0.035 us    |                                xfs_buf_offset();
+  2)   1.377 us    |                              }
+  2)   1.639 us    |                            }
+  2)               |                            kmem_alloc() {
+  2)               |                              __kmalloc() {
+  2)   0.046 us    |                                kmalloc_slab();
+  2)   0.317 us    |                              }
+  2)   0.575 us    |                            }
+  2)               |                            xfs_buf_item_size() {
+  2)               |                              xfs_buf_item_size_segment() {
+  2)   0.048 us    |                                xfs_next_bit();
+  2)   0.051 us    |                                xfs_next_bit();
+  2)   0.747 us    |                              }
+  2)   1.200 us    |                            }
+  2)               |                            kmem_zalloc() {
+  2)               |                              kmem_alloc() {
+  2)               |                                __kmalloc() {
+  2)   0.037 us    |                                  kmalloc_slab();
+  2)   0.302 us    |                                }
+  2)   0.644 us    |                              }
+  2)   0.914 us    |                            }
+  2)               |                            xfs_buf_item_format() {
+  2)               |                              xfs_buf_item_format_segment() {
+  2)   0.032 us    |                                xfs_next_bit();
+  2)   0.034 us    |                                xfs_next_bit();
+  2)   0.036 us    |                                xfs_buf_offset();
+  2)   0.984 us    |                              }
+  2)   1.248 us    |                            }
+  2)               |                            kmem_alloc() {
+  2)               |                              __kmalloc() {
+  2)   0.033 us    |                                kmalloc_slab();
+  2)   0.301 us    |                              }
+  2)   0.563 us    |                            }
+  2)   0.036 us    |                            xfs_qm_dquot_logitem_size();
+  2)               |                            kmem_zalloc() {
+  2)               |                              kmem_alloc() {
+  2)               |                                __kmalloc() {
+  2)   0.034 us    |                                  kmalloc_slab();
+  2)   0.302 us    |                                }
+  2)   0.565 us    |                              }
+  2)   0.833 us    |                            }
+  2)   0.037 us    |                            xfs_qm_dquot_logitem_format();
+  2)               |                            kmem_alloc() {
+  2)               |                              __kmalloc() {
+  2)   0.034 us    |                                kmalloc_slab();
+  2)   0.302 us    |                              }
+  2)   0.564 us    |                            }
+  2) + 15.422 us   |                          }
+  2)   0.036 us    |                          down_read();
+  2)               |                          xlog_cil_insert_items() {
+  2)               |                            xfs_cil_prepare_item() {
+  2)               |                              kmem_free() {
+  2)   0.062 us    |                                kfree();
+  2)   0.324 us    |                              }
+  2)               |                              kmem_free() {
+  2)   0.060 us    |                                kfree();
+  2)   0.319 us    |                              }
+  2)   1.142 us    |                            }
+  2)               |                            xfs_cil_prepare_item() {
+  2)               |                              kmem_free() {
+  2)   0.075 us    |                                kfree();
+  2)   0.327 us    |                              }
+  2)               |                              kmem_free() {
+  2)   0.055 us    |                                kfree();
+  2)   0.317 us    |                              }
+  2)   1.136 us    |                            }
+  2)               |                            xfs_cil_prepare_item() {
+  2)               |                              kmem_free() {
+  2)   0.056 us    |                                kfree();
+  2)   0.310 us    |                              }
+  2)               |                              kmem_free() {
+  2)   0.055 us    |                                kfree();
+  2)   0.314 us    |                              }
+  2)   1.126 us    |                            }
+  2)               |                            xfs_cil_prepare_item() {
+  2)               |                              kmem_free() {
+  2)   0.051 us    |                                kfree();
+  2)   0.302 us    |                              }
+  2)               |                              kmem_free() {
+  2)   0.040 us    |                                kfree();
+  2)   0.300 us    |                              }
+  2)   1.114 us    |                            }
+  2)   0.035 us    |                            _raw_spin_lock();
+  2)   5.809 us    |                          }
+  2)               |                          xfs_log_done() {
+  2)               |                            xlog_ungrant_log_space() {
+  2)   0.035 us    |                              xfs_log_space_wake();
+  2)   0.320 us    |                            }
+  2)               |                            xfs_log_ticket_put() {
+  2)   0.045 us    |                              kmem_cache_free();
+  2)   0.564 us    |                            }
+  2)   1.450 us    |                          }
+  2)               |                          xfs_trans_unreserve_and_mod_sb() {
+  2)               |                            xfs_icsb_modify_counters() {
+  2)   0.038 us    |                              xfs_icsb_counter_disabled();
+  2)   0.051 us    |                              mutex_lock();
+  2)   0.037 us    |                              xfs_icsb_counter_disabled();
+  2)   0.039 us    |                              _raw_spin_lock();
+  2)   0.038 us    |                              xfs_mod_incore_sb_unlocked();
+  2)               |                              xfs_icsb_balance_counter() {
+  2)   0.036 us    |                                _raw_spin_lock();
+  2)               |                                xfs_icsb_balance_counter_locked() {
+  2)               |                                  xfs_icsb_disable_counter() {
+  2)   0.032 us    |                                    xfs_icsb_counter_disabled();
+  2)   0.331 us    |                                  }
+  2)   0.641 us    |                                }
+  2)   1.238 us    |                              }
+  2)   0.036 us    |                              mutex_unlock();
+  2)   3.279 us    |                            }
+  2)   3.580 us    |                          }
+  2)               |                          xfs_trans_free_items() {
+  2)   0.042 us    |                            xfs_inode_item_committing();
+  2)               |                            xfs_inode_item_unlock() {
+  2)   0.036 us    |                              xfs_isilocked();
+  2)   0.309 us    |                            }
+  2)               |                            xfs_trans_free_item_desc() {
+  2)   0.038 us    |                              kmem_cache_free();
+  2)   0.310 us    |                            }
+  2)   0.039 us    |                            xfs_buf_item_committing();
+  2)               |                            xfs_buf_item_unlock() {
+  2)   0.037 us    |                              xfs_bitmap_empty();
+  2)               |                              xfs_buf_unlock() {
+  2)               |                                up() {
+  2)   0.040 us    |                                  _raw_spin_lock_irqsave();
+  2)   0.043 us    |                                  _raw_spin_unlock_irqrestore();
+  2)   0.579 us    |                                }
+  2)   0.838 us    |                              }
+  2)   0.041 us    |                              xfs_buf_rele();
+  2)   1.641 us    |                            }
+  2)               |                            xfs_trans_free_item_desc() {
+  2)   0.039 us    |                              kmem_cache_free();
+  2)   0.296 us    |                            }
+  2)   0.037 us    |                            xfs_buf_item_committing();
+  2)               |                            xfs_buf_item_unlock() {
+  2)   0.036 us    |                              xfs_bitmap_empty();
+  2)               |                              xfs_buf_unlock() {
+  2)               |                                up() {
+  2)   0.040 us    |                                  _raw_spin_lock_irqsave();
+  2)   0.044 us    |                                  _raw_spin_unlock_irqrestore();
+  2)   0.573 us    |                                }
+  2)   0.828 us    |                              }
+  2)   0.039 us    |                              xfs_buf_rele();
+  2)   1.635 us    |                            }
+  2)               |                            xfs_trans_free_item_desc() {
+  2)   0.040 us    |                              kmem_cache_free();
+  2)   0.300 us    |                            }
+  2)   0.037 us    |                            xfs_buf_item_committing();
+  2)               |                            xfs_buf_item_unlock() {
+  2)   0.044 us    |                              xfs_bitmap_empty();
+  2)               |                              xfs_buf_item_relse() {
+  2)   0.037 us    |                                xfs_buf_rele();
+  2)               |                                xfs_buf_item_free() {
+  2)   0.036 us    |                                  xfs_buf_item_free_format();
+  2)   0.039 us    |                                  kmem_cache_free();
+  2)   0.560 us    |                                }
+  2)   1.118 us    |                              }
+  2)               |                              xfs_buf_unlock() {
+  2)               |                                up() {
+  2)   0.036 us    |                                  _raw_spin_lock_irqsave();
+  2)   0.047 us    |                                  _raw_spin_unlock_irqrestore();
+  2)   0.566 us    |                                }
+  2)   1.087 us    |                              }
+  2)   0.038 us    |                              xfs_buf_rele();
+  2)   3.277 us    |                            }
+  2)               |                            xfs_trans_free_item_desc() {
+  2)   0.039 us    |                              kmem_cache_free();
+  2)   0.302 us    |                            }
+  2)   0.040 us    |                            xfs_qm_dquot_logitem_committing();
+  2)               |                            xfs_qm_dquot_logitem_unlock() {
+  2)   0.033 us    |                              mutex_unlock();
+  2)   0.304 us    |                            }
+  2)               |                            xfs_trans_free_item_desc() {
+  2)   0.038 us    |                              kmem_cache_free();
+  2)   0.301 us    |                            }
+  2) + 12.476 us   |                          }
+  2)   0.038 us    |                          up_read();
+  2) + 40.619 us   |                        }
+  2)               |                        xfs_trans_free() {
+  2)   0.037 us    |                          xfs_extent_busy_clear();
+  2)   0.068 us    |                          __sb_end_write();
+  2)               |                          xfs_trans_free_dqinfo() {
+  2)   0.065 us    |                            kmem_cache_free();
+  2)   0.327 us    |                          }
+  2)   0.047 us    |                          kmem_cache_free();
+  2)   1.430 us    |                        }
+  2) + 45.670 us   |                      }
+  2)               |                      xfs_qm_dqdetach() {
+  2)               |                        xfs_qm_dqrele() {
+  2)   0.035 us    |                          mutex_lock();
+  2)               |                          xfs_qm_dqput() {
+  2)   0.034 us    |                            mutex_unlock();
+  2)   0.312 us    |                          }
+  2)   0.861 us    |                        }
+  2)   1.163 us    |                      }
+  2)               |                      xfs_iunlock() {
+  2)   0.037 us    |                        up_write();
+  2)   0.299 us    |                      }
+  2) ! 137.407 us  |                    }
+  2) ! 138.903 us  |                  }
+  2)               |                  __remove_inode_hash() {
+  2)   0.067 us    |                    _raw_spin_lock();
+  2)   0.036 us    |                    _raw_spin_lock();
+  2)   0.617 us    |                  }
+  2)   0.037 us    |                  _raw_spin_lock();
+  2)               |                  wake_up_bit() {
+  2)   0.040 us    |                    bit_waitqueue();
+  2)   0.036 us    |                    __wake_up_bit();
+  2)   0.564 us    |                  }
+  2)               |                  destroy_inode() {
+  2)               |                    __destroy_inode() {
+  2)   0.036 us    |                      inode_has_buffers();
+  2)               |                      __fsnotify_inode_delete() {
+  2)               |                        fsnotify_clear_marks_by_inode() {
+  2)   0.036 us    |                          _raw_spin_lock();
+  2)   0.296 us    |                        }
+  2)   0.557 us    |                      }
+  2)   1.143 us    |                    }
+  2)               |                    xfs_fs_destroy_inode() {
+  2)   0.032 us    |                      is_bad_inode();
+  2)   0.037 us    |                      _raw_spin_lock();
+  2)   0.036 us    |                      _raw_spin_lock();
+  2)               |                      xfs_inode_set_reclaim_tag() {
+  2)   0.051 us    |                        xfs_perag_get();
+  2)   0.051 us    |                        _raw_spin_lock();
+  2)   0.033 us    |                        _raw_spin_lock();
+  2)               |                        __xfs_inode_set_reclaim_tag() {
+  2)   0.032 us    |                          _raw_spin_lock();
+  2)               |                          xfs_reclaim_work_queue() {
+  2)   0.037 us    |                            msecs_to_jiffies();
+  2)   0.064 us    |                            queue_delayed_work_on();
+  2)   0.660 us    |                          }
+  2)   1.420 us    |                        } /* __xfs_inode_set_reclaim_tag */
+  2)   0.036 us    |                        xfs_perag_put();
+  2)   3.045 us    |                      }
+  2)   4.227 us    |                    }
+  2)   5.941 us    |                  }
+  2) ! 148.814 us  |                }
+  2) ! 149.461 us  |              }
+  2) ! 150.042 us  |            }
+  2)               |            d_free() {
+  2)               |              call_rcu_sched() {
+  2)               |                __call_rcu() {
+  2)   0.092 us    |                  __call_rcu_nocb_enqueue();
+  2)   0.422 us    |                }
+  2)   0.684 us    |              }
+  2)   0.973 us    |            }
+  2) ! 152.709 us  |          }
+  2)   0.039 us    |          _raw_spin_lock();
+  2) ! 155.051 us  |        }
+  2)               |        unlock_rename() {
+  2)   0.069 us    |          mutex_unlock();
+  2)   0.045 us    |          mutex_unlock();
+  2)   0.047 us    |          mutex_unlock();
+  2)   0.884 us    |        }
+  2)   0.059 us    |        dput();
+  2) ! 450.462 us  |      }
+  2)   0.055 us    |      revert_creds();
+  2)               |      __put_cred() {
+  2)               |        call_rcu_sched() {
+  2)               |          __call_rcu() {
+  2)   0.045 us    |            __call_rcu_nocb_enqueue();
+  2)   0.402 us    |          }
+  2)   0.686 us    |        }
+  2)   0.950 us    |      }
+  2)               |      ovl_drop_write [overlay]() {
+  2)               |        mnt_drop_write() {
+  2)   0.077 us    |          __sb_end_write();
+  2)   0.403 us    |        }
+  2)   0.690 us    |      }
+  2) ! 457.912 us  |    }
+  2) ! 458.465 us  |  }
+
+Ending tracing...
