@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Overlayfs: delete file failed because project id in XFS
+title: Overlayfs - delete file failed because project id in XFS
 date: 2016-05-27 11:00:30
 categories: Linux
 tags: xfs
-excerpt: Overlayfs: delete file failed because project id in XFS
+excerpt: Overlayfs - delete file failed because project id in XFS
 ---
 
 ## 问题
