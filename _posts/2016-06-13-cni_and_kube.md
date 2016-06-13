@@ -317,4 +317,5 @@ Refer to [Why Kubernetes doesn’t use libnetwork](http://blog.kubernetes.io/201
 * [CNI macvlan plugin](https://github.com/containernetworking/cni/blob/master/Documentation/macvlan.md)
 * [Kube Network Plugins](http://kubernetes.io/docs/admin/network-plugins/)
 * [Why Kubernetes doesn’t use libnetwork](http://blog.kubernetes.io/2016/01/why-Kubernetes-doesnt-use-libnetwork.html)
+* [From network namespace to fabric overlays](http://events.linuxfoundation.org/sites/events/files/slides/Eugene%20Yakubovich_ContainerCon%20-%20netns-to-flannel.pdf)
 * [Canal brings fine-grained policy to DC/OS and Apache Mesos via CNI](https://www.projectcalico.org/canal_brings_fine-grained_policy_to_dcos_and_apache_mesos_via_cni/)
