@@ -293,6 +293,8 @@ func (c *container) Start(checkpointPath string, s Stdio) (Process, error) {
 
 * containerd-shim
 
+Containerd-shim is a small shim that sits in front of a runtime implementation that allows it to be repartented to init and handle reattach from the caller.
+
 ```go
 ///containerd-shim/main.go
 func start(log *os.File) error {
@@ -368,6 +370,47 @@ func (p *process) create() error {
 	if err := cmd.Start(); err != nil {
 ...
 }
+```
+
+## Using runc
+
+* Run container
+
+```sh
+# cd /containers/redis/
+# runc run redis
+1:M 15 Jun 03:10:37.101 # You requested maxclients of 10000 requiring at least 10032 max file descriptors.
+1:M 15 Jun 03:10:37.101 # Server can't set maximum open files to 10032 because of OS error: Operation not permitted.
+1:M 15 Jun 03:10:37.101 # Current maximum open files is 1024. maxclients has been reduced to 992 to compensate for low ulimit. If you need higher maxclients increase 'ulimit -n'.
+…
+```
+
+* List container
+
+```sh
+# runc list
+ID          PID         STATUS      BUNDLE              CREATED
+redis       16476       running     /containers/redis   2016-06-15T03:10:37.097884439Z
+# runc --debug state redis
+{
+  "ociVersion": "1.0.0-rc1",
+  "id": "redis",
+  "pid": 16476,
+  "bundlePath": "/containers/redis",
+  "rootfsPath": "/containers/redis/rootfs",
+  "status": "running",
+  "created": "2016-06-15T03:10:37.097884439Z"
+
+# ls /run/runc/redis/
+state.json
+
+
+# ps -ef --forest
+root     16467 17475  0 11:10 pts/6    00:00:00  |       \_ runc run redis
+root     16476 16467  0 11:10 pts/8    00:00:00  |           \_ redis-server 0.0.0.0:6379
+
+
+# runc kill redis
 ```
 
 ## Reference
