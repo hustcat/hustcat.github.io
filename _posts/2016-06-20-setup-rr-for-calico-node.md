@@ -1,0 +1,299 @@
+---
+layout: post
+title: Setup BGP Route Reflector for Calico node
+date: 2016-06-20 16:00:30
+categories: Network
+tags: calico
+excerpt: Setup BGP Route Reflector for Calico node
+---
+
+By default, Calico enable full node-to-node mesh, and each Calico node automatically sets up a BGP peering with every other Calico node in the network.
+
+However, the full node-to-node mesh is only useful for small scale deployments and where all Calico nodes are on the same L2 network. 
+
+We can disable full node-to-node mesh by setup [Route Reflector](https://en.wikipedia.org/wiki/Route_reflector) (or set of Route Reflectors), and each Calico node only peer with Route Reflector.
+
+More details see [1](https://github.com/projectcalico/calico-containers/blob/master/docs/bgp.md#configuring-a-global-bgp-peer), [2](https://github.com/projectcalico/calico-bird/tree/feature-ipinip/build_routereflector).
+
+## Environment
+
+```
+172.17.42.30 kube-master
+172.17.42.31 kube-node1
+172.17.42.32 kube-node2
+172.17.42.40 node1
+```
+
+```sh
+[root@kube-node1 ~]# calicoctl bgp node-mesh                
+on
+
+[root@kube-node1 ~]# ip route show
+default via 172.17.42.1 dev eth0 
+172.17.0.0/16 dev eth0  proto kernel  scope link  src 172.17.42.31 
+blackhole 192.168.0.0/26  proto bird 
+192.168.0.2 dev cali1f3c9fa633a  scope link 
+192.168.0.64/26 via 172.17.42.32 dev eth0  proto bird
+
+[root@kube-node2 ~]# ip route show
+default via 172.17.42.1 dev eth0 
+172.17.0.0/16 dev eth0  proto kernel  scope link  src 172.17.42.32 
+192.168.0.0/26 via 172.17.42.31 dev eth0  proto bird 
+192.168.0.64 dev cali03adc9f233a  scope link 
+blackhole 192.168.0.64/26  proto bird 
+192.168.0.65 dev calicb1a3b2633b  scope link
+```
+
+
+## Setup Route Reflector
+
+* [Disable the full node-to-node BGP mesh](https://github.com/projectcalico/calico-containers/blob/master/docs/bgp.md#disabling-the-full-node-to-node-bgp-mesh)
+
+```sh
+[root@kube-node1 ~]# calicoctl bgp node-mesh off
+
+[root@kube-node1 ~]# ip route show              
+default via 172.17.42.1 dev eth0 
+172.17.0.0/16 dev eth0  proto kernel  scope link  src 172.17.42.31 
+blackhole 192.168.0.0/26  proto bird 
+192.168.0.2 dev cali1f3c9fa633a  scope link
+
+[root@kube-node2 ~]# ip route show
+default via 172.17.42.1 dev eth0 
+172.17.0.0/16 dev eth0  proto kernel  scope link  src 172.17.42.32 
+192.168.0.64 dev cali03adc9f233a  scope link 
+blackhole 192.168.0.64/26  proto bird 
+192.168.0.65 dev calicb1a3b2633b  scope link
+```
+
+Route entry `192.168.0.64/26` on `kube-node1` is removed after disable full node-to-node BGP mesh.
+
+* Run BIRD Route Reflector on `node1`
+
+```sh
+# docker run --privileged --net=host -d -e IP=172.17.42.40 -e ETCD_AUTHORITY=172.17.42.30:2379 -v /var/log/:/var/log/ calico/routereflector:latest
+```
+
+* Adding the Route Reflector into etcd
+
+```sh
+# curl -L http://172.17.42.30:2379/v2/keys/calico/bgp/v1/rr_v4/172.17.42.40 -XPUT -d value="{\"ip\":\"172.17.42.40\",\"cluster_id\":\"1.0.0.1\"}"
+```
+
+
+* Config every node peer with each of the Route Reflectors
+
+```sh
+[root@kube-node1 ~]# calicoctl bgp peer add 172.17.42.40 as 65100    
+[root@kube-node1 ~]# calicoctl bgp peer show                     
++----------------------+--------+
+| Global IPv4 BGP Peer | AS Num |
++----------------------+--------+
+| 172.17.42.40         | 65100  |
++----------------------+--------+
+No global IPv6 BGP Peers defined.
+```
+
+
+Bird of Route Reflector will connect to every Calico node, and route entries will be automatically recreated.
+
+```sh
+[root@node1 ~]# netstat -tnp|grep 179
+tcp        0      0 172.17.42.40:54395      172.17.42.31:179        ESTABLISHED 27782/bird          
+tcp        0      0 172.17.42.40:56733      172.17.42.30:179        ESTABLISHED 27782/bird          
+tcp        0      0 172.17.42.40:58889      172.17.42.32:179        ESTABLISHED 27782/bird
+
+[root@kube-node1 ~]# ip route show
+default via 172.17.42.1 dev eth0 
+172.17.0.0/16 dev eth0  proto kernel  scope link  src 172.17.42.31 
+blackhole 192.168.0.0/26  proto bird 
+192.168.0.2 dev cali1f3c9fa633a  scope link 
+192.168.0.64/26 via 172.17.42.32 dev eth0  proto bird
+
+[root@kube-master ~]# ip route show
+default via 172.17.42.1 dev eth0 
+172.17.0.0/16 dev eth0  proto kernel  scope link  src 172.17.42.30  
+192.168.0.0/26 via 172.17.42.31 dev eth0  proto bird 
+192.168.0.64/26 via 172.17.42.32 dev eth0  proto bird
+
+[root@kube-node2 ~]# ip route show
+default via 172.17.42.1 dev eth0 
+172.17.0.0/16 dev eth0  proto kernel  scope link  src 172.17.42.32 
+192.168.0.0/26 via 172.17.42.31 dev eth0  proto bird 
+192.168.0.64 dev cali03adc9f233a  scope link 
+blackhole 192.168.0.64/26  proto bird 
+192.168.0.65 dev calicb1a3b2633b  scope link
+```
+
+For redundancy, multiple BGP route reflectors can be deployed seamlessly. The route reflectors are purely involved in the control of the network: no endpoint data passes through them.
+
+
+* Bird config of Route Reflector
+
+```sh
+[root@node1 ~]# docker exec 56854e7cb79a cat /config/bird.cfg
+# Generated by confd
+router id 172.17.42.40;
+
+# Watch interface up/down events.
+protocol device {
+  scan time 2;    # Scan interfaces every 2 seconds
+}
+
+# Template for all BGP clients
+template bgp bgp_template {
+  debug all;
+  description "Connection to BGP peer";
+  multihop;
+  import all;        # Import all routes, since we don't know what the upstream
+                     # topology is and therefore have to trust the ToR/RR.
+  export all;        # Export all.
+  source address 172.17.42.40;  # The local address we use for the TCP connection
+  graceful restart;  # See comment in kernel section about graceful restart.
+}
+
+
+
+
+# ------------- RR-to-RR full mesh -------------
+
+
+
+# For RR 172.17.42.40
+# Skipping ourselves
+
+
+
+
+# ------------- RR as a global peer -------------
+
+
+
+# This RR is a global peer with *all* calico nodes.
+
+
+
+
+# Peering with Calico node kube-master
+protocol bgp Global_172_17_42_30 from bgp_template {
+  local as 65100;
+  neighbor 172.17.42.30 as 65100;
+  rr client;
+  rr cluster id 1.0.0.1;
+}
+
+
+
+
+# Peering with Calico node kube-node1
+protocol bgp Global_172_17_42_31 from bgp_template {
+  local as 65100;
+  neighbor 172.17.42.31 as 65100;
+  rr client;
+  rr cluster id 1.0.0.1;
+}
+
+
+
+
+# Peering with Calico node kube-node2
+protocol bgp Global_172_17_42_32 from bgp_template {
+  local as 65100;
+  neighbor 172.17.42.32 as 65100;
+  rr client;
+  rr cluster id 1.0.0.1;
+}
+
+
+
+
+
+
+# ------------- RR as a node-specific peer -------------
+```
+
+* Bird config of Calico node
+
+```sh
+[root@kube-node1 ~]# docker exec e234b4e9dce7 cat /etc/calico/confd/config/bird.cfg
+# Generated by confd
+include "bird_aggr.cfg";
+include "bird_ipam.cfg";
+
+router id 172.17.42.31;
+
+
+
+# Configure synchronization between routing tables and kernel.
+protocol kernel {
+  learn;             # Learn all alien routes from the kernel
+  persist;           # Don't remove routes on bird shutdown
+  scan time 2;       # Scan kernel routing table every 2 seconds
+  import all;
+  export filter calico_ipip; # Default is export none
+  graceful restart;  # Turn on graceful restart to reduce potential flaps in
+                     # routes when reloading BIRD configuration.  With a full
+                     # automatic mesh, there is no way to prevent BGP from
+                     # flapping since multiple nodes update their BGP
+                     # configuration at the same time, GR is not guaranteed to
+                     # work correctly in this scenario.
+}
+
+# Watch interface up/down events.
+protocol device {
+  
+  debug { states };
+
+  scan time 2;    # Scan interfaces every 2 seconds
+}
+
+protocol direct {
+  
+  debug { states };
+
+  interface -"cali*", "*"; # Exclude cali* but include everything else.
+}
+
+
+# Template for all BGP clients
+template bgp bgp_template {
+  
+  debug { states };
+
+  description "Connection to BGP peer";
+  local as 65100;
+  multihop;
+  gateway recursive; # This should be the default, but just in case.
+  import all;        # Import all routes, since we don't know what the upstream
+                     # topology is and therefore have to trust the ToR/RR.
+  export filter calico_pools;  # Only want to export routes for workloads.
+  next hop self;     # Disable next hop processing and always advertise our
+                     # local address as nexthop
+  source address 172.17.42.31;  # The local address we use for the TCP connection
+  add paths on;
+  graceful restart;  # See comment in kernel section about graceful restart.
+}
+
+
+# ------------- Global peers -------------
+
+
+
+# For peer /global/peer_v4/172.17.42.40
+protocol bgp Global_172_17_42_40 from bgp_template {
+  neighbor 172.17.42.40 as 65100;
+}
+
+
+
+
+# ------------- Node-specific peers -------------
+
+# No node-specific peers configured.
+```
+
+## Related posts
+
+* [Calico Docker BIRD Route Reflector image](https://github.com/projectcalico/calico-bird/tree/feature-ipinip/build_routereflector)
+* [BGP Configuration](https://github.com/projectcalico/calico-containers/blob/master/docs/bgp.md)
+* [Configuring BIRD as a BGP Route Reflector](http://docs.projectcalico.org/en/1.3.0/bird-rr-config.html)
