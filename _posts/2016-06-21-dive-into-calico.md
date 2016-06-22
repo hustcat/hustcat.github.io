@@ -20,7 +20,7 @@ Calico的底层网络可以是[L2网络](http://docs.projectcalico.org/en/latest
 或者是普通的L3网络，ToR与spine之间L3(现在比较常见)、或者L2互联:
 ![](/assets/calico/leaf-spine-l3.jpg)
 
-值得一提的是，[facebook](Introducing data center fabric, the next-generation Facebook data center network)使用的这种架构:`The network is all layer3 – from TOR uplinks to the edge. `
+值得一提的是，[facebook](https://code.facebook.com/posts/360346274145943/introducing-data-center-fabric-the-next-generation-facebook-data-center-network/)使用的这种架构:`The network is all layer3 – from TOR uplinks to the edge. `
 
 ## [IP Interconnect Fabrics](http://docs.projectcalico.org/en/1.3.0/l3-interconnectFabric.html)
 
