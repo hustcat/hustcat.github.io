@@ -1,0 +1,511 @@
+[root@TENCENT64_site ~/perf-tools/bin]# ./funcgraph do_mount
+Tracing "do_mount"... Ctrl-C to end.
+  3)               |  do_mount() {
+  3)               |    kern_path() {
+  3)               |      filename_lookup() {
+  3)               |        path_lookupat() {
+  3)               |          path_init() {
+  3)   0.089 us    |            lg_local_lock();
+  3)   0.850 us    |          }
+  3)               |          link_path_walk() {
+  3)               |            inode_permission() {
+  3)               |              __inode_permission() {
+  3)   0.044 us    |                generic_permission();
+  3)   0.492 us    |              }
+  3)   0.766 us    |            }
+  3)               |            lookup_fast() {
+  3)   0.074 us    |              __d_lookup_rcu();
+  3)   0.480 us    |            }
+  3)               |            inode_permission() {
+  3)               |              __inode_permission() {
+  3)   0.033 us    |                generic_permission();
+  3)   0.299 us    |              }
+  3)   0.561 us    |            }
+  3)               |            lookup_fast() {
+  3)   0.063 us    |              __d_lookup_rcu();
+  3)   0.334 us    |            }
+  3)               |            inode_permission() {
+  3)               |              __inode_permission() {
+  3)   0.037 us    |                generic_permission();
+  3)   0.300 us    |              }
+  3)   0.578 us    |            }
+  3)               |            lookup_fast() {
+  3)   0.115 us    |              __d_lookup_rcu();
+  3)   0.379 us    |            }
+  3)               |            inode_permission() {
+  3)               |              __inode_permission() {
+  3)   0.037 us    |                generic_permission();
+  3)   0.298 us    |              }
+  3)   0.570 us    |            }
+  3)   5.488 us    |          }
+  3)               |          lookup_fast() {
+  3)   0.129 us    |            __d_lookup_rcu();
+  3)   0.406 us    |          }
+  3)   0.037 us    |          _raw_spin_lock();
+  3)               |          complete_walk() {
+  3)   0.035 us    |            _raw_spin_lock();
+  3)   0.077 us    |            mntget();
+  3)   0.037 us    |            lg_local_unlock();
+  3)   0.926 us    |          }
+  3)   9.199 us    |        }
+  3)   9.484 us    |      }
+  3)   9.889 us    |    }
+  3)               |    ns_capable() {
+  3)   0.034 us    |      cap_capable();
+  3)   0.322 us    |    }
+  3)               |    do_loopback() {
+  3)               |      kern_path() {
+  3)               |        filename_lookup() {
+  3)               |          path_lookupat() {
+  3)               |            path_init() {
+  3)   0.036 us    |              lg_local_lock();
+  3)   0.304 us    |            }
+  3)               |            link_path_walk() {
+  3)               |              inode_permission() {
+  3)               |                __inode_permission() {
+  3)   0.039 us    |                  generic_permission();
+  3)   0.406 us    |                }
+  3)   0.672 us    |              }
+  3)               |              lookup_fast() {
+  3)   0.073 us    |                __d_lookup_rcu();
+  3)   0.080 us    |                __lookup_mnt();
+  3)   0.714 us    |              }
+  3)               |              inode_permission() {
+  3)               |                __inode_permission() {
+  3)   0.033 us    |                  generic_permission();
+  3)   0.310 us    |                }
+  3)   0.570 us    |              }
+  3)               |              lookup_fast() {
+  3)   0.070 us    |                __d_lookup_rcu();
+  3)   0.342 us    |              }
+  3)               |              unlazy_walk() {
+  3)   0.037 us    |                _raw_spin_lock();
+  3)   0.037 us    |                _raw_spin_lock();
+  3)   0.038 us    |                _raw_spin_lock();
+  3)               |                path_get() {
+  3)   0.034 us    |                  mntget();
+  3)   0.118 us    |                  _raw_spin_lock();
+  3)   0.820 us    |                }
+  3)   0.037 us    |                mntget();
+  3)   0.036 us    |                lg_local_unlock();
+  3)   3.070 us    |              }
+  3)   0.037 us    |              mntget();
+  3)   0.037 us    |              _cond_resched();
+  3)               |              touch_atime() {
+  3)               |                current_fs_time() {
+  3)   0.068 us    |                  current_kernel_time();
+  3)   0.036 us    |                  timespec_trunc();
+  3)   0.633 us    |                }
+  3)   0.984 us    |              }
+  3)               |              proc_self_follow_link() {
+  3)   0.084 us    |                task_tgid_nr_ns();
+  3)   0.061 us    |                kmem_cache_alloc_trace();
+  3)   0.955 us    |              }
+  3)               |              link_path_walk() {
+  3)               |                inode_permission() {
+  3)               |                  __inode_permission() {
+  3)   0.038 us    |                    generic_permission();
+  3)   0.307 us    |                  }
+  3)   0.578 us    |                }
+  3)   0.902 us    |              }
+  3)               |              lookup_fast() {
+  3)               |                __d_lookup() {
+  3)   0.040 us    |                  _raw_spin_lock();
+  3)   0.354 us    |                }
+  3)               |                pid_revalidate() {
+  3)   0.051 us    |                  get_pid_task();
+  3)   0.374 us    |                }
+  3)   0.040 us    |                follow_managed();
+  3)   1.627 us    |              }
+  3)               |              dput() {
+  3)   0.138 us    |                _raw_spin_lock();
+  3)   0.405 us    |              }
+  3)               |              proc_self_put_link() {
+  3)   0.112 us    |                kfree();
+  3)   0.401 us    |              }
+  3)               |              path_put() {
+  3)               |                dput() {
+  3)   0.036 us    |                  _raw_spin_lock();
+  3)   0.303 us    |                }
+  3)               |                mntput() {
+  3)               |                  mntput_no_expire() {
+  3)   0.038 us    |                    lg_local_lock();
+  3)   0.033 us    |                    lg_local_unlock();
+  3)   0.577 us    |                  }
+  3)   0.885 us    |                }
+  3)   1.691 us    |              }
+  3)               |              inode_permission() {
+  3)               |                __inode_permission() {
+  3)               |                  proc_pid_permission() {
+  3)   0.036 us    |                    get_pid_task();
+  3)   0.039 us    |                    has_pid_permissions();
+  3)   0.038 us    |                    generic_permission();
+  3)   0.867 us    |                  }
+  3)   1.235 us    |                }
+  3)   1.498 us    |              }
+  3)               |              lookup_fast() {
+  3)   0.363 us    |                __d_lookup();
+  3)   0.646 us    |              }
+  3)               |              lookup_slow() {
+  3)   0.107 us    |                mutex_lock();
+  3)               |                __lookup_hash() {
+  3)               |                  lookup_dcache() {
+  3)               |                    d_lookup() {
+  3)   0.050 us    |                      __d_lookup();
+  3)   0.417 us    |                    }
+  3)               |                    d_alloc() {
+  3)               |                      __d_alloc() {
+  3)   0.084 us    |                        kmem_cache_alloc();
+  3)   0.044 us    |                        d_set_d_op();
+  3)   1.235 us    |                      }
+  3)   0.037 us    |                      _raw_spin_lock();
+  3)   1.957 us    |                    }
+  3)   2.931 us    |                  }
+  3)               |                  lookup_real() {
+  3)               |                    proc_tgid_base_lookup() {
+  3)               |                      proc_pident_lookup() {
+  3)   0.039 us    |                        get_pid_task();
+  3)               |                        proc_pident_instantiate() {
+  3)               |                          proc_pid_make_inode() {
+  3)               |                            new_inode() {
+  3)               |                              new_inode_pseudo() {
+  3)               |                                alloc_inode() {
+  3)               |                                  proc_alloc_inode() {
+  3)   0.080 us    |                                    kmem_cache_alloc();
+  3)   0.045 us    |                                    current_kernel_time();
+  3)   0.879 us    |                                  }
+  3)               |                                  inode_init_always() {
+  3)   0.037 us    |                                    __mutex_init();
+  3)   0.923 us    |                                  }
+  3)   2.511 us    |                                }
+  3)   0.036 us    |                                _raw_spin_lock();
+  3)   3.174 us    |                              }
+  3)               |                              inode_sb_list_add() {
+  3)   0.038 us    |                                _raw_spin_lock();
+  3)   0.359 us    |                              }
+  3)   4.171 us    |                            }
+  3)   0.036 us    |                            get_next_ino();
+  3)   0.036 us    |                            current_kernel_time();
+  3)   0.052 us    |                            get_task_pid();
+  3)   0.037 us    |                            _raw_spin_lock();
+  3)   0.045 us    |                            get_dumpable();
+  3)   5.897 us    |                          }
+  3)   0.050 us    |                          set_nlink();
+  3)   0.068 us    |                          d_set_d_op();
+  3)               |                          d_instantiate() {
+  3)   0.033 us    |                            _raw_spin_lock();
+  3)               |                            __d_instantiate() {
+  3)   0.036 us    |                              _raw_spin_lock();
+  3)   0.037 us    |                              _raw_spin_lock();
+  3)   0.594 us    |                            }
+  3)   1.149 us    |                          }
+  3)               |                          d_rehash() {
+  3)   0.035 us    |                            _raw_spin_lock();
+  3)               |                            _d_rehash() {
+  3)   0.039 us    |                              __d_rehash();
+  3)   0.324 us    |                            }
+  3)   0.885 us    |                          }
+  3)               |                          pid_revalidate() {
+  3)   0.036 us    |                            get_pid_task();
+  3)   0.038 us    |                            _raw_spin_lock();
+  3)   0.036 us    |                            get_dumpable();
+  3)   0.878 us    |                          }
+  3) + 10.527 us   |                        }
+  3) + 11.220 us   |                      }
+  3) + 11.506 us   |                    }
+  3) + 11.817 us   |                  }
+  3) + 15.317 us   |                }
+  3)   0.053 us    |                mutex_unlock();
+  3)   0.038 us    |                follow_managed();
+  3) + 16.515 us   |              }
+  3)   0.037 us    |              _raw_spin_lock();
+  3)               |              dput() {
+  3)   0.037 us    |                _raw_spin_lock();
+  3)   0.308 us    |              }
+  3)   0.037 us    |              _raw_spin_lock();
+  3)               |              inode_permission() {
+  3)               |                __inode_permission() {
+  3)   0.036 us    |                  _raw_spin_lock();
+  3)   0.039 us    |                  generic_permission();
+  3)   0.662 us    |                }
+  3)   1.285 us    |              }
+  3) + 38.393 us   |            }
+  3)               |            lookup_fast() {
+  3)   0.219 us    |              __d_lookup();
+  3)   0.552 us    |            }
+  3)               |            lookup_slow() {
+  3)   0.055 us    |              mutex_lock();
+  3)               |              __lookup_hash() {
+  3)               |                lookup_dcache() {
+  3)               |                  d_lookup() {
+  3)   0.033 us    |                    __d_lookup();
+  3)   0.382 us    |                  }
+  3)               |                  d_alloc() {
+  3)               |                    __d_alloc() {
+  3)   0.041 us    |                      kmem_cache_alloc();
+  3)   0.047 us    |                      d_set_d_op();
+  3)   0.862 us    |                    }
+  3)   0.037 us    |                    _raw_spin_lock();
+  3)   1.408 us    |                  }
+  3)   2.369 us    |                }
+  3)               |                lookup_real() {
+  3)               |                  proc_ns_dir_lookup() {
+  3)   0.037 us    |                    get_pid_task();
+  3)               |                    proc_ns_instantiate() {
+  3)               |                      proc_pid_make_inode() {
+  3)               |                        new_inode() {
+  3)               |                          new_inode_pseudo() {
+  3)               |                            alloc_inode() {
+  3)               |                              proc_alloc_inode() {
+  3)   0.039 us    |                                kmem_cache_alloc();
+  3)   0.033 us    |                                current_kernel_time();
+  3)   0.663 us    |                              }
+  3)               |                              inode_init_always() {
+  3)   0.036 us    |                                __mutex_init();
+  3)   0.672 us    |                              }
+  3)   1.966 us    |                            }
+  3)   0.038 us    |                            _raw_spin_lock();
+  3)   2.499 us    |                          }
+  3)               |                          inode_sb_list_add() {
+  3)   0.037 us    |                            _raw_spin_lock();
+  3)   0.310 us    |                          }
+  3)   3.306 us    |                        }
+  3)   0.035 us    |                        get_next_ino();
+  3)   0.038 us    |                        current_kernel_time();
+  3)   0.036 us    |                        get_task_pid();
+  3)   0.038 us    |                        _raw_spin_lock();
+  3)   0.037 us    |                        get_dumpable();
+  3)   4.995 us    |                      }
+  3)   0.052 us    |                      d_set_d_op();
+  3)               |                      d_instantiate() {
+  3)   0.039 us    |                        _raw_spin_lock();
+  3)               |                        __d_instantiate() {
+  3)   0.038 us    |                          _raw_spin_lock();
+  3)   0.036 us    |                          _raw_spin_lock();
+  3)   0.584 us    |                        }
+  3)   1.149 us    |                      }
+  3)               |                      d_rehash() {
+  3)   0.037 us    |                        _raw_spin_lock();
+  3)               |                        _d_rehash() {
+  3)   0.052 us    |                          __d_rehash();
+  3)   0.322 us    |                        }
+  3)   0.861 us    |                      }
+  3)               |                      pid_revalidate() {
+  3)   0.044 us    |                        get_pid_task();
+  3)   0.046 us    |                        _raw_spin_lock();
+  3)   0.041 us    |                        get_dumpable();
+  3)   0.870 us    |                      }
+  3)   9.148 us    |                    }
+  3) + 10.037 us   |                  }
+  3) + 10.404 us   |                }
+  3) + 13.283 us   |              }
+  3)   0.050 us    |              mutex_unlock();
+  3)   0.039 us    |              follow_managed();
+  3) + 14.758 us   |            }
+  3)   0.035 us    |            mntget();
+  3)   0.036 us    |            _cond_resched();
+  3)               |            touch_atime() {
+  3)               |              current_fs_time() {
+  3)   0.035 us    |                current_kernel_time();
+  3)   0.036 us    |                timespec_trunc();
+  3)   0.641 us    |              }
+  3)   1.093 us    |            }
+  3)               |            proc_ns_follow_link() {
+  3)   0.037 us    |              get_pid_task();
+  3)               |              ptrace_may_access() {
+  3)   0.038 us    |                _raw_spin_lock();
+  3)   0.052 us    |                __ptrace_may_access();
+  3)   0.675 us    |              }
+  3)               |              proc_ns_get_dentry() {
+  3)   0.051 us    |                netns_get();
+  3)               |                d_alloc_pseudo() {
+  3)               |                  __d_alloc() {
+  3)   0.035 us    |                    kmem_cache_alloc();
+  3)   0.038 us    |                    d_set_d_op();
+  3)   0.756 us    |                  }
+  3)   1.025 us    |                }
+  3)   0.036 us    |                netns_inum();
+  3)               |                iget_locked() {
+  3)   0.038 us    |                  hash();
+  3)   0.047 us    |                  _raw_spin_lock();
+  3)   0.367 us    |                  find_inode_fast();
+  3)               |                  alloc_inode() {
+  3)               |                    proc_alloc_inode() {
+  3)   0.039 us    |                      kmem_cache_alloc();
+  3)   0.037 us    |                      current_kernel_time();
+  3)   0.606 us    |                    }
+  3)               |                    inode_init_always() {
+  3)   0.037 us    |                      __mutex_init();
+  3)   0.435 us    |                    }
+  3)   1.623 us    |                  }
+  3)   0.038 us    |                  _raw_spin_lock();
+  3)   0.037 us    |                  find_inode_fast();
+  3)   0.036 us    |                  _raw_spin_lock();
+  3)               |                  inode_sb_list_add() {
+  3)   0.037 us    |                    _raw_spin_lock();
+  3)   0.307 us    |                  }
+  3)   4.452 us    |                }
+  3)   0.033 us    |                current_kernel_time();
+  3)               |                unlock_new_inode() {
+  3)   0.036 us    |                  _raw_spin_lock();
+  3)               |                  wake_up_bit() {
+  3)   0.061 us    |                    bit_waitqueue();
+  3)   0.036 us    |                    __wake_up_bit();
+  3)   0.621 us    |                  }
+  3)   1.182 us    |                }
+  3)   0.131 us    |                d_set_d_op();
+  3)               |                d_instantiate_unique() {
+  3)   0.036 us    |                  _raw_spin_lock();
+  3)               |                  __d_instantiate_unique() {
+  3)               |                    __d_instantiate() {
+  3)   0.035 us    |                      _raw_spin_lock();
+  3)   0.039 us    |                      _raw_spin_lock();
+  3)   0.615 us    |                    }
+  3)   0.902 us    |                  }
+  3)   1.447 us    |                }
+  3) + 10.563 us   |              }
+  3)   0.036 us    |              mntget();
+  3)               |              nd_jump_link() {
+  3)               |                path_put() {
+  3)               |                  dput() {
+  3)   0.033 us    |                    _raw_spin_lock();
+  3)   0.295 us    |                  }
+  3)               |                  mntput() {
+  3)               |                    mntput_no_expire() {
+  3)   0.035 us    |                      lg_local_lock();
+  3)   0.038 us    |                      lg_local_unlock();
+  3)   0.762 us    |                    }
+  3)   1.314 us    |                  }
+  3)   2.201 us    |                }
+  3)   2.463 us    |              }
+  3) + 15.299 us   |            }
+  3)               |            path_put() {
+  3)               |              dput() {
+  3)   0.039 us    |                _raw_spin_lock();
+  3)   0.035 us    |                pid_delete_dentry();
+  3)   0.123 us    |                _raw_spin_lock();
+  3)   1.144 us    |              }
+  3)               |              mntput() {
+  3)               |                mntput_no_expire() {
+  3)   0.036 us    |                  lg_local_lock();
+  3)   0.036 us    |                  lg_local_unlock();
+  3)   0.571 us    |                }
+  3)   0.858 us    |              }
+  3)   2.508 us    |            }
+  3)   0.068 us    |            complete_walk();
+  3)               |            path_put() {
+  3)               |              dput() {
+  3)   0.129 us    |                _raw_spin_lock();
+  3)   0.389 us    |              }
+  3)               |              mntput() {
+  3)               |                mntput_no_expire() {
+  3)   0.038 us    |                  lg_local_lock();
+  3)   0.036 us    |                  lg_local_unlock();
+  3)   0.595 us    |                }
+  3)   0.872 us    |              }
+  3)   1.763 us    |            }
+  3) + 78.094 us   |          }
+  3) + 78.359 us   |        }
+  3) + 78.634 us   |      }
+  3)   0.038 us    |      proc_ns_inode();
+  3)   0.037 us    |      get_proc_ns();
+  3)               |      lock_mount() {
+  3)   0.038 us    |        mutex_lock();
+  3)   0.149 us    |        down_write();
+  3)               |        lookup_mnt() {
+  3)   0.037 us    |          lg_local_lock();
+  3)   0.133 us    |          __lookup_mnt();
+  3)   0.036 us    |          lg_local_unlock();
+  3)   0.951 us    |        }
+  3)               |        new_mountpoint() {
+  3)   0.051 us    |          kmem_cache_alloc_trace();
+  3)   0.038 us    |          _raw_spin_lock();
+  3)   0.747 us    |        }
+  3)   2.916 us    |      }
+  3)               |      clone_mnt() {
+  3)               |        alloc_vfsmnt() {
+  3)   0.086 us    |          kmem_cache_alloc();
+  3)   0.165 us    |          kmem_cache_alloc();
+  3)   0.038 us    |          _raw_spin_lock_irqsave();
+  3)   0.049 us    |          _raw_spin_unlock_irqrestore();
+  3)   0.036 us    |          _raw_spin_lock();
+  3)   0.036 us    |          _raw_spin_lock_irqsave();
+  3)   0.045 us    |          _raw_spin_unlock_irqrestore();
+  3)   0.120 us    |          kmem_cache_free();
+  3)               |          kstrdup() {
+  3)               |            __kmalloc_track_caller() {
+  3)   0.050 us    |              kmalloc_slab();
+  3)   0.323 us    |            }
+  3)   0.771 us    |          }
+  3)               |          __alloc_percpu() {
+  3)               |            pcpu_alloc() {
+  3)   0.040 us    |              mutex_lock();
+  3)   0.051 us    |              _raw_spin_lock_irqsave();
+  3)               |              pcpu_alloc_area() {
+  3)   0.059 us    |                pcpu_chunk_relocate();
+  3)   1.412 us    |              }
+  3)   0.047 us    |              _raw_spin_unlock_irqrestore();
+  3)               |              pcpu_populate_chunk() {
+  3)   0.056 us    |                pcpu_next_pop();
+  3)   1.570 us    |              }
+  3)   0.034 us    |              mutex_unlock();
+  3)   5.200 us    |            }
+  3)   5.534 us    |          }
+  3)   9.706 us    |        }
+  3)   0.036 us    |        _raw_spin_lock();
+  3)   3.464 us    |        lg_global_lock();
+  3)   0.606 us    |        lg_global_unlock();
+  3) + 15.111 us   |      }
+  3)               |      attach_recursive_mnt() {
+  3)               |        propagate_mnt() {
+  3)   1.291 us    |          lg_global_lock();
+  3)   0.613 us    |          lg_global_unlock();
+  3)   2.510 us    |        }
+  3)   1.310 us    |        lg_global_lock();
+  3)               |        mnt_set_mountpoint() {
+  3)   0.036 us    |          _raw_spin_lock();
+  3)   0.374 us    |        }
+  3)               |        commit_tree() {
+  3)               |          touch_mnt_namespace() {
+  3)               |            __wake_up() {
+  3)   0.034 us    |              _raw_spin_lock_irqsave();
+  3)   0.050 us    |              __wake_up_common();
+  3)   0.043 us    |              _raw_spin_unlock_irqrestore();
+  3)   0.956 us    |            }
+  3)   1.558 us    |          }
+  3)   2.317 us    |        }
+  3)   0.613 us    |        lg_global_unlock();
+  3)   8.761 us    |      }
+  3)               |      unlock_mount() {
+  3)   0.032 us    |        put_mountpoint();
+  3)               |        namespace_unlock() {
+  3)   0.039 us    |          up_write();
+  3)   0.461 us    |        }
+  3)   0.038 us    |        mutex_unlock();
+  3)   1.328 us    |      }
+  3)               |      path_put() {
+  3)               |        dput() {
+  3)   0.035 us    |          _raw_spin_lock();
+  3)   0.300 us    |        }
+  3)               |        mntput() {
+  3)               |          mntput_no_expire() {
+  3)   0.043 us    |            lg_local_lock();
+  3)   0.037 us    |            lg_local_unlock();
+  3)   0.645 us    |          }
+  3)   0.981 us    |        }
+  3)   1.881 us    |      }
+  3) ! 111.117 us  |    }
+  3)               |    path_put() {
+  3)               |      dput() {
+  3)   0.037 us    |        _raw_spin_lock();
+  3)   0.303 us    |      }
+  3)               |      mntput() {
+  3)               |        mntput_no_expire() {
+  3)   0.034 us    |          lg_local_lock();
+  3)   0.037 us    |          lg_local_unlock();
+  3)   0.567 us    |        }
+  3)   0.838 us    |      }
+  3)   1.629 us    |    }
+  3) ! 124.463 us  |  }
+^C
+Ending tracing...
