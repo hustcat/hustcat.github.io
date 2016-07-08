@@ -72,6 +72,7 @@ Added sock_net() and sock_net_set() methods (get/set network namespace of a sock
 
 - (1) setns每个只会操作一个namespace对象，所以需要创建一个新的nsproxy对象，同时拷贝旧的所有namespace对象；
 - (2) 修改nsproxy，指向目标namespace对象；
+
 ```c
 static int netns_install(struct nsproxy *nsproxy, void *ns)
 {
@@ -86,6 +87,7 @@ static int netns_install(struct nsproxy *nsproxy, void *ns)
 	return 0;
 }
 ```
+
 - (3) 进程指向新的nsproxy对象。
 
 
