@@ -203,8 +203,15 @@ Breakpoint 2 at 0x401018 for main.dostuff() ./test.go:8 (2)
 Process 14068 has exited with status 0
 ```
 
+* debug with arguments
+
+```sh
+# dlv debug . -- -key=value
+```
+
 ### Reference
 
 * [Debugging Go programs with Delve](https://blog.gopheracademy.com/advent-2015/debugging-with-delve/)
 * [Installation on Linux](https://github.com/derekparker/delve/blob/master/Documentation/installation/linux/install.md)
 * [Debugging Go Code with GDB](https://golang.org/doc/gdb)
+* [how to pass arguments to the running program](https://github.com/derekparker/delve/issues/178)
