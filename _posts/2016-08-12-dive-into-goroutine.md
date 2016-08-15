@@ -284,6 +284,286 @@ TEXT runtime·gogo(SB), NOSPLIT, $0-8
 	JMP	BX
 ```
 
+## 调度时机
+
+* goroutine结束
+
+很显然，当M运行完一个G后，会调用`schedule`运行一个新的G:
+
+```c
+void
+runtime·goexit(void)
+{
+	if(g->status != Grunning)
+		runtime·throw("bad g status");
+	if(raceenabled)
+		runtime·racegoend();
+	runtime·mcall(goexit0);
+}
+
+// runtime·goexit continuation on g0.
+static void
+goexit0(G *gp)
+{
+...
+	schedule();
+}
+```
+
+* runtime·park
+
+goroutine可以执行`runtime·park`挂起自己，M会运行一个新的G:
+
+```
+// Puts the current goroutine into a waiting state and calls unlockf.
+// If unlockf returns false, the goroutine is resumed.
+void
+runtime·park(bool(*unlockf)(G*, void*), void *lock, int8 *reason)
+{
+	if(g->status != Grunning)
+		runtime·throw("bad g status");
+	m->waitlock = lock;
+	m->waitunlockf = unlockf;
+	g->waitreason = reason;
+	runtime·mcall(park0);
+}
+
+// runtime·park continuation on g0.
+static void
+park0(G *gp)
+{
+	bool ok;
+
+	gp->status = Gwaiting;
+	gp->m = nil;
+	m->curg = nil;
+	if(m->waitunlockf) {
+		ok = m->waitunlockf(gp, m->waitlock);
+		m->waitunlockf = nil;
+		m->waitlock = nil;
+		if(!ok) {
+			gp->status = Grunnable;
+			execute(gp);  // Schedule it back, never returns.
+		}
+	}
+	if(m->lockedg) {
+		stoplockedm();
+		execute(gp);  // Never returns.
+	}
+	schedule(); ///调度
+}
+```
+
+* 系统调用
+
+## LockOSThread
+
+因为goroutine和OS线程并不是一一对应的关系。在一些场景下，我们希望goroutine在同一个OS线程中运行，比如goroutine使用了[线程局部存储](https://github.com/golang/go/wiki/LockOSThread)，[LockOSThread](https://golang.org/pkg/runtime/#LockOSThread)能够保证goroutine在同一个OS线程中运行：
+
+> LockOSThread wires the calling goroutine to its current operating system thread. Until the calling
+> goroutine exits or calls UnlockOSThread, it will always execute in that thread, and no other
+> goroutine can.
+
+```
+struct	G
+{
+...
+	M*	lockedm;
+...
+}
+
+struct	M
+{
+...
+	uint32	locked;		// tracking for LockOSThread
+	G*	lockedg;
+...
+}
+```
+
+
+```c
+// lockOSThread is called by runtime.LockOSThread and runtime.lockOSThread below
+// after they modify m->locked. Do not allow preemption during this call,
+// or else the m might be different in this function than in the caller.
+#pragma textflag NOSPLIT
+static void
+lockOSThread(void)
+{
+	m->lockedg = g;
+	g->lockedm = m;
+}
+
+void
+runtime·LockOSThread(void)
+{
+	m->locked |= LockExternal;
+	lockOSThread();
+}
+
+void
+runtime·lockOSThread(void)
+{
+	m->locked += LockInternal;
+	lockOSThread();
+}
+```
+
+在调度G的时候，如果发现G->lockedm被设置，则会将G(实际上是关联的P)转给对应的M:
+```c
+// One round of scheduler: find a runnable goroutine and execute it.
+// Never returns.
+static void
+schedule(void)
+{
+...
+	if(gp->lockedm) {
+		// Hands off own p to the locked m,
+		// then blocks waiting for a new p.
+		startlockedm(gp);
+		goto top;
+	}
+...
+}
+
+
+// Schedules the locked m to run the locked gp.
+static void
+startlockedm(G *gp)
+{
+	M *mp;
+	P *p;
+	//锁定的M
+	mp = gp->lockedm;
+	if(mp == m)
+		runtime·throw("startlockedm: locked to me");
+	if(mp->nextp)
+		runtime·throw("startlockedm: m has p");
+	// directly handoff current P to the locked m
+	incidlelocked(-1);
+	//当前M与P解除绑定
+	p = releasep();
+
+	//目标M与P绑定
+	mp->nextp = p;
+
+	//wakeup目标M
+	runtime·notewakeup(&mp->park);
+
+	//休眠当前M
+	stopm();
+}
+```
+
+当goroutine结束时，会解除M和G的这种锁定关系：
+
+```
+// runtime·goexit continuation on g0.
+static void
+goexit0(G *gp)
+{
+	gp->lockedm = nil;
+	m->lockedg = nil;
+	m->locked = 0;
+...
+}
+```
+
+考虑如下程序：
+
+```go
+func main{
+	var wg sync.WaitGroup
+	wg.Add(1)
+	go func(){
+		defer wg.Done()
+		runtime.LockOSThread()
+		// sleep
+		time.Sleep(10 * time.Second)
+	}()
+	wg.Wait()
+}
+```
+
+当主goroutine G0对应的M创建一个G1，并放到M->P的运行队列。G0等待，执行G1中的`runtime.LockOSThread`，G1被挂起。如果此时，M有锁定的G(G1)，M不会调度新的G运行，而将P转给别的M，然后陷入休眠状态。唤醒后重新执行G1。
+
+```c
+// runtime·park continuation on g0.
+static void
+park0(G *gp)
+{
+	bool ok;
+
+	gp->status = Gwaiting;
+	gp->m = nil;
+	m->curg = nil;
+...
+	/// 有锁定的G
+	if(m->lockedg) {
+		stoplockedm(); ///休眠当前M
+		execute(gp);  // Never returns.
+	}
+	schedule();
+}
+
+
+// Stops execution of the current m that is locked to a g until the g is runnable again.
+// Returns with acquired P.
+static void
+stoplockedm(void)
+{
+	P *p;
+
+	///将P转到其它M
+	if(m->p) {
+		// Schedule another M to run this p.
+		p = releasep();
+		handoffp(p);
+	}
+	incidlelocked(1);
+
+	/// 陷入休眠
+	// Wait until another thread schedules lockedg again.
+	runtime·notesleep(&m->park);
+	runtime·noteclear(&m->park);
+	if(m->lockedg->status != Grunnable)
+		runtime·throw("stoplockedm: not runnable");
+	acquirep(m->nextp);
+	m->nextp = nil;
+}
+```
+
+从上面的分析可以看到，当goroutine执行`runtime.LockOSThread`后，该goroutine只会在锁定的M执行，同时，M也只会执行锁定的G，直到锁定的G执行结束。由于go语言中，goroutine与OS线程不是一一对应的，我们必须小心处理一些依赖于底层OS线程的场景，比如线程局部存储，再比如[net namespace](https://github.com/hustcat/sriov-cni/blob/master/vendor/github.com/containernetworking/cni/pkg/ns/ns.go#L286)，而`runtime.LockOSThread`保证了goroutine与OS线程的一一对应。
+
+* time.Sleep
+
+调用`time.Sleep`后，会让当前goroutine挂起，详细参考[这里](http://skoo.me/go/2013/09/12/go-runtime-timer/)。
+
+```
+// Sleep puts the current goroutine to sleep for at least ns nanoseconds.
+func Sleep(ns int64) {
+	runtime·tsleep(ns, "sleep");
+}
+
+// Put the current goroutine to sleep for ns nanoseconds.
+void
+runtime·tsleep(int64 ns, int8 *reason)
+{
+	Timer t;
+
+	if(ns <= 0)
+		return;
+
+	t.when = runtime·nanotime() + ns;
+	t.period = 0;
+	t.fv = &readyv;
+	t.arg.data = g;
+	runtime·lock(&timers);
+	addtimer(&t);
+	runtime·parkunlock(&timers, reason);
+}
+```
+
 ## Reference
 
 * [The Go scheduler](http://morsmachine.dk/go-scheduler)
