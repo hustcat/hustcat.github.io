@@ -7,13 +7,23 @@ tags: golang
 excerpt: Dive into goroutine internal
 ---
 
-Goroutine的[实现](https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw/edit)中有一些简单的概念。
+Goroutine的[实现](http://morsmachine.dk/go-scheduler)中有一些简单的概念。
 
 M:对应一个OS线程，执行goroutine封装成的任务(这个任务有自己的代码逻辑、栈、程序计数器)
 
 G:对应一个goroutine，相当于一个个的任务
 
-P:调度器，维护任务(goroutine)运行队列，并交给M执行。更确切的说，是M从调度器取任务执行。
+P:调度器，维护调度上下文信息(context)和任务(goroutine)的运行队列(runqueues)，并交给M执行。更确切的说，是M从调度器取任务执行。
+
+M/G/P的关系：
+
+![](/assets/goroutine/MGP1.jpg)
+
+简单来说，goroutine的内部实现就是一个线程池。一般来说，有M和G就行了，这里为什么还要搞一个P？
+
+这也是goroutine内部实现一个精妙的地方，当一个M执行G发生阻塞时(比如goroutine中有系统调用)，可以将P转到别的M调度执行其它的G。
+
+![](/assets/goroutine/MGP2.jpg)
 
 go关键字创建一个goroutine，实际上会转化为`runtime.newproc`的调用：
 
