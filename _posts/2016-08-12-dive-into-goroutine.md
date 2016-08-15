@@ -410,6 +410,7 @@ runtime·lockOSThread(void)
 ```
 
 在调度G的时候，如果发现G->lockedm被设置，则会将G(实际上是关联的P)转给对应的M:
+
 ```c
 // One round of scheduler: find a runnable goroutine and execute it.
 // Never returns.
