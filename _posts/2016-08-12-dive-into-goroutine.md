@@ -41,7 +41,7 @@ runtime.newproc(size, f, args)
 
 函数到G的转换：
 
-```go
+```c
 struct	Gobuf
 {
 	// The offsets of sp, pc, and g are known to (hard-coded in) libmach.
@@ -74,7 +74,7 @@ runtime·gostartcall(Gobuf *gobuf, void (*fn)(void), void *ctxt)
 
 runtime·newproc创建一个G，然后放到P的运行队列。
 
-```go
+```c
 void
 runtime·newproc(int32 siz, FuncVal* fn, ...)
 {
@@ -118,7 +118,7 @@ runtime·newproc1(FuncVal *fn, byte *argp, int32 narg, int32 nret, void *callerp
 
 当G太多，M太少，还有空闲的P的时候，就创建一些新的M，去执行G：
 
-```
+```c
 // Create a new m.  It will start off with a call to fn, or else the scheduler.
 static void
 newm(void(*fn)(void), P *p){
@@ -170,7 +170,7 @@ runtime·newosproc(M *mp, void *stk)
 
 可以看到，OS线程实际上是执行的runtime·mstart函数：
 
-```go
+```c
 // Called to start an M.
 void
 runtime·mstart(void)
@@ -197,7 +197,7 @@ schedule()进行任务(goroutine)调度。
 
 ### 调度M
 
-```go
+```c
 // One round of scheduler: find a runnable goroutine and execute it.
 // Never returns.
 static void
@@ -234,7 +234,7 @@ schedule(void)
 
 ### 运行G
 
-```go
+```c
 // Schedules gp to run on the current M.
 // Never returns.
 static void
@@ -286,9 +286,11 @@ TEXT runtime·gogo(SB), NOSPLIT, $0-8
 
 ## 调度时机
 
-* goroutine结束
+### goroutine结束
 
-很显然，当M运行完一个G后，会调用`schedule`运行一个新的G:
+* runtime·goexit
+
+很显然，当G运行结束时，都会调用`runtime·goexit`做一些清理工作，后者会调用`schedule`运行一个新的G:
 
 ```c
 void
@@ -310,11 +312,15 @@ goexit0(G *gp)
 }
 ```
 
-* runtime·park
+* runtime·mcall
+
+注意，`runtime·goexit`通过`runtime·mcall`调用`goexit0`，`runtime·mcall`会切到`m->g0`的栈，因为`goexit0`的逻辑不属于某个G，每个M都有一个g0，它的栈专门用于执行调度的逻辑。详细参考runtime/asm_amd64.s文件。
+
+### runtime·park
 
 goroutine可以执行`runtime·park`挂起自己，M会运行一个新的G:
 
-```
+```c
 // Puts the current goroutine into a waiting state and calls unlockf.
 // If unlockf returns false, the goroutine is resumed.
 void
@@ -354,7 +360,159 @@ park0(G *gp)
 }
 ```
 
-* 系统调用
+* runtime·park
+
+对于调用`runtime·park`陷入阻塞的G，只有调用`runtime·ready`函数才能唤醒。
+
+```c
+// Mark gp ready to run.
+void
+runtime·ready(G *gp)
+{
+	// Mark runnable.
+	m->locks++;  // disable preemption because it can be holding p in a local var
+	if(gp->status != Gwaiting) {
+		runtime·printf("goroutine %D has status %d\n", gp->goid, gp->status);
+		runtime·throw("bad g->status in ready");
+	}
+	gp->status = Grunnable;
+
+	/// put g on local runnable queue
+	runqput(m->p, gp);
+	if(runtime·atomicload(&runtime·sched.npidle) != 0 && runtime·atomicload(&runtime·sched.nmspinning) == 0)  // TODO: fast atomic
+		wakep();
+	m->locks--;
+	if(m->locks == 0 && g->preempt)  // restore the preemption request in case we've cleared it in newstack
+		g->stackguard0 = StackPreempt;
+}
+```
+
+值得注意的是，`runtime·park`和`runtime·ready`在channel的实现中用到。
+
+### 系统调用
+
+Go语言自身对系统调用进行了封装(syscall/zsyscall_linux_amd64.go)。当goroutine执行系统调用时，对应的M(OS线程)会陷入阻塞状态，不能运行其它的G。此时，需要将P转给其它M调度。
+
+系统调用封装：
+
+```
+// syscall/asm_linux_amd64.s
+// System calls for AMD64, Linux
+//
+
+// func Syscall(trap int64, a1, a2, a3 int64) (r1, r2, err int64);
+// Trap # in AX, args in DI SI DX R10 R8 R9, return in AX DX
+// Note that this differs from "standard" ABI convention, which
+// would pass 4th arg in CX, not R10.
+
+TEXT	·Syscall(SB),NOSPLIT,$0-56
+	CALL	runtime·entersyscall(SB)
+	MOVQ	16(SP), DI
+	MOVQ	24(SP), SI
+	MOVQ	32(SP), DX
+	MOVQ	$0, R10
+	MOVQ	$0, R8
+	MOVQ	$0, R9
+	MOVQ	8(SP), AX	// syscall entry
+	SYSCALL
+	CMPQ	AX, $0xfffffffffffff001
+	JLS	ok
+	MOVQ	$-1, 40(SP)	// r1
+	MOVQ	$0, 48(SP)	// r2
+	NEGQ	AX
+	MOVQ	AX, 56(SP)  // errno
+	CALL	runtime·exitsyscall(SB)
+	RET
+ok:
+	MOVQ	AX, 40(SP)	// r1
+	MOVQ	DX, 48(SP)	// r2
+	MOVQ	$0, 56(SP)	// errno
+	CALL	runtime·exitsyscall(SB)
+	RET
+```
+
+可以看到，在执行系统调用之前，会调用`runtime·entersyscall`，返回的时候，会调用`runtime·exitsyscall`。
+
+`runtime·entersyscall`不会主动释放P，但`sysmon`会处理长时间处于`Psyscall`状态的P。`runtime·entersyscallblock`会主动释放P。
+
+```c
+void
+·entersyscall(int32 dummy)
+{
+	runtime·reentersyscall(runtime·getcallerpc(&dummy), runtime·getcallersp(&dummy));
+}
+
+void
+·entersyscallblock(int32 dummy)
+{
+	P *p;
+
+	m->locks++;  // see comment in entersyscall
+
+	///保存G的现场
+	// Leave SP around for GC and traceback.
+	save(runtime·getcallerpc(&dummy), runtime·getcallersp(&dummy));
+	g->syscallsp = g->sched.sp;
+	g->syscallpc = g->sched.pc;
+	g->syscallstack = g->stackbase;
+	g->syscallguard = g->stackguard;
+	g->status = Gsyscall;
+	if(g->syscallsp < g->syscallguard-StackGuard || g->syscallstack < g->syscallsp) {
+		// runtime·printf("entersyscall inconsistent %p [%p,%p]\n",
+		//	g->syscallsp, g->syscallguard-StackGuard, g->syscallstack);
+		runtime·throw("entersyscallblock");
+	}
+	///释放P
+	p = releasep();
+	handoffp(p); ///转给别的M
+	if(g->isbackground)  // do not consider blocked scavenger for deadlock detection
+		incidlelocked(1);
+
+	// Resave for traceback during blocked call.
+	save(runtime·getcallerpc(&dummy), runtime·getcallersp(&dummy));
+
+	g->stackguard0 = StackPreempt;  // see comment in entersyscall
+	m->locks--;
+}
+```
+
+## sysmon goroutine
+
+`sysmon`有3个作用：(1)将长时间没有处理的netpoll的G添加全局队列；(2)处理长时间处于Psyscall状态的P；(3)设置过长时间运行的G的抢占标志位。
+
+```c
+// The main goroutine.
+void
+runtime·main(void)
+{
+...
+	newm(sysmon, nil); ///sysmon goroutine
+...
+}
+```
+
+```c
+static void
+sysmon(void)
+{
+	uint32 idle, delay;
+	int64 now, lastpoll, lasttrace;
+	G *gp;
+
+	lasttrace = 0;
+	idle = 0;  // how many cycles in succession we had not wokeup somebody
+	delay = 0;
+	for(;;) {
+...
+		// retake P's blocked in syscalls
+		// and preempt long running G's
+		if(retake(now))
+			idle = 0;
+		else
+			idle++;
+...
+}
+```
 
 ## LockOSThread
 
@@ -541,6 +699,7 @@ stoplockedm(void)
 调用`time.Sleep`后，会让当前goroutine挂起，详细参考[这里](http://skoo.me/go/2013/09/12/go-runtime-timer/)。
 
 ```
+// runtime/time.goc
 // Sleep puts the current goroutine to sleep for at least ns nanoseconds.
 func Sleep(ns int64) {
 	runtime·tsleep(ns, "sleep");
