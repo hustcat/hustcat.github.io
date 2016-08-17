@@ -360,7 +360,7 @@ park0(G *gp)
 }
 ```
 
-* runtime·park
+* runtime·ready
 
 对于调用`runtime·park`陷入阻塞的G，只有调用`runtime·ready`函数才能唤醒。
 
