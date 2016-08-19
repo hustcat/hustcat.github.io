@@ -384,15 +384,21 @@ Go语言对函数的栈处理与C语言有些区别。在C中，在函数的开�
 
 ## panic and recover
 
+C++有try/catch异常处理机制，Go语言中也有类似的机制panic/recover。
+
 * panic
 
-一些运行时错误，比如数组越界、空指针等，会导致goroutine发生[panic](https://golang.org/ref/spec#Handling_panics)。
+一些运行时错误，比如数组越界、空指针等，会导致goroutine发生[panic](https://golang.org/ref/spec#Handling_panics)。也可以主动调用panic函数触发异常。
 
 ```
-While executing a function F, an explicit call to panic or a run-time panic terminates the execution of F. Any functions deferred by F are then executed as usual. Next, any deferred functions run by F's caller are run, and so on up to any deferred by the top-level function in the executing goroutine. At that point, the program is terminated and the error condition is reported, including the value of the argument to panic. This termination sequence is called panicking. 
+While executing a function F, an explicit call to panic or a run-time panic terminates the execution
+of F. Any functions deferred by F are then executed as usual. Next, any deferred functions run by 
+F's caller are run, and so on up to any deferred by the top-level function in the executing 
+goroutine. At that point, the program is terminated and the error condition is reported, including
+the value of the argument to panic. This termination sequence is called panicking. 
 ```
 
-如果函数F发生panic，F中的defer函数仍然会执行，调用F的函数中的defer也会执行，直到goroutine上最上层函数。然后goroutine结束，并报告相应的错误。
+如果函数F发生panic，F中的defer函数仍然会执行，调用F的函数中的defer也会执行，直到goroutine上最上层函数。然后goroutine结束，并报告相应的错误。这时，defer的作用有点类似C++中的finally的作用。
 
 ```go
 package main
