@@ -286,7 +286,7 @@ TEXT runtime·gogo(SB), NOSPLIT, $0-8
 
 ## 调度时机
 
-### goroutine结束
+### 1. goroutine结束
 
 * runtime·goexit
 
@@ -316,7 +316,40 @@ goexit0(G *gp)
 
 注意，`runtime·goexit`通过`runtime·mcall`调用`goexit0`，`runtime·mcall`会切到`m->g0`的栈，因为`goexit0`的逻辑不属于某个G，每个M都有一个g0，它的栈专门用于执行调度的逻辑。详细参考runtime/asm_amd64.s文件。
 
-### runtime·park
+```
+// void mcall(void (*fn)(G*))
+// Switch to m->g0's stack, call fn(g).
+// Fn must never return.  It should gogo(&g->sched)
+// to keep running g.
+TEXT runtime·mcall(SB), NOSPLIT, $0-8
+	MOVQ	fn+0(FP), DI
+	get_tls(CX)
+	MOVQ	g(CX), AX	// save state in g->sched
+	MOVQ	0(SP), BX	// caller's PC
+	MOVQ	BX, (g_sched+gobuf_pc)(AX)
+	LEAQ	8(SP), BX	// caller's SP
+	MOVQ	BX, (g_sched+gobuf_sp)(AX)
+	MOVQ	AX, (g_sched+gobuf_g)(AX)
+
+	// switch to m->g0 & its stack, call fn
+	MOVQ	m(CX), BX
+	MOVQ	m_g0(BX), SI
+	CMPQ	SI, AX	// if g == m->g0 call badmcall
+	JNE	3(PC)
+	MOVQ	$runtime·badmcall(SB), AX
+	JMP	AX
+	MOVQ	SI, g(CX)	// g = m->g0
+	MOVQ	(g_sched+gobuf_sp)(SI), SP	// sp = m->g0->sched.sp
+	PUSHQ	AX  // g -> SP
+	ARGSIZE(8)
+	CALL	DI  // call fn
+	POPQ	AX
+	MOVQ	$runtime·badmcall2(SB), AX
+	JMP	AX
+	RET
+```
+
+### 2. runtime·park
 
 goroutine可以执行`runtime·park`挂起自己，M会运行一个新的G:
 
@@ -389,7 +422,39 @@ runtime·ready(G *gp)
 
 值得注意的是，`runtime·park`和`runtime·ready`在channel的实现中用到。
 
-### 系统调用
+### 3. runtime·gosched
+
+可以调用`runtime.Goshed()`主动放弃CPU。注意`gosched`与`park`的区别，前者的G为`Grunnable`状态，而且放在全局调度队列:
+
+```c
+// Scheduler yield.
+void
+runtime·gosched(void)
+{
+	if(g->status != Grunning)
+		runtime·throw("bad g status");
+	runtime·mcall(runtime·gosched0);
+}
+
+// runtime·gosched continuation on g0.
+void
+runtime·gosched0(G *gp)
+{
+	gp->status = Grunnable;
+	gp->m = nil;
+	m->curg = nil;
+	runtime·lock(&runtime·sched);
+	globrunqput(gp);
+	runtime·unlock(&runtime·sched);
+	if(m->lockedg) {
+		stoplockedm();
+		execute(gp);  // Never returns.
+	}
+	schedule();
+}
+```
+
+### 4. 系统调用
 
 Go语言自身对系统调用进行了封装(syscall/zsyscall_linux_amd64.go)。当goroutine执行系统调用时，对应的M(OS线程)会陷入阻塞状态，不能运行其它的G。此时，需要将P转给其它M调度。
 
