@@ -1,10 +1,10 @@
 ---
 layout: post
-title: `Mutex` in Go
-date: 2016-08-25 17:00:30
+title: Mutex in Go
+date: 2016-08-25 16:00:30
 categories: 编程语言
 tags: golang
-excerpt: `Mutex` in Go
+excerpt: Mutex in Go
 ---
 
 [sync.Mutex](https://golang.org/pkg/sync/#Mutex.Lock)是Go提供给用户的互斥量接口。关于Mutex需要注意一点:
