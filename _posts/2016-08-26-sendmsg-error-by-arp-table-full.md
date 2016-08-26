@@ -1,10 +1,10 @@
 ---
 layout: post
-title: sendmsg return EINVLA caused by ARP table full
+title: sendmsg return EINVAL caused by ARP table full
 date: 2016-08-26 16:00:30
 categories: Linux
 tags: ARP
-excerpt: sendmsg return EINVLA caused by ARP table full
+excerpt: sendmsg return EINVAL caused by ARP table full
 ---
 
 ## 1 问题描述
