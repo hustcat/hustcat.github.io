@@ -1,11 +1,13 @@
 ---
 layout: post
-title: Dive into goroutine internal
+title: Dive into goroutine in Go
 date: 2016-08-12 17:00:30
 categories: 编程语言
 tags: golang
-excerpt: Dive into goroutine internal
+excerpt: Dive into goroutine in Go
 ---
+
+## 1 概念
 
 Goroutine的[实现](http://morsmachine.dk/go-scheduler)中有一些简单的概念。
 
@@ -25,6 +27,8 @@ M/G/P的关系：
 
 ![](/assets/goroutine/MGP2.jpg)
 
+* struct G
+
 go关键字创建一个goroutine，实际上会转化为`runtime.newproc`的调用：
 
 ```
@@ -35,6 +39,34 @@ go f(args)
 
 ```
 runtime.newproc(size, f, args)
+```
+
+`runtime.newproc`会创建一个G对象:
+
+```c
+struct	G
+{
+	// stackguard0 can be set to StackPreempt as opposed to stackguard
+	uintptr	stackguard0;	// cannot move - also known to linker, libmach, runtime/cgo
+	uintptr	stackbase;	// cannot move - also known to libmach, runtime/cgo
+	Gobuf	sched;  ///PC, SP
+	uintptr	stackguard;	// same as stackguard0, but not set to StackPreempt
+	uintptr	stack0;
+	uintptr	stacksize;
+
+	int16	status; ///状态
+	uintptr	gopc;		// pc of go statement that created this goroutine
+}
+```
+
+Goroutine的栈结构:
+
+```
+stack0          stackguard (stackguard0)              stackbase 
++---------------+-------------------------------------+---------------+
+| StackGuard    | STACK                               | Stktop        |
++---------------+-------------------------------------+---------------+ 
+low          <--------------------------------------- SP              high
 ```
 
 每个goroutine都需要有一个自己的栈，G结构的sched字段维护了栈地址以及程序计数器等代码运行所需的基本信息。也就是说这个goroutine放弃cpu的时候需要保存这些信息，待下次重新获得cpu的时候，需要将这些信息装载到对应的cpu寄存器中。
@@ -70,7 +102,38 @@ runtime·gostartcall(Gobuf *gobuf, void (*fn)(void), void *ctxt)
 }
 ```
 
-## 创建G
+* struct M
+
+```c
+struct	M
+{
+	G*	g0;		// goroutine with scheduling stack，用于专门执行调度的逻辑
+	void	(*mstartfn)(void); ///M对应的OS线程运行时，会先执行该回调函数
+	G*	curg;		// current running goroutine,当前运行的G
+	// 关联的P
+	P*	p;		// attached P for executing Go code (nil if not executing Go code)	
+
+	MCache*	mcache; ///用于M进行内存分配，参考内存管理
+}
+```
+
+* struct P
+
+```c
+struct P
+{
+	M*	m;		// back-link to associated M (nil if idle)
+
+	// Queue of runnable goroutines.
+	uint32	runqhead; ///G队列
+	uint32	runqtail;
+	G*	runq[256];
+}
+```
+
+## 2 主要逻辑
+
+### 2.1 创建G
 
 runtime·newproc创建一个G，然后放到P的运行队列。
 
@@ -110,13 +173,67 @@ runtime·newproc1(FuncVal *fn, byte *argp, int32 narg, int32 nret, void *callerp
 	newg->status = Grunnable;
 ...
 	///Try to put g on local runnable queue
-	runqput(p, newg);
+	runqput(p, newg); ///将G加入P的运行队列
+	///如果有空闲的P,而且没有自旋等待的M,则唤醒M来运行G
+	if(runtime·atomicload(&runtime·sched.npidle) != 0 && runtime·atomicload(&runtime·sched.nmspinning) == 0 && fn->fn != runtime·main)  // TODO: fast atomic
+		wakep(); 
+	m->locks--;
+	if(m->locks == 0 && g->preempt)  // restore the preemption request in case we've cleared it in newstack
+		g->stackguard0 = StackPreempt;
+	return newg;
+}
 ...
+
+// Tries to add one more P to execute G's.
+// Called when a G is made runnable (newproc, ready).
+static void
+wakep(void)
+{
+	// be conservative about spinning threads
+	if(!runtime·cas(&runtime·sched.nmspinning, 0, 1))
+		return;
+	startm(nil, true);
+}
 ```
 
-## 创建M
+### 2.2 创建M
 
-当G太多，M太少，还有空闲的P的时候，就创建一些新的M，去执行G：
+从OS层面来看，每个G代表的goroutine都需要一个M来运行。每个M都需要关联一个P，并从P的运行队列取出G运行；当M需要阻塞或者放弃运行时，会解除与P的关联，从而使得其它M能够关联并处理P的运行队列。所以，P的数量限制了同时运行的M的数量。
+
+
+`wakep`会唤醒空闲的M处理空闲的P，如果没有可用的M，则创建新的M:
+
+```c
+// Schedules some M to run the p (creates an M if necessary).
+// If p==nil, tries to get an idle P, if no idle P's does nothing.
+static void
+startm(P *p, bool spinning)
+{
+	M *mp;
+	void (*fn)(void);
+
+	runtime·lock(&runtime·sched);
+	if(p == nil) {
+		p = pidleget(); ///空闲的P
+		if(p == nil) {
+			runtime·unlock(&runtime·sched);
+			if(spinning)
+				runtime·xadd(&runtime·sched.nmspinning, -1);
+			return;
+		}
+	}
+	mp = mget(); ///获取一个空闲的M
+	runtime·unlock(&runtime·sched);
+	if(mp == nil) { ///没有可用的M,则创建M
+		fn = nil;
+		if(spinning)
+			fn = mspinning;
+		newm(fn, p); ///创建M
+		return;
+	}
+```
+
+从runtime来看，创建一个M，就是创建一个OS线程，这个线程从其关联的P取G并运行：
 
 ```c
 // Create a new m.  It will start off with a call to fn, or else the scheduler.
@@ -126,7 +243,7 @@ newm(void(*fn)(void), P *p){
 
 	mp = runtime·allocm(p);
 	mp->nextp = p;
-	mp->mstartfn = fn;	
+	mp->mstartfn = fn;	///runtime·mstart会调用该函数
 ...
 	runtime·newosproc(mp, (byte*)mp->g0->stackbase);
 }
@@ -150,21 +267,12 @@ runtime·newosproc(M *mp, void *stk)
 		;
 
 	mp->tls[0] = mp->id;	// so 386 asm can find it
-	if(0){
-		runtime·printf("newosproc stk=%p m=%p g=%p clone=%p id=%d/%d ostk=%p\n",
-			stk, mp, mp->g0, runtime·clone, mp->id, (int32)mp->tls[0], &mp);
-	}
 
 	// Disable signals during clone, so that the new thread starts
 	// with signals disabled.  It will enable them in minit.
 	runtime·rtsigprocmask(SIG_SETMASK, &sigset_all, &oset, sizeof oset);
-	ret = runtime·clone(flags, stk, mp, mp->g0, runtime·mstart);
+	ret = runtime·clone(flags, stk, mp, mp->g0, runtime·mstart); ///执行runtime·mstart
 	runtime·rtsigprocmask(SIG_SETMASK, &oset, nil, sizeof oset);
-
-	if(ret < 0) {
-		runtime·printf("runtime: failed to create new OS thread (have %d already; errno=%d)\n", runtime·mcount(), -ret);
-		runtime·throw("runtime.newosproc");
-	}
 }
 ```
 
@@ -195,7 +303,11 @@ runtime·mstart(void)
 
 schedule()进行任务(goroutine)调度。
 
-### 调度M
+### 2.3 调度G(运行M)
+
+调度G是由M执行的，详细设计参考[Scalable Go Scheduler Design Doc](https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw/edit#heading=h.mmq8lm48qfcw)。
+
+(1)先尝试从全局队列获取可运行的G;(2)没有G，则再尝试从关联的P的队列取G;(3)最后再尝试从其它队列获取G:
 
 ```c
 // One round of scheduler: find a runnable goroutine and execute it.
@@ -218,11 +330,11 @@ schedule(void)
 			resetspinning();
 	}
 	if(gp == nil) {
-		gp = runqget(m->p);
+		gp = runqget(m->p);///从关联的P取一个G
 		if(gp && m->spinning)
 			runtime·throw("schedule: spinning with local work");
 	}
-	if(gp == nil) {
+	if(gp == nil) { ///从其它队列取G
 		gp = findrunnable();  // blocks until work is available
 		resetspinning();
 	}
@@ -232,7 +344,35 @@ schedule(void)
 }
 ```
 
-### 运行G
+* work stealing
+
+当M关联的P没有可运行的G时，就会从其它的队列移动一些G到当前的P，这就是所谓的[work-stealing算法](http://supertech.csail.mit.edu/papers/steal.pdf)。runtime的work stealing算法是在函数`findrunnable`实现的。
+
+```c
+// Finds a runnable goroutine to execute.
+// Tries to steal from other P's, get g from global queue, poll network.
+static G*
+findrunnable(void)
+{
+///...
+	// random steal from other P's
+	for(i = 0; i < 2*runtime·gomaxprocs; i++) {
+		if(runtime·sched.gcwaiting)
+			goto top;
+		p = runtime·allp[runtime·fastrand1()%runtime·gomaxprocs];
+		if(p == m->p)
+			gp = runqget(p);
+		else
+			gp = runqsteal(m->p, p); ///从P'偷'一半放到m->p
+		if(gp)
+			return gp;
+	}
+
+///...
+}
+```
+
+### 2.4 运行G
 
 ```c
 // Schedules gp to run on the current M.
@@ -284,9 +424,9 @@ TEXT runtime·gogo(SB), NOSPLIT, $0-8
 	JMP	BX
 ```
 
-## 调度时机
+## 3 调度时机
 
-### 1. goroutine结束
+### 3.1 goroutine结束
 
 * runtime·goexit
 
@@ -349,7 +489,7 @@ TEXT runtime·mcall(SB), NOSPLIT, $0-8
 	RET
 ```
 
-### 2. runtime·park
+### 3.2 runtime·park
 
 goroutine可以执行`runtime·park`挂起自己，M会运行一个新的G:
 
@@ -422,7 +562,7 @@ runtime·ready(G *gp)
 
 值得注意的是，`runtime·park`和`runtime·ready`在channel的实现中用到。
 
-### 3. runtime·gosched
+### 3.3 runtime·gosched
 
 可以调用`runtime.Goshed()`主动放弃CPU。注意`gosched`与`park`的区别，前者的G为`Grunnable`状态，而且放在全局调度队列:
 
@@ -454,7 +594,7 @@ runtime·gosched0(G *gp)
 }
 ```
 
-### 4. 系统调用
+### 3.4 系统调用
 
 Go语言自身对系统调用进行了封装(syscall/zsyscall_linux_amd64.go)。当goroutine执行系统调用时，对应的M(OS线程)会陷入阻塞状态，不能运行其它的G。此时，需要将P转给其它M调度。
 
@@ -541,7 +681,7 @@ void
 }
 ```
 
-## sysmon goroutine
+## 4 sysmon goroutine
 
 `sysmon`有3个作用：(1)将长时间没有处理的netpoll的G添加全局队列；(2)处理长时间处于Psyscall状态的P；(3)设置过长时间运行的G的抢占标志位。
 
@@ -579,7 +719,7 @@ sysmon(void)
 }
 ```
 
-## LockOSThread
+## 5 LockOSThread
 
 因为goroutine和OS线程并不是一一对应的关系。在一些场景下，我们希望goroutine在同一个OS线程中运行，比如goroutine使用了[线程局部存储](https://github.com/golang/go/wiki/LockOSThread)，[LockOSThread](https://golang.org/pkg/runtime/#LockOSThread)能够保证goroutine在同一个OS线程中运行：
 
@@ -759,11 +899,13 @@ stoplockedm(void)
 
 从上面的分析可以看到，当goroutine执行`runtime.LockOSThread`后，该goroutine只会在锁定的M执行，同时，M也只会执行锁定的G，直到锁定的G执行结束。由于go语言中，goroutine与OS线程不是一一对应的，我们必须小心处理一些依赖于底层OS线程的场景，比如线程局部存储，再比如[net namespace](https://github.com/hustcat/sriov-cni/blob/master/vendor/github.com/containernetworking/cni/pkg/ns/ns.go#L286)，而`runtime.LockOSThread`保证了goroutine与OS线程的一一对应。
 
-* time.Sleep
+## 6 其它
+
+### 6.1 time.Sleep
 
 调用`time.Sleep`后，会让当前goroutine挂起，详细参考[这里](http://skoo.me/go/2013/09/12/go-runtime-timer/)。
 
-```
+```go
 // runtime/time.goc
 // Sleep puts the current goroutine to sleep for at least ns nanoseconds.
 func Sleep(ns int64) {
@@ -789,10 +931,42 @@ runtime·tsleep(int64 ns, int8 *reason)
 }
 ```
 
+### 6.2 GOMAXPROCS
+
+`GOMAXPROCS`可以限制OS层面同时运行M的数量(注意并不能限制创建M的数量，M可能因为执行系统调用发生阻塞，这时runtime会创建新的M)，默认值(Go1.3)为1，最大256。
+
+```
+The GOMAXPROCS variable limits the number of operating system threads that can execute user-level Go 
+code simultaneously. There is no limit to the number of threads that can be blocked in system calls
+on behalf of Go code; those do not count against the GOMAXPROCS limit. This package's GOMAXPROCS 
+function queries and changes the limit.
+```
+
+实际上，从runtime来看，`GOMAXPROCS`限制了P的数量:
+
+```c
+void
+runtime·schedinit(void)
+{
+///...
+	procs = 1;
+	p = runtime·getenv("GOMAXPROCS");
+	if(p != nil && (n = runtime·atoi(p)) > 0) {
+		if(n > MaxGomaxprocs) ///最多256个P
+			n = MaxGomaxprocs;
+		procs = n;
+	}
+	runtime·allp = runtime·malloc((MaxGomaxprocs+1)*sizeof(runtime·allp[0]));///创建P
+	procresize(procs);
+```
+
+从[Go1.5](https://golang.org/doc/go1.5#introduction)开始，`GOMAXPROCS`默认设置为CPU的核数。
+
 ## Reference
 
 * [The Go scheduler](http://morsmachine.dk/go-scheduler)
 * [Analysis of the Go runtime scheduler](http://www.cs.columbia.edu/~aho/cs6998/reports/12-12-11_DeshpandeSponslerWeiss_GO.pdf)
+* [Scalable Go Scheduler Design Doc](https://docs.google.com/document/d/1TTj4T2JO42uD5ID9e89oa0sLKhJYD0Y_kqxDv3I3XMw/edit)
 * [goroutine与调度器](http://skoo.me/go/2013/11/29/golang-schedule/)
 * [以goroutine为例看协程的相关概念](http://wangzhezhe.github.io/blog/2016/02/17/golang-scheduler/)
 * [3.2 go关键字](https://tiancaiamao.gitbooks.io/go-internals/content/zh/03.3.html)
