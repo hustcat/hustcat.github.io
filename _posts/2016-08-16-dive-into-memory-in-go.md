@@ -739,6 +739,72 @@ runtime·FixAlloc_Alloc(FixAlloc *f)
 
 ## 内存释放
 
+### runtime·free
+
+`runtime·free`是释放对象的入口函数:
+
+```c
+// Free the object whose base pointer is v.
+void
+runtime·free(void *v)
+{
+
+```
+
+address -> MSpan:
+
+```c
+int32
+runtime·mlookup(void *v, byte **base, uintptr *size, MSpan **sp)
+{
+	s = runtime·MHeap_LookupMaybe(&runtime·mheap, v);
+///...
+}
+
+MSpan*
+runtime·MHeap_LookupMaybe(MHeap *h, void *v)
+{
+	MSpan *s;
+	PageID p, q;
+
+	p = (uintptr)v>>PageShift;
+	q = p;
+	q -= (uintptr)h->arena_start >> PageShift; ///offset from arena_start
+	s = h->spans[q];
+	return s;
+}
+```
+
+* zero
+
+当MSpan返回MHeap的时候，会设置needzero:
+
+```c
+// Free the object whose base pointer is v.
+void
+runtime·free(void *v)
+{
+///...
+    if(sizeclass == 0) {
+        // Large object.
+        s->needzero = 1; ///大对象直接返给heap
+            runtime·MHeap_Free(&runtime·mheap, s, 1);
+        c->local_nlargefree++;
+        c->local_largefree += size;
+    }
+```
+
+MSpan从MCentral还回MHeap:
+
+```c
+// Return s to the heap.  s must be unused (s->ref == 0).  Unlocks c.
+static void
+MCentral_ReturnToHeap(MCentral *c, MSpan *s)
+{
+    s->needzero = 1
+```
+
+
 ### Free to MHeap
 
 ```c
