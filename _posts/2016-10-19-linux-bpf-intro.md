@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Linux BPF introduction
-date: 2016-09-01 16:00:30
+date: 2016-10-19 16:00:30
 categories: Linux
 tags: BPF
 excerpt: Linux BPF introduction
@@ -122,7 +122,7 @@ bpf_prog_load(enum bpf_prog_type type,
 
 基本过程如图：
 
-![](/assets/bfp/bpf-intro-1.png)
+![](/assets/bpf/bfp-intro-1.png)
 
 * eBPF maps
 
