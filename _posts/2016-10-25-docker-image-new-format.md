@@ -588,6 +588,144 @@ parent:
 sha256:ae2b342b32f9ee27f0196ba59e9952c00e016836a11921ebc8baaf783847686a
 ```
 
+* distribution
+
+另外，还有一个`distribution`目录：
+
+```sh
+# ls /data/docker/image/overlay/distribution/
+diffid-by-digest  v2metadata-by-diffid
+```
+
+对应
+
+```go
+// FSMetadataStore uses the filesystem to associate metadata with layer and
+// image IDs.
+type FSMetadataStore struct {
+  sync.RWMutex
+  basePath string ///filepath.Join(imageRoot, "distribution")
+}
+```
+
+其中`diffid-by-digest`保存了digest->diffid的映射关系，即`distribution hashes`和`Content hashes`的映射关系。这可以方便检查layer是否在本地已经存在。
+
+```sh
+# cat /data/docker/image/overlay/distribution/diffid-by-digest/sha256/c0a04912aa5afc0b4fd4c34390e526d547e67431f6bc122084f1e692dcb7d34e 
+sha256:ae2b342b32f9ee27f0196ba59e9952c00e016836a11921ebc8baaf783847686a
+
+# cat /data/docker/image/overlay/distribution/diffid-by-digest/sha256/a3ed95caeb02ffe68cdd9fd84406680ae93d633cb16422d00e8a7c22955b46d4 
+sha256:5f70bf18a086007016e948b04aed3b82103a36bea41755b6cddfaf10ace3c6ef
+```
+
+`v2metadata-by-diffid`保存了diffid -> (digest,repository)的映射关系，这可以方便查找layer的digest及其所属的repository:
+
+```sh
+# cat /data/docker/image/overlay/distribution/v2metadata-by-diffid/sha256/ae2b342b32f9ee27f0196ba59e9952c00e016836a11921ebc8baaf783847686a   
+[{"Digest":"sha256:c0a04912aa5afc0b4fd4c34390e526d547e67431f6bc122084f1e692dcb7d34e","SourceRepository":"10.x.x.x:5000/busybox"}]
+```
+
+几个问题：
+
+(1)如何判断image在本地已经存在？
+
+实际上，schema2的返回结果已经包含image ID，只需要从image store检查即可：
+
+```go
+func (p *v2Puller) pullSchema2(ctx context.Context, ref reference.Named, mfst *schema2.DeserializedManifest) (imageID image.ID, manifestDigest digest.Digest, err error) {
+  manifestDigest, err = schema2ManifestDigest(ref, mfst)
+  if err != nil {
+    return "", "", err
+  }
+
+  target := mfst.Target()
+  imageID = image.ID(target.Digest)
+  if _, err := p.config.ImageStore.Get(imageID); err == nil { ///image ID已经存在
+    // If the image already exists locally, no need to pull
+    // anything.
+    return imageID, manifestDigest, nil
+  }
+```
+
+(2)如何判断layer在本地已经存在？
+
+```go
+func (ldm *LayerDownloadManager) Download(ctx context.Context, initialRootFS image.RootFS, layers []DownloadDescriptor, progressOutput progress.Output) (image.RootFS, func(), error) {
+  rootFS := initialRootFS
+  for _, descriptor := range layers {
+    key := descriptor.Key()
+    transferKey += key
+
+    if !missingLayer {
+      missingLayer = true
+      diffID, err := descriptor.DiffID()
+      if err == nil {
+        getRootFS := rootFS
+        getRootFS.Append(diffID)
+        l, err := ldm.layerStore.Get(getRootFS.ChainID())
+        if err == nil { ////layer已经存在
+          // Layer already exists.
+          logrus.Debugf("Layer already exists: %s", descriptor.ID())
+          progress.Update(progressOutput, descriptor.ID(), "Already exists")
+          if topLayer != nil {
+            layer.ReleaseAndLog(ldm.layerStore, topLayer)
+          }
+          topLayer = l
+          missingLayer = false
+          rootFS.Append(diffID)
+          continue
+        }
+      }
+    }
+///...
+}
+
+
+func (ld *v2LayerDescriptor) DiffID() (layer.DiffID, error) {
+  return ld.V2MetadataService.GetDiffID(ld.digest)
+}
+
+///ditribution/metadata/v2_metadata_service.go
+// GetDiffID finds a layer DiffID from a digest.
+func (serv *V2MetadataService) GetDiffID(dgst digest.Digest) (layer.DiffID, error) {
+  ///distribution/diffid-by-digest/sha256/$digest
+  diffIDBytes, err := serv.store.Get(serv.digestNamespace(), serv.digestKey(dgst))
+  if err != nil {
+    return layer.DiffID(""), err
+  }
+
+  return layer.DiffID(diffIDBytes), nil
+}
+
+func (serv *V2MetadataService) diffIDNamespace() string {
+  return "v2metadata-by-diffid"
+}
+
+func (serv *V2MetadataService) digestNamespace() string {
+  return "diffid-by-digest"
+}
+
+func (serv *V2MetadataService) diffIDKey(diffID layer.DiffID) string {
+  return string(digest.Digest(diffID).Algorithm()) + "/" + digest.Digest(diffID).Hex()
+}
+
+func (serv *V2MetadataService) digestKey(dgst digest.Digest) string {
+  return string(dgst.Algorithm()) + "/" + dgst.Hex()
+}
+
+
+
+///ditribution/metadata/metadata.go
+// Get retrieves data by namespace and key. The data is read from a file named
+// after the key, stored in the namespace's directory.
+func (store *FSMetadataStore) Get(namespace string, key string) ([]byte, error) {
+  store.RLock()
+  defer store.RUnlock()
+
+  return ioutil.ReadFile(store.path(namespace, key))
+}
+```
+
 ## 6 Summary
 
 新的存储格式涉及的ID比较多，理解了这些ID，也就理解了存储格式。这里简单总结一下：
