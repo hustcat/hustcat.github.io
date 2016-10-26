@@ -31,14 +31,14 @@ excerpt: The new stored format of Docker image on disk and Distribution
 
 `distribution`顶层有2个目录，`repositories`存储image/tag相关的信息，blobs目录存储实际的layer数据:
 
-```
+```sh
 # ls
 blobs  repositories
 ```
 
 以`busybox:latest`为例：
 
-```
+```sh
 # docker pull busybox:latest
 latest: Pulling from busybox
 c0a04912aa5a: Pull complete 
@@ -136,6 +136,7 @@ data
 从这个目录，可以得到tag对应的image ID，以及image所有的layer。
 
 另外，`9e301a362a270bcb6900ebd1aad1b3a9553a9d055830bdf4cab5c2184187a2d1`目录保存了image的信息：
+
 ```sh
 # cat blobs/sha256/9e/9e301a362a270bcb6900ebd1aad1b3a9553a9d055830bdf4cab5c2184187a2d1/data | python -mjson.tool
 {
