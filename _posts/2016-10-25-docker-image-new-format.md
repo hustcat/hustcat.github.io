@@ -3,7 +3,7 @@ layout: post
 title: The new stored format of Docker image on disk and Distribution
 date: 2016-10-25 20:00:30
 categories: Container
-tags: Docker
+tags: docker
 excerpt: The new stored format of Docker image on disk and Distribution
 ---
 
