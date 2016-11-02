@@ -36,6 +36,12 @@ busybox-oci/
     `-- latest
 ```
 
+The [OCI image layout](https://github.com/opencontainers/image-spec/blob/master/image-layout.md) has two top level directories:
+
+- "blobs" contains content-addressable blobs. A blob has no schema and should be considered opaque.
+- "refs" contains [descriptors](https://github.com/opencontainers/image-spec/blob/master/descriptor.md). Commonly pointing to an [image manifest](https://github.com/opencontainers/image-spec/blob/master/manifest.md#image-manifest) or an [image manifest list](https://github.com/opencontainers/image-spec/blob/master/manifest-list.md#oci-image-manifest-list-specification).
+
+
 `refs/latest` saved [OCI:Descriptor](https://github.com/opencontainers/image-spec/blob/master/specs-go/v1/descriptor.go#L18) data of `busybox:latest`:
 
 ```sh
