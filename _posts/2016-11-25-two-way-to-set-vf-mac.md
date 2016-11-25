@@ -74,7 +74,7 @@ RTNETLINK answers: Cannot assign requested address
 
 先看看两者的区别与实现:
 
-![](/assets/network/two_way_set_vf.png)
+![](/assets/network/two_way_set_vf.jpg)
 
 ###  2.1 ip link set dev $VFDEV address $MAC
 
