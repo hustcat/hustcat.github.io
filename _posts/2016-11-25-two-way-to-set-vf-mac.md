@@ -298,6 +298,7 @@ static void igbvf_reset(struct igbvf_adapter *adapter)
 可以，VF驱动会用`adapter->hw.mac.addr`的值，该值从哪里获取？
 
 实际上`reset_hw`，即`e1000_reset_hw_vf`会向PF发送`E1000_VF_RESET`消息，PF会返回MAC信息，VF读取然后保存在`hw->mac.perm_addr`：
+
 ```c
 static s32 e1000_reset_hw_vf(struct e1000_hw *hw)
 {
@@ -384,6 +385,6 @@ down对应的dmesg信息：
 [699929.950543] failed to kill vid 0081/0 for device dev8
 ```
 
-## 总结
+## 3 总结
 
 通过PF设置VF的MAC后，需要重启VF网络设备，VF才能同步到PF的MAC信息。
