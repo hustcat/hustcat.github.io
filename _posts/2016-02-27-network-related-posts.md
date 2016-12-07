@@ -2,8 +2,8 @@
 layout: post
 title: Network related posts
 date: 2016-02-27 15:00:30
-categories: Linux
-tags: Network 
+categories: Network
+tags: network
 excerpt: Network related posts
 ---
 
