@@ -370,6 +370,42 @@ hehe  ------ # echo hehe > /dev/pts/12 ---in another host terminal
 ```
 如果我们只指定stdin，client则看不到stdout的输出；如果只指定stdout，client则无法进行输入，但是可以看到输出。
 
+>  === begin update 2016/12/08 ===
+
+实际上，如果不指定`-t`参数，也可attach到容器：
+
+```sh
+# docker run -i  --rm dbyin/busybox:latest /bin/sh
+echo hello
+hello
+ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue 
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+    inet6 ::1/128 scope host 
+       valid_lft forever preferred_lft forever
+51: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue 
+    link/ether 02:42:ac:11:00:03 brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.3/16 scope global eth0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:acff:fe11:3/64 scope link 
+       valid_lft forever preferred_lft forever
+```
+
+这时docker直接将docker client的`stdio`通过pipe拷贝到容器的`stdio`，或者说容器的`stdio`即为pipe.Stdin(即http connection):
+
+```sh
+# ls /proc/36753/fd* -lh
+/proc/36753/fd:
+total 0
+lr-x------ 1 root root 64 Dec  8 16:41 0 -> pipe:[7515032]
+l-wx------ 1 root root 64 Dec  8 16:41 1 -> pipe:[7515033]
+l-wx------ 1 root root 64 Dec  8 16:41 2 -> pipe:[7515034]
+```
+
+>  === end update 2016/12/08 ===
+
 # 相关资料
 * [man7: ptmx, pts - pseudoterminal master and slave](http://man7.org/linux/man-pages/man4/pts.4.html)
 * [docker doc: docker attach](http://docs.docker.com/v1.4/reference/commandline/cli/#attach)
