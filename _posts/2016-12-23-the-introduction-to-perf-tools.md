@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Introduction to the perf-toos
+title: Introduction to the perf-tools
 date: 2016-12-23 18:00:30
 categories: Linux
 tags: tracing
-excerpt: Introduction to the perf-toos
+excerpt: Introduction to the perf-tools
 ---
 
 [ftrace](https://www.kernel.org/doc/Documentation/trace/ftrace.txt)是内核在2.6.27提供的trace机制。使用`ftrace`可以在不影响进程运行的情况下，跟踪分析内核中发生的事情。`ftrace`提供了不同的跟踪器，以用于不同的场合，比如跟踪内核函数调用、对上下文切换进行跟踪、查看中断被关闭的时长、跟踪内核态中的延迟以及性能问题等。
