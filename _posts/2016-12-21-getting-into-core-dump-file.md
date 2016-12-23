@@ -19,7 +19,7 @@ excerpt: Getting into the Linux ELF and core dump file
 
 ELF文件有两种视图，`Execution View`和`Linking View`:
 
-![](/assets/elf-view.png)
+![](/assets/elf/elf-view.png)
 
 ### ELF header
 
