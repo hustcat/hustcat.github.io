@@ -341,7 +341,7 @@ func (c *TimeoutConn) Read(b []byte) (int, error) {
 
 Go并没有使用`epoll_wait`实现IO的超时，而是通过`Set[Read|Write]Deadline(time.Time)`对每个`netFD`设置超时。
 
-当`SetDeadline`设置的定时器超时后，在超时处理函数中，会删除该定时器；而且，每次收到或者发送数据时，也不会reset该定时器。所以，每次`Read/Write`操作之前，都需要调用该函数。参考[The Go netpoller and timeout](/_posts/go-netpoller-and-timeout).
+当`SetDeadline`设置的定时器超时后，在超时处理函数中，会删除该定时器；而且，每次收到或者发送数据时，也不会reset该定时器。所以，每次`Read/Write`操作之前，都需要调用该函数。参考[The Go netpoller and timeout](/go-netpoller-and-timeout).
 
 
 ```go
