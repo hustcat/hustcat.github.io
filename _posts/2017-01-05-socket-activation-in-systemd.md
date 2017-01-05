@@ -188,6 +188,75 @@ root      3589  3338  0 19:01 pts/1    00:00:00 socat - unix-connect:/run/foobar
 root      3590     1  0 19:01 ?        00:00:00 /usr/local/bin/foobard
 ```
 
+## Internal
+
+`systemd`在启动服务进程前，会设置环境变量`LISTEN_PID`和`LISTEN_FDS`:
+
+```c
+static int build_environment(
+                const ExecContext *c,
+                unsigned n_fds,
+                usec_t watchdog_usec,
+                const char *home,
+                const char *username,
+                const char *shell,
+                char ***ret) {
+
+        _cleanup_strv_free_ char **our_env = NULL;
+        unsigned n_env = 0;
+        char *x;
+
+        assert(c);
+        assert(ret);
+
+        our_env = new0(char*, 10);
+        if (!our_env)
+                return -ENOMEM;
+
+        if (n_fds > 0) {
+                if (asprintf(&x, "LISTEN_PID="PID_FMT, getpid()) < 0)
+                        return -ENOMEM;
+                our_env[n_env++] = x;
+
+                if (asprintf(&x, "LISTEN_FDS=%u", n_fds) < 0)
+                        return -ENOMEM;
+                our_env[n_env++] = x;
+        }
+...
+```
+
+服务进程通过`sd_listen_fds`获取对应的环境变量：
+
+```c
+_public_ int sd_listen_fds(int unset_environment) {
+        const char *e;
+        int n, r, fd;
+        pid_t pid;
+
+        e = getenv("LISTEN_PID");
+        if (!e) {
+                r = 0;
+                goto finish;
+        }
+
+        r = parse_pid(e, &pid);
+        if (r < 0)
+                goto finish;
+
+        /* Is this for us? */
+        if (getpid() != pid) {
+                r = 0;
+                goto finish;
+        }
+
+        e = getenv("LISTEN_FDS");
+        if (!e) {
+                r = 0;
+                goto finish;
+        }
+...
+```
+
 ## Reference
 
 * [systemd for Developers I: Socket Activation](http://0pointer.de/blog/projects/socket-activation.html)
