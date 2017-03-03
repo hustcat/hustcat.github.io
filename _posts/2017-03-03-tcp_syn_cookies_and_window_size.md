@@ -2,8 +2,8 @@
 layout: post
 title: TCP SYN cookies make window size suddenly becomes smaller
 date: 2017-03-03 20:00:30
-categories: Linux
-tags: Network
+categories: Network
+tags: TCP
 excerpt: TCP SYN cookies make window size suddenly becomes smaller
 ---
 
