@@ -206,3 +206,4 @@ o "/org/freedesktop/systemd1/job/905"
 * [systemd](https://www.freedesktop.org/wiki/Software/systemd/)
 * [The D-Bus API of systemd/PID 1](https://www.freedesktop.org/wiki/Software/systemd/dbus/)
 * [使用 D-BUS 连接桌面应用程序](http://www.ibm.com/developerworks/cn/linux/l-dbus.html)
+* [D-Bus 使用](http://thebigdoc.readthedocs.io/en/latest/dbus/index.html)
