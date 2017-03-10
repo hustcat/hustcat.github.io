@@ -1,4 +1,3 @@
-
 ---
 layout: post
 title: Mount namespace and mount propagation
