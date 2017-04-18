@@ -209,7 +209,8 @@ These two devices are very similar in many regards and the specific use case cou
 
 * [Stateless NAT with iproute2](http://linux-ip.net/html/nat-stateless.html)
 * [Stateless Floating IPs](https://feiskyer.github.io/2015/06/24/stateless-floating-ips/)
-
+* [Linux Stateless无状态NAT-使用TC来配置](http://blog.csdn.net/dog250/article/details/7256411)
+* [: Add stateless NAT](https://lwn.net/Articles/252540/)
 
 
 # BPF
