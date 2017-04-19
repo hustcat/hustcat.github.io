@@ -213,6 +213,12 @@ These two devices are very similar in many regards and the specific use case cou
 * [: Add stateless NAT](https://lwn.net/Articles/252540/)
 
 
+## SYN proxy
+
+* [DDoS protection Using Netfilter/iptables](https://people.netfilter.org/hawk/presentations/devconf2014/iptables-ddos-mitigation_JesperBrouer.pdf)
+* [Working with SYNPROXY](https://github.com/firehol/firehol/wiki/Working-with-SYNPROXY)
+* [SynProxy 工作原理](https://blog.gobyoung.com/cn/2015-how-synproxy-works.html)
+
 # BPF
 
 * [Dive into BPF: a list of reading material](https://qmonnet.github.io/whirl-offload/2016/09/01/dive-into-bpf/)
