@@ -583,6 +583,50 @@ TEXT runtime·newstackcall(SB), NOSPLIT, $0-20
 	RET
 ```
 
+## Example
+
+`net/http/server.go`
+
+```
+// Serve a new connection.
+func (c *conn) serve() {
+    origConn := c.rwc // copy it before it's set nil on Close or Hijack
+    defer func() {
+        if err := recover(); err != nil {
+            const size = 64 << 10
+            buf := make([]byte, size)
+            buf = buf[:runtime.Stack(buf, false)]
+            c.server.logf("http: panic serving %v: %v\n%s", c.remoteAddr, err, buf)
+        }
+        if !c.hijacked() {
+            c.close()
+            c.setState(origConn, StateClosed)
+        }
+    }()
+///...
+}
+
+
+// Serve accepts incoming connections on the Listener l, creating a
+// new service goroutine for each.  The service goroutines read requests and
+// then call srv.Handler to reply to them.
+func (srv *Server) Serve(l net.Listener) error {
+    defer l.Close()
+    var tempDelay time.Duration // how long to sleep on accept failure
+    for {
+        rw, e := l.Accept()
+///...
+        tempDelay = 0
+        c, err := srv.newConn(rw)
+        if err != nil {
+            continue
+        }
+        c.setState(c.rwc, StateNew) // before Serve can return
+        go c.serve()
+    }
+}
+```
+
 ## Reference
 
 * [Defer, Panic, and Recover](https://blog.golang.org/defer-panic-and-recover)
