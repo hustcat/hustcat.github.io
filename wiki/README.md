@@ -5,4 +5,4 @@
 
 ## Git tips
 
-[Git tipes](/wiki/git_tips.md)
+[Git tips](/wiki/git_tips.md)
