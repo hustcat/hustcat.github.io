@@ -213,6 +213,11 @@ These two devices are very similar in many regards and the specific use case cou
 * [: Add stateless NAT](https://lwn.net/Articles/252540/)
 
 
+## nftables
+
+* [Nftables: a new packet filtering engine](https://lwn.net/Articles/324989/)
+* [What comes after 'iptables'? Its successor, of course: `nftables`](https://developers.redhat.com/blog/2016/10/28/what-comes-after-iptables-its-successor-of-course-nftables/)
+
 ## SYN proxy
 
 * [DDoS protection Using Netfilter/iptables](https://people.netfilter.org/hawk/presentations/devconf2014/iptables-ddos-mitigation_JesperBrouer.pdf)
