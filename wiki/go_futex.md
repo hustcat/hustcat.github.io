@@ -103,6 +103,7 @@ struct	Lock
 	// Used to be a union, but unions break precise GC.
 	uintptr	key;
 };
+```
 
 * runtime·lock
 
