@@ -109,16 +109,31 @@ runtime·netpollopen(uintptr fd, PollDesc *pd)
 }
 ```
 
-* wait
+## wait
 
 ```
+//net/fd_poll_runtime.go
+func (pd *pollDesc) Wait(mode int) error {
+	res := runtime_pollWait(pd.runtimeCtx, mode)
+	return convertErr(res)
+}
+
+func (pd *pollDesc) WaitRead() error {
+	return pd.Wait('r')
+}
+
+func (pd *pollDesc) WaitWrite() error {
+	return pd.Wait('w')
+}
+
+// runtime/netpoll.goc
 func runtime_pollWait(pd *PollDesc, mode int) (err int) {
 	err = checkerr(pd, mode);
 	if(err == 0) {
 		// As for now only Solaris uses level-triggered IO.
 		if(Solaris)
 			runtime·netpollarm(pd, mode);
-		while(!netpollblock(pd, mode, false)) {
+		while(!netpollblock(pd, mode, false)) { ///等待IO ready
 			err = checkerr(pd, mode);
 			if(err != 0)
 				break;
@@ -128,4 +143,41 @@ func runtime_pollWait(pd *PollDesc, mode int) (err int) {
 		}
 	}
 }
+
+// returns true if IO is ready, or false if timedout or closed
+// waitio - wait only for completed IO, ignore errors
+static bool
+netpollblock(PollDesc *pd, int32 mode, bool waitio)
+{
+	G **gpp, *old;
+
+	gpp = &pd->rg;
+	if(mode == 'w')
+		gpp = &pd->wg;
+
+	// set the gpp semaphore to WAIT
+	for(;;) {
+		old = *gpp;
+		if(old == READY) {
+			*gpp = nil;
+			return true;
+		}
+		if(old != nil)
+			runtime·throw("netpollblock: double wait");
+		if(runtime·casp(gpp, nil, WAIT))
+			break;
+	}
+
+	// need to recheck error states after setting gpp to WAIT
+	// this is necessary because runtime_pollUnblock/runtime_pollSetDeadline/deadlineimpl
+	// do the opposite: store to closing/rd/wd, membarrier, load of rg/wg
+	if(waitio || checkerr(pd, mode) == 0)
+		runtime·park((bool(*)(G*, void*))blockcommit, gpp, "IO wait"); ////wait IO
+	// be careful to not lose concurrent READY notification
+	old = runtime·xchgp(gpp, nil);
+	if(old > WAIT)
+		runtime·throw("netpollblock: corrupted state");
+	return old == READY;
+}
 ```
+
