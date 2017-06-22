@@ -49,7 +49,7 @@ func (fd *netFD) accept(toAddr func(syscall.Sockaddr) Addr) (netfd *netFD, err e
 		return nil, &OpError{"accept", fd.net, fd.laddr, err}
 	}
 	for {
-		s, rsa, err = accept(fd.sysfd)
+		s, rsa, err = accept(fd.sysfd) ///accept
 		if err != nil {
 			if err == syscall.EAGAIN {
 				if err = fd.pd.WaitRead(); err == nil {
@@ -78,4 +78,45 @@ func (fd *netFD) accept(toAddr func(syscall.Sockaddr) Addr) (netfd *netFD, err e
 	return netfd, nil
 }
 
+```
+
+Linux的`accept`是在`net/sock_cloexec.go`中实现的。
+
+```
+/// net/sock_cloexec.go
+// Wrapper around the accept system call that marks the returned file
+// descriptor as nonblocking and close-on-exec.
+func accept(s int) (int, syscall.Sockaddr, error) {
+	ns, sa, err := syscall.Accept4(s, syscall.SOCK_NONBLOCK|syscall.SOCK_CLOEXEC)
+	// On Linux the accept4 system call was introduced in 2.6.28
+	// kernel and on FreeBSD it was introduced in 10 kernel. If we
+	// get an ENOSYS error on both Linux and FreeBSD, or EINVAL
+	// error on Linux, fall back to using accept.
+	switch err {
+	default: // nil and errors other than the ones listed
+		return ns, sa, err
+	case syscall.ENOSYS: // syscall missing
+	case syscall.EINVAL: // some Linux use this instead of ENOSYS
+	case syscall.EACCES: // some Linux use this instead of ENOSYS
+	case syscall.EFAULT: // some Linux use this instead of ENOSYS
+	}
+
+	// See ../syscall/exec_unix.go for description of ForkLock.
+	// It is probably okay to hold the lock across syscall.Accept
+	// because we have put fd.sysfd into non-blocking mode.
+	// However, a call to the File method will put it back into
+	// blocking mode. We can't take that risk, so no use of ForkLock here.
+	ns, sa, err = syscall.Accept(s)
+	if err == nil {
+		syscall.CloseOnExec(ns)
+	}
+	if err != nil {
+		return -1, nil, err
+	}
+	if err = syscall.SetNonblock(ns, true); err != nil {
+		syscall.Close(ns)
+		return -1, nil, err
+	}
+	return ns, sa, nil
+}
 ```
