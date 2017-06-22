@@ -1,4 +1,5 @@
 
+## 文件描述符
 
 * netFD
 
@@ -12,7 +13,7 @@ type netFD struct {
 	fdmu fdMutex
 
 	// immutable until Close
-	sysfd       int
+	sysfd       int /// OS fd
 	family      int
 	sotype      int
 	isConnected bool
@@ -60,8 +61,21 @@ struct PollDesc
 };
 ```
 
+## 文件描述符初始化
 
 ```
+// net/fd_poll_runtime.go
+func (pd *pollDesc) Init(fd *netFD) error {
+	serverInit.Do(runtime_pollServerInit)
+	ctx, errno := runtime_pollOpen(uintptr(fd.sysfd))
+	if errno != 0 {
+		return syscall.Errno(errno)
+	}
+	pd.runtimeCtx = ctx
+	return nil
+}
+
+//runtime/netpoll.goc
 func runtime_pollOpen(fd uintptr) (pd *PollDesc, errno int) {
 	pd = allocPollDesc();
 	runtime·lock(pd);
@@ -79,6 +93,19 @@ func runtime_pollOpen(fd uintptr) (pd *PollDesc, errno int) {
 	runtime·unlock(pd);
 
 	errno = runtime·netpollopen(fd, pd);
+}
+
+//runtime/netpoll_epoll.c
+int32
+runtime·netpollopen(uintptr fd, PollDesc *pd)
+{
+	EpollEvent ev;
+	int32 res;
+
+	ev.events = EPOLLIN|EPOLLOUT|EPOLLRDHUP|EPOLLET;
+	ev.data = (uint64)pd;
+	res = runtime·epollctl(epfd, EPOLL_CTL_ADD, (int32)fd, &ev);
+	return -res;
 }
 ```
 
