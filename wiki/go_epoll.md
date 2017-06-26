@@ -227,3 +227,30 @@ retry:
 	return gp;
 }
 ```
+
+IO ready的`G`会被放到可运行队列，重新调度执行：
+
+```
+// runtime/netpoll.goc
+// make pd ready, newly runnable goroutines (if any) are enqueued info gpp list
+// make pd ready, newly runnable goroutines (if any) are enqueued info gpp list
+void
+runtime·netpollready(G **gpp, PollDesc *pd, int32 mode)
+{
+	G *rg, *wg;
+
+	rg = wg = nil;
+	if(mode == 'r' || mode == 'r'+'w')
+		rg = netpollunblock(pd, 'r', true);
+	if(mode == 'w' || mode == 'r'+'w')
+		wg = netpollunblock(pd, 'w', true);
+	if(rg) {
+		rg->schedlink = *gpp;
+		*gpp = rg;
+	}
+	if(wg) {
+		wg->schedlink = *gpp;
+		*gpp = wg;
+	}
+}
+```
