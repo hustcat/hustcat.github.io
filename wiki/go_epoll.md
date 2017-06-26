@@ -181,3 +181,49 @@ netpollblock(PollDesc *pd, int32 mode, bool waitio)
 }
 ```
 
+## IO ready
+
+```
+/// runtime/netpoll_epoll.c
+// polls for ready network connections
+// returns list of goroutines that become runnable
+G*
+runtime·netpoll(bool block)
+{
+	static int32 lasterr;
+	EpollEvent events[128], *ev;
+	int32 n, i, waitms, mode;
+	G *gp;
+
+	if(epfd == -1)
+		return nil;
+	waitms = -1;
+	if(!block)
+		waitms = 0;
+retry:
+	n = runtime·epollwait(epfd, events, nelem(events), waitms);
+	if(n < 0) {
+		if(n != -EINTR && n != lasterr) {
+			lasterr = n;
+			runtime·printf("runtime: epollwait on fd %d failed with %d\n", epfd, -n);
+		}
+		goto retry;
+	}
+	gp = nil;
+	for(i = 0; i < n; i++) {
+		ev = &events[i];
+		if(ev->events == 0)
+			continue;
+		mode = 0;
+		if(ev->events & (EPOLLIN|EPOLLRDHUP|EPOLLHUP|EPOLLERR))
+			mode += 'r';
+		if(ev->events & (EPOLLOUT|EPOLLHUP|EPOLLERR))
+			mode += 'w';
+		if(mode)
+			runtime·netpollready(&gp, (void*)ev->data, mode);
+	}
+	if(block && gp == nil)
+		goto retry;
+	return gp;
+}
+```
