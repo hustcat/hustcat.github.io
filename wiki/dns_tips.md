@@ -108,3 +108,5 @@ __libc_res_nsend(res_state statp, const u_char *buf, int buflen,
 				goto same_ns;
 		}
 ```
+
+参考 [getaddrinfo](http://man7.org/linux/man-pages/man3/getaddrinfo.3.html).
