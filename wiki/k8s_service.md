@@ -103,3 +103,8 @@ spec:
     - --use-kubernetes-cluster-service=false
     - --selectors=role:my-nginx
 ```
+
+
+## performance
+
+* [Fighting Service Latency in Microservices with Kubernetes](https://developers.redhat.com/blog/2017/05/18/fighting-service-latency-in-microservices-with-kubernetes/)
