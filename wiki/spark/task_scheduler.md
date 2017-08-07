@@ -1,3 +1,12 @@
+一个Spark应用程序包括Job、Stage以及Task三个概念：
+
+(1) Job是以Action方法为界，遇到一个Action方法则触发一个Job；
+(2) Stage是Job的子集，以RDD宽依赖(即Shuffle)为界，遇到Shuffle做一次划分；
+(3) Task是Stage的子集，以并行度(分区数)来衡量，分区数是多少，则有多少个task。
+
+Spark的任务调度总体来说分两级进行，一是Stage级的调度，一是Task级的调度。
+
+
 * TaskScheduler启动
 
 ```
