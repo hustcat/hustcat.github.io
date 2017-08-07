@@ -245,4 +245,13 @@ CoarseGrainedExecutorBackend:
       val ser = env.closureSerializer.newInstance()
       logInfo(s"Running $taskName (TID $taskId)")
 ...
+        val value = try {
+          val res = task.run( ///Task.run
+            taskAttemptId = taskId,
+            attemptNumber = taskDescription.attemptNumber,
+            metricsSystem = env.metricsSystem)
+          threwException = false
+          res
+        } 
+...
 ```
