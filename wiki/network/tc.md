@@ -53,3 +53,61 @@ tc filter add dev ${INTERFACE} protocol ip parent 1:0 prio 1 u32 match ip src `h
 
 ## QDisc的实现
 
+### 数据结构
+
+* Qdisc
+
+```
+struct Qdisc {
+	int 			(*enqueue)(struct sk_buff *skb, struct Qdisc *dev); ///skb -> queue
+	struct sk_buff *	(*dequeue)(struct Qdisc *dev);
+///...
+  
+	const struct Qdisc_ops	*ops; ///pfifo_fast_ops  
+	u32			handle; ///handle ID
+	u32			parent; /// parent ID
+```
+ 
+每个网卡队列有一个`Qdisc`对象：
+
+```
+struct netdev_queue {
+/*
+ * read mostly part
+ */
+	struct net_device	*dev;
+	struct Qdisc		*qdisc;
+	struct Qdisc		*qdisc_sleeping;
+```
+
+ 
+* netlink命令初始化
+
+```c
+///sched/sch_api.c
+static int __init pktsched_init(void)
+{
+	int err;
+
+	err = register_pernet_subsys(&psched_net_ops);
+	if (err) {
+		pr_err("pktsched_init: "
+		       "cannot initialize per netns operations\n");
+		return err;
+	}
+
+	register_qdisc(&pfifo_qdisc_ops);
+	register_qdisc(&bfifo_qdisc_ops);
+	register_qdisc(&pfifo_head_drop_qdisc_ops);
+	register_qdisc(&mq_qdisc_ops);
+
+	rtnl_register(PF_UNSPEC, RTM_NEWQDISC, tc_modify_qdisc, NULL, NULL); /// new qdisc
+	rtnl_register(PF_UNSPEC, RTM_DELQDISC, tc_get_qdisc, NULL, NULL);
+	rtnl_register(PF_UNSPEC, RTM_GETQDISC, tc_get_qdisc, tc_dump_qdisc, NULL);
+	rtnl_register(PF_UNSPEC, RTM_NEWTCLASS, tc_ctl_tclass, NULL, NULL);
+	rtnl_register(PF_UNSPEC, RTM_DELTCLASS, tc_ctl_tclass, NULL, NULL);
+	rtnl_register(PF_UNSPEC, RTM_GETTCLASS, tc_ctl_tclass, tc_dump_tclass, NULL);
+
+	return 0;
+}
+```
