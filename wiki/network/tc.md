@@ -220,3 +220,22 @@ void dev_activate(struct net_device *dev)
 	}
 }
 ```
+
+* egress qdisc
+
+```c
+int dev_queue_xmit(struct sk_buff *skb)
+{
+///...
+	txq = netdev_pick_tx(dev, skb);
+	q = rcu_dereference_bh(txq->qdisc);
+
+	trace_net_dev_queue(skb);
+	if (q->enqueue) { ///pfifo_fast_ops
+		rc = __dev_xmit_skb(skb, q, dev, txq);
+		goto out;
+	}
+///...
+```
+
+* ingress qdisc
