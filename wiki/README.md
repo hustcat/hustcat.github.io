@@ -1,8 +1,8 @@
 ## Network
 
-[Network Posts](/wiki/2016-02-27-network-related-posts.md)
+[Network Posts](/wiki/misc/2016-02-27-network-related-posts.md)
 
 
 ## Git tips
 
-[Git tips](/wiki/git_tips.md)
+[Git tips](/wiki/tools/git_tips.md)
