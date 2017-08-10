@@ -1,4 +1,5 @@
-*　`ixgbe` -> `vxlan`
+
+* `ixgbe` -> `vxlan`
 
 ```
 # ./kprobe -s 'p:vxlan_udp_encap_recv'
