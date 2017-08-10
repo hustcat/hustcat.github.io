@@ -111,6 +111,7 @@ static int __init pktsched_init(void)
 }
 ```
 
+### 实现
 
 * create qdisc
 
@@ -236,6 +237,98 @@ int dev_queue_xmit(struct sk_buff *skb)
 		goto out;
 	}
 ///...
+}
+
+static inline int __dev_xmit_skb(struct sk_buff *skb, struct Qdisc *q,
+				 struct net_device *dev,
+				 struct netdev_queue *txq)
+{
+///...
+	spin_lock(root_lock);
+	if (unlikely(test_bit(__QDISC_STATE_DEACTIVATED, &q->state))) {
+		kfree_skb(skb);
+		rc = NET_XMIT_DROP;
+	} else if ((q->flags & TCQ_F_CAN_BYPASS) && !qdisc_qlen(q) &&
+		   qdisc_run_begin(q)) {
+		/*
+		 * This is a work-conserving queue; there are no old skbs
+		 * waiting to be sent out; and the qdisc is not running -
+		 * xmit the skb directly.
+		 */
+		if (!(dev->priv_flags & IFF_XMIT_DST_RELEASE))
+			skb_dst_force(skb);
+
+		qdisc_bstats_update(q, skb);
+
+		if (sch_direct_xmit(skb, q, dev, txq, root_lock)) {
+			if (unlikely(contended)) {
+				spin_unlock(&q->busylock);
+				contended = false;
+			}
+			__qdisc_run(q);
+		} else
+			qdisc_run_end(q);
+
+		rc = NET_XMIT_SUCCESS;
+	} else {
+		skb_dst_force(skb);
+		rc = q->enqueue(skb, q) & NET_XMIT_MASK; /// enqueue qdisc queue
+		if (qdisc_run_begin(q)) {
+			if (unlikely(contended)) {
+				spin_unlock(&q->busylock);
+				contended = false;
+			}
+			__qdisc_run(q);
+		}
+	}
+	spin_unlock(root_lock);
+```
+
+* __qdisc_run
+
+```c
+/ * Returns to the caller:
+ *				0  - queue is empty or throttled.
+ *				>0 - queue is not empty.
+ *
+ */
+static inline int qdisc_restart(struct Qdisc *q)
+{
+	struct netdev_queue *txq;
+	struct net_device *dev;
+	spinlock_t *root_lock;
+	struct sk_buff *skb;
+
+	/* Dequeue packet */
+	skb = dequeue_skb(q); /// dequeue skb from qdisc
+	if (unlikely(!skb))
+		return 0;
+	WARN_ON_ONCE(skb_dst_is_noref(skb));
+	root_lock = qdisc_lock(q);
+	dev = qdisc_dev(q);
+	txq = netdev_get_tx_queue(dev, skb_get_queue_mapping(skb));
+
+	return sch_direct_xmit(skb, q, dev, txq, root_lock); /// send to driver
+}
+
+void __qdisc_run(struct Qdisc *q)
+{
+	int quota = weight_p;
+
+	while (qdisc_restart(q)) {
+		/*
+		 * Ordered by possible occurrence: Postpone processing if
+		 * 1. we've exceeded packet quota
+		 * 2. another process needs the CPU;
+		 */
+		if (--quota <= 0 || need_resched()) {
+			__netif_schedule(q);
+			break;
+		}
+	}
+
+	qdisc_run_end(q);
+}
 ```
 
 * ingress qdisc
