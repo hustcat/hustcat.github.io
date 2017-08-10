@@ -81,3 +81,62 @@ Tracing kprobe br_dev_xmit. Ctrl-C to end.
  => cpu_startup_entry
  => start_secondary
  ```
+ 
+ * with qdisc
+ 
+ ```
+ # ./kprobe -s 'p:br_dev_xmit' 
+br_dev_xmit
+Tracing kprobe br_dev_xmit. Ctrl-C to end.
+          <idle>-0     [012] d.s. 9006194.364715: br_dev_xmit: (br_dev_xmit+0x0/0x1d0)
+          <idle>-0     [012] d.s. 9006194.364723: <stack trace>
+ => sch_direct_xmit
+ => __qdisc_run
+ => dev_queue_xmit
+ => ip_finish_output
+ => ip_output
+ => ip_forward_finish
+ => ip_forward
+ => ip_rcv_finish
+ => ip_rcv
+ => __netif_receive_skb_core
+ => __netif_receive_skb
+ => process_backlog
+ => net_rx_action
+ => __do_softirq
+ => call_softirq
+ => do_softirq
+ => irq_exit
+ => do_IRQ
+ => ret_from_intr
+ => cpuidle_idle_call
+ => arch_cpu_idle
+ => cpu_idle_loop
+ => cpu_startup_entry
+ => start_secondary
+ ```
+
+* htb qdisc
+
+```
+ 12)               |  dev_queue_xmit() {
+ 12)   0.056 us    |    local_bh_disable();
+ 12)   0.101 us    |    netdev_pick_tx();
+ 12)   0.037 us    |    _raw_spin_lock();
+ 12)               |    htb_enqueue [sch_htb]() {
+ 12)   0.360 us    |      htb_classify [sch_htb]();
+ 12)   1.045 us    |    }
+ 12)               |    __qdisc_run() {
+ 12)   0.040 us    |      htb_dequeue [sch_htb]();
+ 12)               |      sch_direct_xmit() {
+ 12)               |        dev_hard_start_xmit() {
+ 12)   0.116 us    |          netif_skb_dev_features();
+ 12)   1.051 us    |          dev_queue_xmit_nit();
+ 12)   2.659 us    |          br_dev_xmit();
+ 12)   4.958 us    |        }
+ 12)   0.035 us    |        _raw_spin_lock();
+ 12)   5.623 us    |      }
+ 12)   6.373 us    |    }
+ 12)   0.037 us    |    local_bh_enable();
+ 12) + 10.378 us   |  }
+ ```
