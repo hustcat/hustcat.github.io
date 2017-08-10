@@ -240,6 +240,61 @@ int dev_queue_xmit(struct sk_buff *skb)
 
 * ingress qdisc
 
+## qdisc and netdev_queues
+ 
+一般来说，对于虚拟网络设备(比如bridge,veth)只有一个队列，而且队列长度`tx_queue_len`会设置为0.
+
+```c
+int br_add_bridge(struct net *net, const char *name)
+{
+	struct net_device *dev;
+	int res;
+
+	dev = alloc_netdev(sizeof(struct net_bridge), name,
+			   br_dev_setup);
+}
+
+#define alloc_netdev(sizeof_priv, name, setup) \
+	alloc_netdev_mqs(sizeof_priv, name, setup, 1, 1)
+```	
+ 
+这样，在为这类网络设备创建qdisc时，会将`netdev_queues->qdisc`和`net_device->qdisc`设置为`noqueue_qdisc`:
+
+```
+static void attach_one_default_qdisc(struct net_device *dev,
+				     struct netdev_queue *dev_queue,
+				     void *_unused)
+{
+	struct Qdisc *qdisc = &noqueue_qdisc;
+
+	if (dev->tx_queue_len) {
+		qdisc = qdisc_create_dflt(dev_queue,
+					  &pfifo_fast_ops, TC_H_ROOT);
+		if (!qdisc) {
+			netdev_info(dev, "activation failed\n");
+			return;
+		}
+		if (!netif_is_multiqueue(dev))
+			qdisc->flags |= TCQ_F_ONETXQUEUE;
+	}
+	dev_queue->qdisc_sleeping = qdisc;
+}
+```
+
+* noqueue_qdisc
+
+```
+static struct Qdisc noqueue_qdisc = {
+	.enqueue	=	NULL,
+	.dequeue	=	noop_dequeue,
+	.flags		=	TCQ_F_BUILTIN,
+	.ops		=	&noqueue_qdisc_ops,
+	.list		=	LIST_HEAD_INIT(noqueue_qdisc.list),
+	.q.lock		=	__SPIN_LOCK_UNLOCKED(noqueue_qdisc.q.lock),
+	.dev_queue	=	&noqueue_netdev_queue,
+	.busylock	=	__SPIN_LOCK_UNLOCKED(noqueue_qdisc.busylock),
+};
+```
 
 ## Ref
 
