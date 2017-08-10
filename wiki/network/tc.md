@@ -2,10 +2,10 @@
 
 * 概念
 
-每个网络接口都有一个`egress ’root qdisc’`，默认是`pfifo_fast`。Each `qdisc` and `class` is assigned a `handle, `handle`用于配置流控策略.`handle`用`<major>:<minor>`来标识，`qdisc`的`minor`总是0.
+每个网络接口都有一个`egress root qdisc`，默认是`pfifo_fast`。Each `qdisc` and `class` is assigned a `handle, `handle`用于配置流控策略.`handle`用`major:minor`来标识，`qdisc`的`minor`总是0.
 
 
-> The `handles` of these `qdiscs` consist of two parts, a major number and a minor number : `<major>:<minor>`. It is customary to name the root qdisc `1:`, which is equal to `1:0`. The minor number of a qdisc is always 0.
+> The `handles` of these `qdiscs` consist of two parts, a major number and a minor number : `major:minor`. It is customary to name the root qdisc `1:`, which is equal to `1:0`. The minor number of a qdisc is always 0.
 > 
 > `Classes` need to have the same major number as their parent. This major number must be unique within a egress or ingress setup. The minor number must be unique within a qdisc and his classes.
 
@@ -23,7 +23,7 @@
                /  \        / \
            10:1  10:2   12:1  12:2  leaf classes
 
-详细参考[Linux Advanced Routing & Traffic Control HOWTO](http://lartc.org/).
+详细参考[Linux Advanced Routing & Traffic Control HOWTO](http://lartc.org/), [4. Components of Linux Traffic Control](http://tldp.org/HOWTO/Traffic-Control-HOWTO/components.html).
 
 * 基本操作
 
@@ -239,3 +239,8 @@ int dev_queue_xmit(struct sk_buff *skb)
 ```
 
 * ingress qdisc
+
+
+## Ref
+
+* [Traffic Control HOWTO](http://tldp.org/HOWTO/Traffic-Control-HOWTO/)
