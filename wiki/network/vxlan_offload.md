@@ -264,3 +264,26 @@ vxlan设备发送数据时，不再做`software offload`，即不再调用`__skb
 ## 总结
 
 如果下层物理网卡不支持硬件`offload`，`vxlan`设备层面做`软件offload`，然后下传给物理网卡。反之，则透传给物理网卡做`硬件offload`.但是，从网卡的流量统计`sar -n DEV`看不出这种区别。
+
+
+## vxlan device software offload
+ 
+如果下层物理网卡不支持`vxlan offload`，`vxlan`设备本身需要对UDP内层封包完成offload。
+
+`udp4_ufo_fragment` -> `skb_udp_tunnel_segment`：
+ 
+ ```
+ ///udp_offload(software offload)
+struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
+	netdev_features_t features)
+{
+///...
+	/* Fragment the skb. IP headers of the fragments are updated in
+	 * inet_gso_segment()
+	 */
+	if (skb->encapsulation && skb_shinfo(skb)->gso_type & SKB_GSO_UDP_TUNNEL)
+		segs = skb_udp_tunnel_segment(skb, features); ///UDP tunnel packet
+///...
+```
+ 
+ 
