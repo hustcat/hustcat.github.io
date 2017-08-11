@@ -263,4 +263,4 @@ vxlan设备发送数据时，不再做`software offload`，即不再调用`__skb
 
 ## 总结
 
-如果下层物理网卡不支持硬件`offload`，`vxlan`设备层面做`软件offload`，然后下传给物理网卡。反之，则透传给物理网卡做`硬件offload`.
+如果下层物理网卡不支持硬件`offload`，`vxlan`设备层面做`软件offload`，然后下传给物理网卡。反之，则透传给物理网卡做`硬件offload`.但是，从网卡的流量统计`sar -n DEV`看不出这种区别。
