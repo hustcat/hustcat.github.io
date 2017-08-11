@@ -4,7 +4,7 @@
 VXLAN设备默认开启`TSO/UFO/GRO`:
 
 ```
-# ./ethtool -k vxlan_dev 
+# ./ethtool -k flannel.1 
 Features for flannel.1:
 rx-checksumming: on
 tx-checksumming: on
