@@ -155,7 +155,11 @@ static void vxlan_setup(struct net_device *dev)
 
 ### 打开eth1的`vxlan offload`
 
-vxlan设备发送数据，不再做`software offload`，即调用`__skb_gso_segment`:
+```
+# ./ethtool -K eth1 tx-udp_tnl-segmentation on
+```
+
+vxlan设备发送数据时，不再做`software offload`，即不再调用`__skb_gso_segment`:
 
 ```
 # ./ethtool -K eth1 tx-udp_tnl-segmentation on
@@ -256,3 +260,7 @@ vxlan设备发送数据，不再做`software offload`，即调用`__skb_gso_segm
   17)   9.286 us    |    }
   17) + 11.828 us   |  }
   ```
+
+## 总结
+
+如果下层物理网卡不支持硬件`offload`，`vxlan`设备层面做`软件offload`，然后下传给物理网卡。反之，则透传给物理网卡做`硬件offload`.
