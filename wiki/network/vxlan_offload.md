@@ -291,6 +291,7 @@ struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
 
 * VXLAN GRO
 
+[3.14](https://github.com/torvalds/linux/commit/dc01e7d3447793fd9e4090aa9d50c549848b5a18)支持`VXLAN GRO`:
 
 ```
 /* Create new listen socket if needed */
