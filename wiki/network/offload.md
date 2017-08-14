@@ -1,6 +1,8 @@
 
 ## GRO
 
+* [JLS2009: Generic receive offload](https://lwn.net/Articles/358910/)
+* [GRO: Surviving 10Gbp/s with Cycles to Spare](https://events.linuxfoundation.org/images/stories/slides/jls09/jls09_xu.pdf)
 * [linux kernel 网络协议栈之GRO(Generic receive offload)](http://www.pagefault.info/?p=159)
 
 ### VXLAN GRO
