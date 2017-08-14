@@ -34,7 +34,7 @@ OMNI and Migrated BSD Sockets Test Options:
 ...
 ```
 
-参考[scan_sockets_args](https://github.com/hustcat/netperf/blob/netperf-2.6.0/src/nettest_bsd.c#L13006).
+参考[scan_omni_args](https://github.com/hustcat/netperf/blob/netperf-2.6.0/src/nettest_omni.c#L6894)和[scan_sockets_args](https://github.com/hustcat/netperf/blob/netperf-2.6.0/src/nettest_bsd.c#L13006).
 
 ## TCP_RR
 
