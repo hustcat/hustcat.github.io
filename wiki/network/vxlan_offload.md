@@ -292,6 +292,101 @@ struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
 * VXLAN GRO
 
 
+```
+/* Create new listen socket if needed */
+static struct vxlan_sock *vxlan_socket_create(struct net *net, __be16 port,
+					      u32 flags)
+{
+///...
+	/* Initialize the vxlan udp offloads structure */
+	vs->udp_offloads.port = port;
+	vs->udp_offloads.callbacks.gro_receive  = vxlan_gro_receive;
+	vs->udp_offloads.callbacks.gro_complete = vxlan_gro_complete;
+}
+
+
+/* Notify netdevs that UDP port started listening */
+static void vxlan_notify_add_rx_port(struct vxlan_sock *vs)
+{
+	struct net_device *dev;
+	struct sock *sk = vs->sock->sk;
+	struct net *net = sock_net(sk);
+	sa_family_t sa_family = vxlan_get_sk_family(vs);
+	__be16 port = inet_sk(sk)->inet_sport;
+	int err;
+
+	if (sa_family == AF_INET) {
+		err = udp_add_offload(&vs->udp_offloads);
+		if (err)
+			pr_warn("vxlan: udp_add_offload failed with status %d\n", err);
+	}
+///...
+}
+```
+
+
+
+```
+///udp_offload.c
+struct sk_buff **udp_gro_receive(struct sk_buff **head, struct sk_buff *skb,
+				 struct udphdr *uh)
+{
+	struct udp_offload_priv *uo_priv;
+	struct sk_buff *p, **pp = NULL;
+	struct udphdr *uh2;
+	unsigned int off = skb_gro_offset(skb);
+	int flush = 1;
+
+	if (NAPI_GRO_CB(skb)->udp_mark ||
+	    (skb->ip_summed != CHECKSUM_PARTIAL &&
+	     NAPI_GRO_CB(skb)->csum_cnt == 0 &&
+	     !NAPI_GRO_CB(skb)->csum_valid))
+		goto out;
+
+	/* mark that this skb passed once through the udp gro layer */
+	NAPI_GRO_CB(skb)->udp_mark = 1;
+
+	rcu_read_lock();
+	uo_priv = rcu_dereference(udp_offload_base);
+	for (; uo_priv != NULL; uo_priv = rcu_dereference(uo_priv->next)) {
+		if (uo_priv->offload->port == uh->dest && ///same port (8472 for vxlan)
+		    uo_priv->offload->callbacks.gro_receive)
+			goto unflush;
+	}
+	goto out_unlock;
+
+unflush:
+	flush = 0;
+
+	for (p = *head; p; p = p->next) {
+		if (!NAPI_GRO_CB(p)->same_flow)
+			continue;
+
+		uh2 = (struct udphdr   *)(p->data + off);
+
+		/* Match ports and either checksums are either both zero
+		 * or nonzero.
+		 */
+		if ((*(u32 *)&uh->source != *(u32 *)&uh2->source) ||
+		    (!uh->check ^ !uh2->check)) {
+			NAPI_GRO_CB(p)->same_flow = 0;
+			continue;
+		}
+	}
+
+	skb_gro_pull(skb, sizeof(struct udphdr)); /* pull encapsulating udp header */
+	skb_gro_postpull_rcsum(skb, uh, sizeof(struct udphdr));
+	NAPI_GRO_CB(skb)->proto = uo_priv->offload->ipproto;
+	pp = uo_priv->offload->callbacks.gro_receive(head, skb, ///vxlan_gro_receive
+						     uo_priv->offload);
+
+out_unlock:
+	rcu_read_unlock();
+out:
+	NAPI_GRO_CB(skb)->flush |= flush;
+	return pp;
+}
+```
  
- 
+ 参考 [【Linux4.1.12源码分析】协议栈gro收包之VXLAN处理](http://blog.csdn.net/one_clouder/article/details/53043390)
  
