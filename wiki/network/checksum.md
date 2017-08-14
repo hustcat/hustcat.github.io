@@ -46,3 +46,43 @@ static inline void igb_rx_checksum(struct igb_ring *ring,
 		skb->ip_summed = CHECKSUM_UNNECESSARY; ///stack don't needed verify
 }
 ```
+
+
+* GSO and CSUM offload
+
+```
+int dev_hard_start_xmit(struct sk_buff *skb, struct net_device *dev,
+			struct netdev_queue *txq)
+{
+///...
+		if (netif_needs_gso(skb, features)) {
+			if (unlikely(dev_gso_segment(skb, features))) ///GSO(software offload)
+				goto out_kfree_skb;
+			if (skb->next)
+				goto gso;
+		} else { ///hardware offload
+			if (skb_needs_linearize(skb, features) &&
+			    __skb_linearize(skb))
+				goto out_kfree_skb;
+
+			/* If packet is not checksummed and device does not
+			 * support checksumming for this protocol, complete
+			 * checksumming here.
+			 */
+			if (skb->ip_summed == CHECKSUM_PARTIAL) { ///only header csum is computed
+				if (skb->encapsulation)
+					skb_set_inner_transport_header(skb,
+						skb_checksum_start_offset(skb));
+				else
+					skb_set_transport_header(skb,
+						skb_checksum_start_offset(skb));
+				if (!(features & NETIF_F_ALL_CSUM) && ///check hardware if support offload
+				     skb_checksum_help(skb))
+					goto out_kfree_skb;
+			}
+		}
+///...
+}
+```
+
+`ip_summed==CHECKSUM_PARTIAL`表示协议栈并没有计算完校验和，只计算了[伪头](http://www.tcpipguide.com/free/t_TCPChecksumCalculationandtheTCPPseudoHeader-2.htm)，将传输层的数据部分留给了硬件进行计算。如果底层硬件不支持`CSUM`，则`skb_checksum_help`完成计算校验和。
