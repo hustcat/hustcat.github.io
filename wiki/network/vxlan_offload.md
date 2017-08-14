@@ -263,12 +263,15 @@ vxlan设备发送数据时，不再做`software offload`，即不再调用`__skb
 
 ## 总结
 
-如果下层物理网卡不支持硬件`offload`，`vxlan`设备层面做`软件offload`，然后下传给物理网卡。反之，则透传给物理网卡做`硬件offload`.但是，从网卡的流量统计`sar -n DEV`看不出这种区别。
+`vxlan`设备支持`TSO/GSO`,所以，内核的向`vxlan`设备发送数据时（调用`vxlan_xmit`）时，并不会做`software offload`。而在下发物理网卡时，如果下层物理网卡不支持硬件`offload`，内核做`VXLAN GSO`，然后调用物理网卡发送函数（`i40e_lan_xmit_frame`）。反之，则透传给物理网卡做`硬件offload`。但是，从网卡的流量统计`sar -n DEV`看不出这种区别。
 
 
-## vxlan device software offload
- 
-如果下层物理网卡不支持`vxlan offload`，`vxlan`设备本身需要对UDP内层封包完成offload。
+## vxlan software offload
+
+* VXLAN GSO(软件offload)
+
+也就是说，不管怎样，`vxlan offload`都不是在`vxlan`这一层做的，而是下层物理网络设备层面做的（`software offload`/`hardware offload`）
+如果下层物理网卡不支持`vxlan offload`，内核在下发物理网卡时，需要对UDP内层封包完成`软件offload`。
 
 `udp4_ufo_fragment` -> `skb_udp_tunnel_segment`：
  
@@ -285,5 +288,10 @@ struct sk_buff *udp4_ufo_fragment(struct sk_buff *skb,
 		segs = skb_udp_tunnel_segment(skb, features); ///UDP tunnel packet
 ///...
 ```
+
+* VXLAN GRO
+
+
  
  
+ 
