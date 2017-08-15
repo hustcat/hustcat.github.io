@@ -60,7 +60,7 @@ struct sk_buff {
 
 * (1) CHECKSUM_UNNECESSARY
 
-`CHECKSUM_UNNECESSARY`表示底层硬件已经计算了CSUM。
+`CHECKSUM_UNNECESSARY`表示底层硬件已经计算了CSUM，以`igb`驱动为例：
 
 `igb_poll` -> `igb_clean_rx_irq` -> `igb_process_skb_fields` -> `igb_rx_checksum`:
 
@@ -98,6 +98,27 @@ static inline void igb_rx_checksum(struct igb_ring *ring,
 }
 ```
 
+`TCP`层在收到包后，发现`skb->ip_summed`为`CHECKSUM_UNNECESSARY`就不会再检查checksum了:
+
+```
+int tcp_v4_rcv(struct sk_buff *skb)
+{
+///...
+	/* An explanation is required here, I think.
+	 * Packet length and doff are validated by header prediction,
+	 * provided case of th->doff==0 is eliminated.
+	 * So, we defer the checks. */
+	if (!skb_csum_unnecessary(skb) && tcp_v4_checksum_init(skb))
+		goto csum_error;
+///...
+}
+
+static inline int skb_csum_unnecessary(const struct sk_buff *skb)
+{
+	return skb->ip_summed & CHECKSUM_UNNECESSARY;
+}
+```
+
 * (2) CHECKSUM_NONE
 
 `csum`中的校验和无效，可能有以下几种原因： 
@@ -111,7 +132,7 @@ static inline void igb_rx_checksum(struct igb_ring *ring,
 
 这里讨论一个有意思的问题：[Linux kernel bug delivers corrupt TCP/IP data to Mesos, Kubernetes, Docker containers](https://tech.vijayp.ca/linux-kernel-bug-delivers-corrupt-tcp-ip-data-to-mesos-kubernetes-docker-containers-4986f88f7a19).
 
-Veth设备会将`CHECKSUM_NONE`改为`CHECKSUM_UNNECESSARY`。这样，就会导致硬件收到损坏的数据帧后，转给veth后，却变成了`CHECKSUM_UNNECESSARY`，上层协议栈就不会再计算检查数据包的校验和了。
+Veth设备会将`CHECKSUM_NONE`改为`CHECKSUM_UNNECESSARY`。这样，就会导致硬件收到损坏的数据帧后，转给veth后，却变成了`CHECKSUM_UNNECESSARY`，上层协议栈（TCP）就不会再计算检查数据包的校验和了。
 
 ```
 static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
