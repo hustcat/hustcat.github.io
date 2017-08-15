@@ -1,4 +1,53 @@
 
+* net_device->features
+
+`net_device->features`字段表示设备的各种特性。其中一些位用于表示硬件校验和的计算能力：
+
+```
+#define NETIF_F_IP_CSUM		__NETIF_F(HW_CSUM)
+#define NETIF_F_IP_CSUM		__NETIF_F(IP_CSUM) ///ipv4 + TCP/UDP
+#define NETIF_F_IPV6_CSUM	__NETIF_F(IPV6_CSUM)
+```
+
+`NETIF_F_IP_CSUM`表示硬件可以计算L4 checksum，但是只针对IPV4的TCP和UDP。但是一些设备扩展支持VXLAN和NVGRE。
+`NETIF_F_IP_CSUM`是一种协议感知的计算checksum的方法。具体来说，上层提供两个CSUM的参数(`csum_start`和`csum_offset`)。
+
+> NETIF_F_HW_CSUM is a protocol agnostic method to offload the transmit checksum. In this method the host 
+> provides checksum related parameters in a transmit descriptor for a packet. These parameters include the 
+> starting offset of data to checksum and the offset in the packet where the computed checksum is to be written. The 
+> length of data to checksum is implicitly the length of the packet minus the starting offset. 
+
+值得一提的是，`igb/ixgbe`使用的`NETIF_F_IP_CSUM`.
+
+* sk_buff
+
+取决于skb是接收封包，还是发送封包，`skb->csum`和`skb->ip_summed`的意义会不同。
+
+```
+/*
+ *	@csum: Checksum (must include start/offset pair)
+ *	@csum_start: Offset from skb->head where checksumming should start
+ *	@csum_offset: Offset from csum_start where checksum should be stored
+ *	@ip_summed: Driver fed us an IP checksum
+ */
+struct sk_buff {
+	union {
+		__wsum		csum;
+		struct {
+			__u16	csum_start;
+			__u16	csum_offset;
+		};
+	};
+
+	__u8			local_df:1,
+				cloned:1,
+				ip_summed:2,
+				nohdr:1,
+				nfctinfo:3;
+```
+
+`skb->ip_summed`一般的取值：
+
 ```
 /* Don't change this without changing skb_csum_unnecessary! */
 #define CHECKSUM_NONE 0
@@ -6,6 +55,8 @@
 #define CHECKSUM_COMPLETE 2
 #define CHECKSUM_PARTIAL 3 ///only compute IP header, not include data
 ```
+
+
 
 * CHECKSUM_UNNECESSARY
 
