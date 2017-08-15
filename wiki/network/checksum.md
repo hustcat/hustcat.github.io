@@ -184,7 +184,9 @@ static __sum16 tcp_v4_checksum_init(struct sk_buff *skb)
 
 值得一提的，`igb/ixgbe`没有使用`CHECKSUM_COMPLETE`，而是使用的`CHECKSUM_UNNECESSARY`.
 
-注意`CHECKSUM_COMPLETE`和`CHECKSUM_UNNECESSARY`的区别，对于前者，上层还需要计算伪头校验和，再进行验证，见`tcp_v4_check`。实际上，早前的内核版本为`CHECKSUM_HW`。
+注意`CHECKSUM_COMPLETE`和`CHECKSUM_UNNECESSARY`的区别，对于前者，上层还需要计算伪头校验和，再进行验证，见`tcp_v4_check`。实际上，早前的内核版本为`CHECKSUM_HW`，参考[The 2.6.19 process begins](https://lwn.net/Articles/200304/)。
+
+> The CHECKSUM_HW value has long been used in the networking subsystem to support hardware checksumming. That value has been replaced with CHECKSUM_PARTIAL (intended for outgoing packets where the job must be completed by the hardware) and CHECKSUM_COMPLETE (for incoming packets which have been completely checksummed by the hardware).
 
 * Veth的BUG
 
