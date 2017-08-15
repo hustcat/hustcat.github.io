@@ -111,7 +111,7 @@ static inline void igb_rx_checksum(struct igb_ring *ring,
 
 这里讨论一个有意思的问题：[Linux kernel bug delivers corrupt TCP/IP data to Mesos, Kubernetes, Docker containers](https://tech.vijayp.ca/linux-kernel-bug-delivers-corrupt-tcp-ip-data-to-mesos-kubernetes-docker-containers-4986f88f7a19).
 
-Veth设备会将`CHECKSUM_NONE`改为`CHECKSUM_UNNECESSARY`。
+Veth设备会将`CHECKSUM_NONE`改为`CHECKSUM_UNNECESSARY`。这样，就会导致硬件收到损坏的数据帧后，转给veth后，却变成了`CHECKSUM_UNNECESSARY`，上层协议栈就不会再计算检查数据包的校验和了。
 
 ```
 static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
@@ -126,6 +126,8 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
 		skb->ip_summed = CHECKSUM_UNNECESSARY;
 }
 ```
+
+veth最初是用于本地通信的设备，一般来说，本地的数据帧不太可能发生损坏。在发送数据时，如果协议栈已经计算校验和，会将`skb->ip_summed`设置为`CHECKSUM_NONE`。所以，对于veth本机通信，接收端没有必要再计算校验和。但是，对于容器虚拟化场景，veth的数据包可能来自网络，如果还这样设置，就会导致损坏的数据帧传给应用层。
 
 ## GSO and CSUM offload
 
