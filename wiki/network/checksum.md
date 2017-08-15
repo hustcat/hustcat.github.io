@@ -89,6 +89,8 @@ struct sk_buff {
 #define CHECKSUM_PARTIAL 3 ///only compute IP header, not include data
 ```
 
+## 接收时的CSUM
+
 对于接收包,`skb->csum`可能包含L4校验和。`skb->ip_summed`表述L4校验和的状态：
 
 * (1) CHECKSUM_UNNECESSARY
@@ -206,7 +208,70 @@ static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
 
 veth最初是用于本地通信的设备，一般来说，本地的数据帧不太可能发生损坏。在发送数据时，如果协议栈已经计算校验和，会将`skb->ip_summed`设置为`CHECKSUM_NONE`。所以，对于veth本机通信，接收端没有必要再计算校验和。但是，对于容器虚拟化场景，veth的数据包可能来自网络，如果还这样设置，就会导致损坏的数据帧传给应用层。
 
-## GSO and CSUM offload
+## 发送时CSUM
+
+同样，对于发送包,`skb->ip_summed`用于L4校验和的状态，以通知底层网卡是否还需要处理校验和：
+
+* (1) CHECKSUM_NONE
+
+此时，`CHECKSUM_NONE`表示协议栈已经计算了校验和，设备不需要做任何事情。
+
+* (2) CHECKSUM_PARTIAL
+
+`CHECKSUM_PARTIAL`表示使用硬件checksum ，协议栈已经计算L4层的伪头的校验和，并且已经加入uh->check字段中，此时只需要设备计算整个头4层头的校验值。
+
+
+```
+int tcp_sendmsg(struct kiocb *iocb, struct sock *sk, struct msghdr *msg,
+		size_t size)
+{
+///...
+
+				/*
+				 * Check whether we can use HW checksum.
+				 */
+				if (sk->sk_route_caps & NETIF_F_ALL_CSUM)
+					skb->ip_summed = CHECKSUM_PARTIAL;
+}
+
+
+static int tcp_transmit_skb(struct sock *sk, struct sk_buff *skb, int clone_it,
+			    gfp_t gfp_mask)
+{
+///...
+	icsk->icsk_af_ops->send_check(sk, skb); ///tcp_v4_send_check
+}
+
+
+static void __tcp_v4_send_check(struct sk_buff *skb,
+				__be32 saddr, __be32 daddr)
+{
+	struct tcphdr *th = tcp_hdr(skb);
+
+	if (skb->ip_summed == CHECKSUM_PARTIAL) { ///HW CSUM
+		th->check = ~tcp_v4_check(skb->len, saddr, daddr, 0); ///add IPv4 pseudo header checksum
+		skb->csum_start = skb_transport_header(skb) - skb->head;
+		skb->csum_offset = offsetof(struct tcphdr, check);
+	} else {
+		th->check = tcp_v4_check(skb->len, saddr, daddr,
+					 csum_partial(th,
+						      th->doff << 2,
+						      skb->csum)); ///ip_summed == CHECKSUM_NONE
+	}
+}
+
+/* This routine computes an IPv4 TCP checksum. */
+void tcp_v4_send_check(struct sock *sk, struct sk_buff *skb)
+{
+	const struct inet_sock *inet = inet_sk(sk);
+
+	__tcp_v4_send_check(skb, inet->inet_saddr, inet->inet_daddr);
+}
+```
+
+* dev_queue_xmit
+
+最后在`dev_queue_xmit`发送的时候发现设备不支持硬件checksum还会进行软件计算（是否会走这里？）:
 
 ```
 int dev_hard_start_xmit(struct sk_buff *skb, struct net_device *dev,
@@ -235,11 +300,10 @@ int dev_hard_start_xmit(struct sk_buff *skb, struct net_device *dev,
 					skb_set_transport_header(skb,
 						skb_checksum_start_offset(skb));
 				if (!(features & NETIF_F_ALL_CSUM) && ///check hardware if support offload
-				     skb_checksum_help(skb))
+				     skb_checksum_help(skb)) ///HW not support CSUM
 					goto out_kfree_skb;
 			}
 		}
-///...
 }
 ```
 
