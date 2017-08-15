@@ -1,3 +1,36 @@
+## calculate IP/TCP/UDP checsum
+
+内核计算IP/TCPU/UDP的校验和的方法，参考[How to Calculate IP/TCP/UDP Checksum–Part 1 Theory](http://www.roman10.net/2011/11/27/how-to-calculate-iptcpudp-checksumpart-1-theory/).
+
+简单来说，就是对要计算的数据，以16bit为单元进行累加，然后取反。
+
+
+TCP收包时，检查校验和：
+
+```
+static __sum16 tcp_v4_checksum_init(struct sk_buff *skb)
+{
+	const struct iphdr *iph = ip_hdr(skb);
+
+	if (skb->ip_summed == CHECKSUM_COMPLETE) {
+		if (!tcp_v4_check(skb->len, iph->saddr, ///check TCP/UDP pseudo-header checksum
+				  iph->daddr, skb->csum)) {
+			skb->ip_summed = CHECKSUM_UNNECESSARY;
+			return 0;
+		}
+	}
+
+	skb->csum = csum_tcpudp_nofold(iph->saddr, iph->daddr,
+				       skb->len, IPPROTO_TCP, 0); ///calc pseudo header checksum
+
+	if (skb->len <= 76) {
+		return __skb_checksum_complete(skb); /// 基于伪头累加和，计算整个数据包的checksum
+	}
+	return 0;
+}
+```
+
+`csum_tcpudp_nofold`用于计算伪头的checksum，`__skb_checksum_complete`基于伪头累加和(`skb->csum`)计算整个skb的校验和。
 
 ## net_device->features
 
@@ -123,9 +156,9 @@ static inline int skb_csum_unnecessary(const struct sk_buff *skb)
 
 `csum`中的校验和无效，可能有以下几种原因： 
 
-  * 设备不支持硬件校验和计算；
-  
-  * 设备计算了硬件校验和，但发现该数据帧已经损坏。此时，设备驱动程序可以直接丢弃该数据帧。但有些设备驱动程序（比如e10000/igb/ixbge）却没有丢弃数据帧，而是将`ip_summed`设置为`CHECKSUM_NONE`，然后交给上层协议栈重新计算并处理这种错误。
+> * 设备不支持硬件校验和计算；
+>
+> * 设备计算了硬件校验和，但发现该数据帧已经损坏。此时，设备驱动程序可以直接丢弃该数据帧。但有些设备驱动程序（比如e10000/igb/ixbge）却没有丢弃数据帧，而是将`ip_summed`设置为`CHECKSUM_NONE`，然后交给上层协议栈重新计算并处理这种错误。
 
 
 * Veth的BUG
