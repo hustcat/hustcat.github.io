@@ -1,5 +1,5 @@
 
-* net_device->features
+## net_device->features
 
 `net_device->features`字段表示设备的各种特性。其中一些位用于表示硬件校验和的计算能力：
 
@@ -19,7 +19,7 @@
 
 值得一提的是，`igb/ixgbe`使用的`NETIF_F_IP_CSUM`.
 
-* sk_buff
+## sk_buff
 
 取决于skb是接收封包，还是发送封包，`skb->csum`和`skb->ip_summed`的意义会不同。
 
@@ -56,9 +56,9 @@ struct sk_buff {
 #define CHECKSUM_PARTIAL 3 ///only compute IP header, not include data
 ```
 
+对于接收包,`skb->csum`可能包含L4校验和。`skb->ip_summed`表述L4校验和的状态：
 
-
-* CHECKSUM_UNNECESSARY
+* (1) CHECKSUM_UNNECESSARY
 
 `CHECKSUM_UNNECESSARY`表示底层硬件已经计算了CSUM。
 
@@ -98,8 +98,36 @@ static inline void igb_rx_checksum(struct igb_ring *ring,
 }
 ```
 
+* (2) CHECKSUM_NONE
 
-* GSO and CSUM offload
+`csum`中的校验和无效，可能有以下几种原因： 
+
+  * 设备不支持硬件校验和计算；
+  
+  * 设备计算了硬件校验和，但发现该数据帧已经损坏。此时，设备驱动程序可以直接丢弃该数据帧。但有些设备驱动程序（比如e10000/igb/ixbge）却没有丢弃数据帧，而是将`ip_summed`设置为`CHECKSUM_NONE`，然后交给上层协议栈重新计算并处理这种错误。
+
+
+* Veth的BUG
+
+这里讨论一个有意思的问题：[Linux kernel bug delivers corrupt TCP/IP data to Mesos, Kubernetes, Docker containers](https://tech.vijayp.ca/linux-kernel-bug-delivers-corrupt-tcp-ip-data-to-mesos-kubernetes-docker-containers-4986f88f7a19).
+
+Veth设备会将`CHECKSUM_NONE`改为`CHECKSUM_UNNECESSARY`。
+
+```
+static netdev_tx_t veth_xmit(struct sk_buff *skb, struct net_device *dev)
+{
+///...
+
+	/* don't change ip_summed == CHECKSUM_PARTIAL, as that
+	 * will cause bad checksum on forwarded packets
+	 */
+	if (skb->ip_summed == CHECKSUM_NONE &&
+	    rcv->features & NETIF_F_RXCSUM)
+		skb->ip_summed = CHECKSUM_UNNECESSARY;
+}
+```
+
+## GSO and CSUM offload
 
 ```
 int dev_hard_start_xmit(struct sk_buff *skb, struct net_device *dev,
