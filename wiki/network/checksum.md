@@ -308,3 +308,14 @@ int dev_hard_start_xmit(struct sk_buff *skb, struct net_device *dev,
 ```
 
 `ip_summed==CHECKSUM_PARTIAL`表示协议栈并没有计算完校验和，只计算了[伪头](http://www.tcpipguide.com/free/t_TCPChecksumCalculationandtheTCPPseudoHeader-2.htm)，将传输层的数据部分留给了硬件进行计算。如果底层硬件不支持`CSUM`，则`skb_checksum_help`完成计算校验和。
+
+## Remote checksum
+
+TODO:
+
+## 相关资料
+
+* [Checksum Offloads in the Linux Networking Stack](https://www.kernel.org/doc/Documentation/networking/checksum-offloads.txt)
+* [How to Calculate IP/TCP/UDP Checksum–Part 1 Theory](http://www.roman10.net/2011/11/27/how-to-calculate-iptcpudp-checksumpart-1-theory/)
+* [https://tech.vijayp.ca/linux-kernel-bug-delivers-corrupt-tcp-ip-data-to-mesos-kubernetes-docker-containers-4986f88f7a19](https://tech.vijayp.ca/linux-kernel-bug-delivers-corrupt-tcp-ip-data-to-mesos-kubernetes-docker-containers-4986f88f7a19)
+* [tc netem](https://wiki.linuxfoundation.org/networking/netem)
