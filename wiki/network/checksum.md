@@ -160,6 +160,29 @@ static inline int skb_csum_unnecessary(const struct sk_buff *skb)
 >
 > * 设备计算了硬件校验和，但发现该数据帧已经损坏。此时，设备驱动程序可以直接丢弃该数据帧。但有些设备驱动程序（比如e10000/igb/ixbge）却没有丢弃数据帧，而是将`ip_summed`设置为`CHECKSUM_NONE`，然后交给上层协议栈重新计算并处理这种错误。
 
+* (3) CHECKSUM_COMPLETE
+
+表明网卡已经计算了L4层报头和payload的校验和，并且`skb->csum`已经被赋值，此时L4层的接收者只需要加伪头并验证校验结果。以TCP为例：
+
+```
+static __sum16 tcp_v4_checksum_init(struct sk_buff *skb)
+{
+	const struct iphdr *iph = ip_hdr(skb);
+
+	if (skb->ip_summed == CHECKSUM_COMPLETE) {
+		if (!tcp_v4_check(skb->len, iph->saddr, ///check TCP/UDP pseudo-header checksum
+				  iph->daddr, skb->csum)) {
+			skb->ip_summed = CHECKSUM_UNNECESSARY;
+			return 0;
+		}
+	}
+///...
+}
+```
+
+值得一提的，`igb/ixgbe`没有使用`CHECKSUM_COMPLETE`，而是使用的`CHECKSUM_UNNECESSARY`.
+
+注意`CHECKSUM_COMPLETE`和`CHECKSUM_UNNECESSARY`的区别，对于前者，上层还需要计算伪头校验和，再进行验证，见`tcp_v4_check`。实际上，早前的内核版本为`CHECKSUM_HW`。
 
 * Veth的BUG
 
