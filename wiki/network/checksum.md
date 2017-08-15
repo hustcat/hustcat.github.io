@@ -317,5 +317,5 @@ TODO:
 
 * [Checksum Offloads in the Linux Networking Stack](https://www.kernel.org/doc/Documentation/networking/checksum-offloads.txt)
 * [How to Calculate IP/TCP/UDP Checksum–Part 1 Theory](http://www.roman10.net/2011/11/27/how-to-calculate-iptcpudp-checksumpart-1-theory/)
-* [https://tech.vijayp.ca/linux-kernel-bug-delivers-corrupt-tcp-ip-data-to-mesos-kubernetes-docker-containers-4986f88f7a19](https://tech.vijayp.ca/linux-kernel-bug-delivers-corrupt-tcp-ip-data-to-mesos-kubernetes-docker-containers-4986f88f7a19)
+* [Linux kernel bug delivers corrupt TCP/IP data to Mesos, Kubernetes, Docker containers](https://tech.vijayp.ca/linux-kernel-bug-delivers-corrupt-tcp-ip-data-to-mesos-kubernetes-docker-containers-4986f88f7a19)
 * [tc netem](https://wiki.linuxfoundation.org/networking/netem)
