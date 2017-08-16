@@ -32,6 +32,19 @@ static __sum16 tcp_v4_checksum_init(struct sk_buff *skb)
 
 `csum_tcpudp_nofold`用于计算伪头的checksum，`__skb_checksum_complete`基于伪头累加和(`skb->csum`)计算整个skb的校验和。
 
+* IP CSUM (send)
+
+对于TCP，L4->L3时，调用`ip_queue_xmit`添加IP header， `ip_queue_xmit` -> `ip_local_out` -> `__ip_local_out` -> `ip_send_check`，`ip_send_check`完成`IP header`的`checksum`的计算：
+
+```
+/* Generate a checksum for an outgoing IP datagram. */
+void ip_send_check(struct iphdr *iph)
+{
+	iph->check = 0;
+	iph->check = ip_fast_csum((unsigned char *)iph, iph->ihl);
+}
+```
+
 ## net_device->features
 
 `net_device->features`字段表示设备的各种特性。其中一些位用于表示硬件校验和的计算能力：
