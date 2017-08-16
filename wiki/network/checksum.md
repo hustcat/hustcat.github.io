@@ -134,6 +134,13 @@ static inline __wsum udp_csum(struct sk_buff *skb)
 }
 ```
 
+* ip_fragment & ip_defrag
+
+一般来说，L4会根据PMTU完成用户数据的分片，但是L4只会对第一个skb添加L3 header，`ip_fragment`需要对`skb->frag_list`中的skb添加L3 header；当然，`ip_fragment`也会做数据切分操作，如果数据超过MTU。
+
+`ip_local_deliver` -> `ip_defrag`，当接收端收到这些分片后，需要进行重组。
+
+TODO: `ip_defrag`对checksum的处理。
 
 ## net_device->features
 
