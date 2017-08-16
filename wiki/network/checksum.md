@@ -45,6 +45,96 @@ void ip_send_check(struct iphdr *iph)
 }
 ```
 
+* UDP CSUM (send)
+
+`udp_sendmsg` ->  `ip_append_data` -> `__ip_append_data`, `__ip_append_data`在分片拷贝用户数据时，会对每个skb的数据计算checksum:
+
+```
+///copy user data -> to
+int
+ip_generic_getfrag(void *from, char *to, int offset, int len, int odd, struct sk_buff *skb)
+{
+	struct iovec *iov = from;
+
+	if (skb->ip_summed == CHECKSUM_PARTIAL) { ///HW calc data csum
+		if (memcpy_fromiovecend(to, iov, offset, len) < 0)///don't calc csum
+			return -EFAULT;
+	} else { ///software calc data csum
+		__wsum csum = 0;
+		if (csum_partial_copy_fromiovecend(to, iov, offset, len, &csum) < 0)
+			return -EFAULT;
+		skb->csum = csum_block_add(skb->csum, csum, odd);
+	}
+	return 0;
+}
+```
+
+`ip_generic_getfrag`作为一个通用函数，本身考虑了`HW CSUM`，即`CHECKSUM_PARTIAL`，则不计算数据的checksum。但是如果用户数据超过PMTU，即发生分片时，`HW CSUM`不再有效，必须进行软件计算checksum.
+
+`udp_sendmsg` -> `udp_push_pending_frames` -> `udp_send_skb`,内核在发送这些分片(skb)之前，会累加所有分片的checksum(skb->csum)，并考虑第一个skb的L4 header和伪头：
+
+```c
+///add UDP header
+static int udp_send_skb(struct sk_buff *skb, struct flowi4 *fl4)
+{
+	struct sock *sk = skb->sk;
+	struct inet_sock *inet = inet_sk(sk);
+	struct udphdr *uh;
+	int err = 0;
+	int is_udplite = IS_UDPLITE(sk);
+	int offset = skb_transport_offset(skb);
+	int len = skb->len - offset;
+	__wsum csum = 0;
+
+	/*
+	 * Create a UDP header
+	 */
+	uh = udp_hdr(skb);
+	uh->source = inet->inet_sport;
+	uh->dest = fl4->fl4_dport;
+	uh->len = htons(len);
+	uh->check = 0;
+
+	if (is_udplite)  				 /*     UDP-Lite      */
+		csum = udplite_csum(skb);
+
+	else if (sk->sk_no_check == UDP_CSUM_NOXMIT) {   /* UDP csum disabled */
+
+		skb->ip_summed = CHECKSUM_NONE;
+		goto send;
+
+	} else if (skb->ip_summed == CHECKSUM_PARTIAL) { /* UDP hardware csum */
+
+		udp4_hwcsum(skb, fl4->saddr, fl4->daddr);
+		goto send;
+
+	} else
+		csum = udp_csum(skb);
+
+	/* add protocol-dependent pseudo-header */
+	uh->check = csum_tcpudp_magic(fl4->saddr, fl4->daddr, len, ///加上伪头csum
+				      sk->sk_protocol, csum);
+	if (uh->check == 0)
+		uh->check = CSUM_MANGLED_0;
+
+send:
+	err = ip_send_skb(sock_net(sk), skb); ///send skb
+///..
+}
+
+static inline __wsum udp_csum(struct sk_buff *skb)
+{
+	__wsum csum = csum_partial(skb_transport_header(skb),
+				   sizeof(struct udphdr), skb->csum); ///L4 header's csum
+        ///frag_list中的skb是没有L4 header的
+	for (skb = skb_shinfo(skb)->frag_list; skb; skb = skb->next) {
+		csum = csum_add(csum, skb->csum); ///累加所有分片的skb->csum
+	}
+	return csum;
+}
+```
+
+
 ## net_device->features
 
 `net_device->features`字段表示设备的各种特性。其中一些位用于表示硬件校验和的计算能力：
