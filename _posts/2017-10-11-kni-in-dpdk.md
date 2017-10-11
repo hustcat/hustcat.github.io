@@ -124,13 +124,13 @@ KNI示例程序位于`example/kni`，KNI内核模块位于`lib/librte_eal/linuxa
 
 整体实现如下：
 
-![](pic/kni01.png)
+![](/assets/dpdk/kni01.png)
 
 ### 数据接收
 
 先调用`rte_eth_rx_burst`从网络接口读取数据，然后调用`rte_kni_tx_burst`通过`FIFO`传给内核模块。
 
-![](pic/kni02.png)
+![](/assets/dpdk/kni02.png)
 
 ```
 		/* Burst rx from eth */
