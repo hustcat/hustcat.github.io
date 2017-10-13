@@ -314,8 +314,106 @@ static void kni_net_rx_normal(struct kni_dev *kni);
 static kni_net_rx_t kni_net_rx_func = kni_net_rx_normal;
 ```
 
+```
+/*
+ * RX: normal working mode
+ */
+static void
+kni_net_rx_normal(struct kni_dev *kni)
+{
+///...
+	/* Calculate the number of entries to dequeue from rx_q */
+	num_rx = min_t(uint32_t, num_fq, MBUF_BURST_SZ);
+
+	/* Burst dequeue from rx_q */
+	num_rx = kni_fifo_get(kni->rx_q, kni->pa, num_rx);
+	if (num_rx == 0)
+		return;
+///...
+	/* Transfer received packets to netif */
+	for (i = 0; i < num_rx; i++) {
+		kva = pa2kva(kni->pa[i]);
+		len = kva->pkt_len;
+		data_kva = kva2data_kva(kva);
+		kni->va[i] = pa2va(kni->pa[i], kva);
+
+		skb = dev_alloc_skb(len + 2);
+///...
+		skb->dev = dev;
+		skb->protocol = eth_type_trans(skb, dev);
+		skb->ip_summed = CHECKSUM_UNNECESSARY;
+
+		/* Call netif interface */
+		netif_rx_ni(skb); ///进入内核协议栈
+///...
+	}
+///...
+}
+```
+
+## 发送数据
+
+* KNI kernel interface
+
+```
+/*
+ * Transmit a packet (called by the kernel)
+ */
+static int
+kni_net_tx(struct sk_buff *skb, struct net_device *dev)
+{
+///...
+	/* dequeue a mbuf from alloc_q */
+	ret = kni_fifo_get(kni->alloc_q, &pkt_pa, 1);
+	if (likely(ret == 1)) {
+		void *data_kva;
+
+		pkt_kva = pa2kva(pkt_pa);
+		data_kva = kva2data_kva(pkt_kva);
+		pkt_va = pa2va(pkt_pa, pkt_kva);
+
+		len = skb->len; /// data length
+		memcpy(data_kva, skb->data, len); /// copy data
+		if (unlikely(len < ETH_ZLEN)) {
+			memset(data_kva + len, 0, ETH_ZLEN - len);
+			len = ETH_ZLEN;
+		}
+		pkt_kva->pkt_len = len;
+		pkt_kva->data_len = len;
+
+		/* enqueue mbuf into tx_q */
+		ret = kni_fifo_put(kni->tx_q, &pkt_va, 1);/// put tx_q
+///...
+```
+
+* DPDK app
+
+```
+		/* Burst rx from kni */
+		num = rte_kni_rx_burst(p->kni[i], pkts_burst, PKT_BURST_SZ);
+
+		/* Burst tx to eth */
+		nb_tx = rte_eth_tx_burst(port_id, 0, pkts_burst, (uint16_t)num);
+```
+
+`rte_kni_rx_burst`从`tx_q`队列取出mbuf:
+
+```
+unsigned
+rte_kni_rx_burst(struct rte_kni *kni, struct rte_mbuf **mbufs, unsigned num)
+{
+	unsigned ret = kni_fifo_get(kni->tx_q, (void **)mbufs, num);
+
+	/* If buffers removed, allocate mbufs and then put them into alloc_q */
+	if (ret)
+		kni_allocate_mbufs(kni);
+
+	return ret;
+}
+```
+
 ## Refs
 
 * [Learning DPDK : KNI interface](https://haryachyy.wordpress.com/2016/02/07/learning-dpdk-kni-sample-overview/)
-* [11. Kernel NIC Interface Sample Application](http://dpdk.org/doc/guides/sample_app_ug/kernel_nic_interface.html)
-* [24. Kernel NIC Interface](http://dpdk.org/doc/guides/prog_guide/kernel_nic_interface.html)
+* [Sample Applications User Guides: 11. Kernel NIC Interface Sample Application](http://dpdk.org/doc/guides/sample_app_ug/kernel_nic_interface.html)
+* [Programmer’s Guide: 24. Kernel NIC Interface](http://dpdk.org/doc/guides/prog_guide/kernel_nic_interface.html)
