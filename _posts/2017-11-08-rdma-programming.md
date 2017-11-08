@@ -1,10 +1,10 @@
 ---
 layout: post
-title: RDMA Programming: Base on linux-rdma
+title: RDMA Programming - Base on linux-rdma
 date: 2017-11-08 23:00:30
 categories: Network
 tags: RDMA RoCE Linux-RDMA 
-excerpt: RDMA Programming: Base on linux-rdma
+excerpt: RDMA Programming - Base on linux-rdma
 ---
 
 [`linux-rdma`](https://github.com/linux-rdma/rdma-core)为Linux内核`Infiniband`子系统`drivers/infiniband`对应的用户态库，提供了[`Infiniband Verbs API`](https://github.com/linux-rdma/rdma-core/blob/v15/libibverbs/verbs.h)和[`RDMA Verbs API`](https://github.com/linux-rdma/rdma-core/blob/v15/librdmacm/rdma_verbs.h).
