@@ -22,14 +22,14 @@ excerpt: Understanding the RoCE network protocol
 对应的数据帧格式如下：
 
 
-![图片描述](/assets/rdma/roce_00.png)
+![](/assets/rdma/roce_00.png)
 
 
 对应的协议规范参考[InfiniBand™ Architecture Specification Release 1.2.1 Annex A16: RoCE](https://cw.infinibandta.org/document/dl/7148)。
 
 示例：
 
-![图片描述](/assets/rdma/roce_01.png)
+![](/assets/rdma/roce_01.png)
 
 ## RoCEv2
 
@@ -41,11 +41,11 @@ excerpt: Understanding the RoCE network protocol
 
 数据帧的格式如下：
 
-![图片描述](/assets/rdma/roce_02.png)
+![](/assets/rdma/roce_02.png)
 
 示例：
 
-![图片描述](/assets/rdma/roce_03.png)
+![](/assets/rdma/roce_03.png)
 
 值得一提的是内核在4.9通过软件的方式的实现了[RoCEv2](http://hustcat.github.io/linux-soft-roce-implementation/)，即`Soft-RoCE`.
 
