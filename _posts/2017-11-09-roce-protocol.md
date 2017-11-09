@@ -29,7 +29,7 @@ excerpt: Understanding the RoCE network protocol
 
 示例：
 
-![](/assets/rdma/roce_01.png)
+![](/assets/rdma/roce_01.jpg)
 
 ## RoCEv2
 
