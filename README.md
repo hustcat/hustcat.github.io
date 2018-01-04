@@ -1,4 +1,4 @@
-YY哥's Page(hustcat.github.io)
+YY哥's Pages
 =================
 
 Web pages please visit [hustcat.github.io](http://hustcat.github.io).
