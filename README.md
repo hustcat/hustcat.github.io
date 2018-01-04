@@ -3,6 +3,24 @@ YY哥's Pages
 
 Web pages please visit [hustcat.github.io](http://hustcat.github.io).
 
+## Network
+
+* [An introduction to OVN architecture](_posts/2018-01-04-an-introduction-to-ovn-architecture.md)
+* [OVN gateway practice](_posts/2018-01-04-ovn-gateway-practice.md)
+* [OVN-kubernetes practice](_posts/2018-01-03-ovn-k8s-practice.md)
+* [Checksum in Linux Kernel](_posts/2017-08-15-checksum-in-kernel.md)
+* [Container Network Interface](_posts/2016-06-13-cni_and_kube.md)
+* [Dive into Calico - IP Interconnect Fabrics](_posts/2016-06-21-dive-into-calico.md)
+* [Getting started with Calico](_posts/2016-06-16-getting-started-with-calico.md)
+* [KNI in DPDK](_posts/2017-10-11-kni-in-dpdk.md)
+* [Linux Soft-RoCE implementation](_posts/2017-11-08-linux-soft-roce-implementation.md)
+* [Multiple queue and RSS in DPDK](_posts/2017-10-17-rss-in-dpdk.md)
+* [Network related posts](_posts/2016-02-27-network-related-posts.md)
+* [RDMA Programming - Base on linux-rdma](_posts/2017-11-08-rdma-programming.md)
+* [Setup BGP Route Reflector for Calico node](_posts/2016-06-20-setup-rr-for-calico-node.md)
+* [TCP SYN cookies make window size suddenly becomes smaller](_posts/2017-03-03-tcp_syn_cookies_and_window_size.md)
+* [Understanding the RoCE network protocol](_posts/2017-11-09-roce-protocol.md)
+
 ## Container
 
 * [Getting started containerd](_posts/2016-06-14-getting-started-containerd.md)
@@ -62,7 +80,6 @@ Web pages please visit [hustcat.github.io](http://hustcat.github.io).
 * [Equal Cost Multipath(ECMP) practice base on Quagga](_posts/2015-10-29-ecmp-practice-base-quagga.md)
 * [GPG常用操作](_posts/2015-05-24-gpg-basic.md)
 * [Getting into the Linux ELF and core dump file](_posts/2016-12-21-getting-into-core-dump-file.md)
-* [Getting started with D-BUS](_posts/2016-12-21-getting-started-with-dbus.md)
 * [Getting started with D-BUS](_posts/2017-01-04-getting-started-with-dbus.md)
 * [Getting started with Kprobe](_posts/2017-02-09-dive-into-kprobe.md)
 * [Getting started with Openshift](_posts/2016-06-24-getting-started-with-openshift.md)
@@ -71,9 +88,7 @@ Web pages please visit [hustcat.github.io](http://hustcat.github.io).
 * [Inside the interrupt](_posts/2015-09-25-inside-the-interrupt.md)
 * [Introduction to the UIO](_posts/2017-10-10-introduction-to-uio.md)
 * [Introduction to the perf-tools](_posts/2016-12-23-the-introduction-to-perf-tools.md)
-* [LVS gateway with asymmetrical routing](_posts/2016-02-12-lvs-gw-with-asymmetrical-routing.md)
 * [LVS practice](_posts/2016-02-11-lvs-pracice.md)
-* [Linux BPF introduction](_posts/2016-09-01-linux-bpf-intro.md)
 * [Linux BPF introduction](_posts/2016-10-19-linux-bpf-intro.md)
 * [Linux NAT internal](_posts/2016-03-10-linux-nat-internal.md)
 * [Linux Namespace分析——mnt namespace的实现与应用](_posts/2015-03-22-namespace-implement-1.md)
@@ -117,28 +132,9 @@ Web pages please visit [hustcat.github.io](http://hustcat.github.io).
 * [理解iostats](_posts/2015-03-31-iostats.md)
 * [容器内存用完导致容器卡死的问题](_posts/2015-05-27-cgroup-oom.md)
 
-## Network
-
-* [An introduction to OVN architecture](_posts/2018-01-04-an-introduction-to-ovn-architecture.md)
-* [Checksum in Linux Kernel](_posts/2017-08-15-checksum-in-kernel.md)
-* [Container Network Interface](_posts/2016-06-13-cni_and_kube.md)
-* [Dive into Calico - IP Interconnect Fabrics](_posts/2016-06-21-dive-into-calico.md)
-* [Getting started with Calico](_posts/2016-06-16-getting-started-with-calico.md)
-* [KNI in DPDK](_posts/2017-10-11-kni-in-dpdk.md)
-* [Linux Soft-RoCE implementation](_posts/2017-11-08-linux-soft-roce-implementation.md)
-* [Multiple queue and RSS in DPDK](_posts/2017-10-17-rss-in-dpdk.md)
-* [Network related posts](_posts/2016-02-27-network-related-posts.md)
-* [OVN gateway practice](_posts/2018-01-04-ovn-gateway-practice.md)
-* [OVN-kubernetes practice](_posts/2018-01-03-ovn-k8s-practice.md)
-* [RDMA Programming - Base on linux-rdma](_posts/2017-11-08-rdma-programming.md)
-* [Setup BGP Route Reflector for Calico node](_posts/2016-06-20-setup-rr-for-calico-node.md)
-* [TCP SYN cookies make window size suddenly becomes smaller](_posts/2017-03-03-tcp_syn_cookies_and_window_size.md)
-* [Understanding the RoCE network protocol](_posts/2017-11-09-roce-protocol.md)
-
 ## Openstack
 
 * [openstack neutron DVR internal with floating IP](_posts/2016-01-31-openstack-neutron-dvr-internal-with-fip.md)
-* [openstack neutron DVR internal](_posts/2016-01-30-openstack-neutron-dvr-internal.md)
 * [openstack neutron DVR internal](_posts/2016-02-03-openstack-neutron-dvr-internal.md)
 * [openstack neutron classic ovs practice](_posts/2016-01-27-openstack-neutron-classic-ovs-pratice.md)
 * [openstack neutron dvr practice](_posts/2016-01-28-openstack-neutron-dvr-practice.md)
@@ -161,8 +157,6 @@ Web pages please visit [hustcat.github.io](http://hustcat.github.io).
 * [Go语言学习：new与make](_posts/2014-11-1-new-and-make.md)
 * [Manual memory management in Go](_posts/2016-09-08-manual-mem-management-in-go.md)
 * [Mutex in Go](_posts/2016-08-25-mutex-in-go.md)
-* [Profile in Go](_posts/2016-09-08-profile-in-go.md)
 * [Rate limit examples in Go](_posts/2016-09-28-rate-limit-example-in-go.md)
-* [The Go netpoller and timeout](_posts/2012-12-30-go-netpoller.md)
 * [The Go netpoller and timeout](_posts/2016-12-30-go-netpoller-and-timeout.md)
 * [Timeout in Go net/http client](_posts/2016-12-30-timeout-in-net-http-of-golang.md)
