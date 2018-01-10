@@ -16,7 +16,7 @@ OVS中的`flow cache`分两级：`microflow cache`和`megaflow cache`。前者�
 
 OVS使用[`sw_flow_key`](https://github.com/openvswitch/ovs/blob/v2.8.1/datapath/flow.h#L68)进行流匹配，字段比较多，包含L1到L4协议的关键信息：
 
-![](/assets/ovs_sw_flow_key_fields.png)
+![](/assets/ovs/ovs_sw_flow_key_fields.png)
 
 那么为什么OVS选择TSS，而不选择其他查找算法？[这里](https://www.usenix.org/system/files/conference/nsdi15/nsdi15-paper-pfaff.pdf)给出了以下三点解释：
 
