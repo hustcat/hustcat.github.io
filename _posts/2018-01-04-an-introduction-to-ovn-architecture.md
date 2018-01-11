@@ -376,7 +376,15 @@ Geneve Option:
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 ```
 
-OVS 的 tunnel 封装是由 Openflow 流表来做的，所以 ovn-controller 需要把这三个标识符写到本地 HV 的 `Openflow flow table` 里面，对于每个进入 br-int 的报文，都会有这三个属性，`logical datapath identifier` 和 `logical input port identifier` 在入口方向被赋值，分别存在 `openflow metadata` 字段和 Nicira 扩展寄存器 reg6 里面。报文经过 OVS 的 pipeline 处理后，如果需要从指定端口发出去，只需要把 `Logical output port identifier` 写在 Nicira 扩展寄存器 reg7 里面。
+OVS 的 tunnel 封装是由 Openflow 流表来做的，所以 ovn-controller 需要把这三个标识符写到本地 HV 的 `Openflow flow table` 里面，对于每个进入 br-int 的报文，都会有这三个属性，`logical datapath identifier` 和 `logical input port identifier` 在入口方向被赋值，分别存在 `openflow metadata` 字段和 OVS 扩展寄存器 reg14 里面。报文经过 OVS 的 pipeline 处理后，如果需要从指定端口发出去，只需要把 `Logical output port identifier` 写在 OVS 扩展寄存器 reg15 里面。
+
+示例(`port 6`对应Geneve tunnel接口)：
+
+```
+table=0,in_port=6 actions=move:NXM_NX_TUN_ID[0..23]->OXM_OF_METADATA[0..23],move:NXM_NX_TUN_METADATA0[16..30]->NXM_NX_REG14[0..14],move:NXM_NX_TUN_METADATA0[0..15]->NXM_NX_REG15[0..15],resubmit(,33)
+```
+
+可以看到，`NXM_NX_TUN_ID`为`tunnel_key`，`reg14`为15 bit，`reg15`为16 bit.
 
 OVN tunnel 里面所携带的 `logical input port identifier` 和 `logical output port identifier` 可以提高流表的查找效率，OVS 流表可以通过这两个值来处理报文，不需要解析报文的字段。
 
