@@ -16,9 +16,11 @@ excerpt: Queue Pair in RDMA
 
 QP Setup. When it is set up by software, a RC QP is initialized with:
 
-  * (1) The port number on the local CA through which it will send and receive all messages.
-  * (2) The QP Number (QPN) that identifies the RC QP that it is married to in a remote CA.
-  * (3) The port address of the remote CA port behind which the remote RC QP resides.
+(1) The port number on the local CA through which it will send and receive all messages.
+
+(2) The QP Number (QPN) that identifies the RC QP that it is married to in a remote CA.
+
+(3) The port address of the remote CA port behind which the remote RC QP resides.
 
 ## 数据结构
 
