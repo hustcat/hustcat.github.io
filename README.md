@@ -5,6 +5,7 @@ Web pages please visit [hustcat.github.io](http://hustcat.github.io).
 
 ## Network
 
+* [QoS in RoCE](_posts/2018-03-22-qos-in-roce.md)
 * [Queue Pair in RDMA](_posts/2018-03-21-queue-pair-in-rdma.md)
 * [The introduction to OVS architecture](_posts/2018-01-10-an-introduction-to-ovs-architecture.md)
 * [OVS flow table implementation in datapath](_posts/2018-01-10-ovs-flow-table-in-datapath.md)
