@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Qos in RoCE
+title: QoS in RoCE
 date: 2018-03-22 18:28:30
 categories: Network
 tags: RDMA RoCE ECN PFC
-excerpt: Qos in RoCE
+excerpt: QoS in RoCE
 ---
 
 ## Overview
