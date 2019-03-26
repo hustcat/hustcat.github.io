@@ -385,6 +385,14 @@ down对应的dmesg信息：
 [699929.950543] failed to kill vid 0081/0 for device dev8
 ```
 
+***update at 2019-03-26***
+
+实际上第二种方式设置MAC是更安全的方式：
+
+> User can use IPROUTE2 utility to assign a unique MAC address to a VF from within the host Operating System. Once the new MAC address is assigned, VM that has this particular VF assigned to will not be able to alter its MAC address. This is called "administratively assigned MAC" and is a security feature.
+
+参考[这里](https://forums.intel.com/s/question/0D50P0000490A1CSAU/sriov-on-nic-82599-are-vf-mac-addresses-unique?language=en_US#).
+
 ## 3 总结
 
 通过PF设置VF的MAC后，需要重启VF网络设备，VF才能同步到PF的MAC信息。
