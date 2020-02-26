@@ -1,7 +1,7 @@
 ---
 layout: post
 title:  Collective communication in MPI
-date: 2020-02-26 00:00:00
+date: 2020-02-26 12:00:00
 categories: MachineLearning
 tags: mpi
 excerpt: Collective communication in MPI总结
@@ -156,9 +156,11 @@ MPI_Allreduce(
 `Ring AllReduce`主要针对数据块过大的情况，把每个节点的数据切分成N份(相当于scatter操作)。所以，`ring allreduce`分2个阶段操作:
 
  * (1) scatter-reduce
+
  通过(N-1)步，让每个节点都得到1/N的完整数据块。每一步的通信耗时是α+S/(NB)，计算耗时是(S/N)*C。 这一阶段也可视为scatter-reduce。
 
  * (2) all-gather
+
  通过(N-1)步，让所有节点的每个1/N数据块都变得完整。每一步的通信耗时也是α+S/(NB)，没有计算。这一阶段也可视为allgather。
 
 ## Refs

@@ -3,6 +3,10 @@ YY哥's Pages
 
 Web pages please visit [hustcat.github.io](http://hustcat.github.io).
 
+## MachineLearning
+
+* [Collective communication in MPI](_posts/2020-02-26-collective-communication-in-mpi.md)
+
 ## Network
 
 * [QoS in RoCE](_posts/2018-03-22-qos-in-roce.md)
